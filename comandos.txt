@@ -1,0 +1,23 @@
+header comando
+53 63
+
+comando positivo
+B4 00 40 06 B4 00 40 06
+
+comando espera
+00 00 E8 03 00 00 E8 03
+
+comando voltar
+4C FF 40 06 4C FF 40 06
+
+end msg
+00 80 00 00 00 80 00 00
+
+header start
+53 74
+
+todos juntos
+53 63 B4 00 40 06 B4 00 40 06 00 00 E8 03 00 00 E8 03 4C FF 40 06 4C FF 40 06 00 80 00 00 00 80 00 00
+
+diff vel
+53 63 B4 00 40 06 B4 00 40 26 00 00 E8 03 00 00 E8 03 4C FF 40 06 4C FF 40 26 00 80 00 00 00 80 00 00
