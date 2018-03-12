@@ -71,7 +71,7 @@ const uint8_t END_MSG[] = {0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00};
 #define SPEED_UPDATE_TIMER_TOP	  11119					//this will give approximately 720Hz - period of the timer that will update the speed (will 
 #define ACC_MODULE				  (720*ACC_SCALER)		//degrees per second square
 #define BREAKING_MODULE			  (720*BREAKING_SCALER)
-#define D_THETA					  (1/(DEFAULT_MS*FS_REVOLUTION))
+#define D_THETA					  (360/(DEFAULT_MS*FS_REVOLUTION))
 #define DEN_CALC_ACC_STEPS		  (float)(162)					//360/(2*ACC_MODULE*D_THETA));
 
 typedef enum{

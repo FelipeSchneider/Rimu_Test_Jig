@@ -209,11 +209,17 @@ ISR(TIMER4_OVF_vect){
 		if (gs_base_ctrl.c_steps_made <= gs_base_ctrl.n_to_cruse_speed){	//if we need to speed up
 			gs_base_ctrl.speed = max(INITIAL_SPEED,gs_base_ctrl.speed);
 			gs_base_ctrl.speed += ACC_SCALER;
+			gs_base_ctrl.speed = min(721,gs_base_ctrl.speed);
 			updateMbaseSpeed((uint16_t)(gs_base_ctrl.speed));		//apply the timer period table according to the actual speed
 		}
 		else if(gs_base_ctrl.c_steps_made >= gs_base_ctrl.n_to_start_breaking){	//if we net to reduce the angular speed
+			gs_base_ctrl.speed = max(INITIAL_SPEED,gs_base_ctrl.speed);
 			gs_base_ctrl.speed -= BREAKING_SCALER;
+			gs_base_ctrl.speed = min(721,gs_base_ctrl.speed);
 			updateMbaseSpeed((uint16_t)(gs_base_ctrl.speed));
+		}
+		else{
+			updateMbaseSpeed(abs(gs_base_ctrl.prog_speed));
 		}
 	}
 	else{
@@ -222,13 +228,21 @@ ISR(TIMER4_OVF_vect){
 	
 	if (abs(gs_top_ctrl.prog_speed) >= INITIAL_SPEED){
 		if (gs_top_ctrl.c_steps_made <= gs_top_ctrl.n_to_cruse_speed){	//if we need to speed up
+			SET_NATIVE_LED;
 			gs_top_ctrl.speed = max(INITIAL_SPEED,gs_top_ctrl.speed);
 			gs_top_ctrl.speed += ACC_SCALER;
+			gs_top_ctrl.speed = min(721,gs_top_ctrl.speed);
 			updateMtopSpeed((uint16_t)(gs_top_ctrl.speed));		//apply the timer period table according to the actual speed
 		}
 		else if(gs_top_ctrl.c_steps_made >= gs_top_ctrl.n_to_start_breaking){	//if we net to reduce the angular speed
+			CLEAR_NATIVE_LED;
+			gs_top_ctrl.speed = max(INITIAL_SPEED,gs_top_ctrl.speed);
 			gs_top_ctrl.speed -= BREAKING_SCALER;
+			gs_top_ctrl.speed = min(721,gs_top_ctrl.speed);
 			updateMtopSpeed((uint16_t)(gs_top_ctrl.speed));
+		}
+		else{
+			updateMtopSpeed(abs(gs_top_ctrl.prog_speed));
 		}
 	}
 	else{

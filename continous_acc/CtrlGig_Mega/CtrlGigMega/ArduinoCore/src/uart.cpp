@@ -145,8 +145,9 @@ uint8_t processCommands(s_motor_ctrl *s){
 			#ifdef _DEBUG
 				Serial.println("Velocidade de cruzeiro com cortes");
 			#endif // _DEBUG
-			s->n_to_cruse_speed = RATIO_ACC_BREAKING*s->prog_steps;
-			s->steps_breaking = s->prog_steps-s->n_to_cruse_speed;
+			s->n_to_cruse_speed = RATIO_ACC_BREAKING * s->prog_steps;
+			s->n_to_start_breaking = s->n_to_cruse_speed;
+			s->steps_breaking = s->prog_steps - s->n_to_cruse_speed;
 			s->prog_speed = sqrt(INITIAL_SPEED_2 + 2*ACC_MODULE*s->n_to_cruse_speed*D_THETA);				//TORRICELLI EQUATION
 		}
 		
@@ -170,7 +171,8 @@ uint8_t processCommands(s_motor_ctrl *s){
 				Serial.println("Velocidade de cruzeiro com cortes");
 			#endif // _DEBUG
 			s->n_to_cruse_speed = RATIO_ACC_BREAKING*s->prog_steps;
-			s->steps_breaking = s->prog_steps-s->n_to_cruse_speed;
+			s->n_to_start_breaking = s->n_to_cruse_speed;
+			s->steps_breaking = s->prog_steps - s->n_to_cruse_speed;
 			s->prog_speed = sqrt(INITIAL_SPEED_2 + 2*ACC_MODULE*s->n_to_cruse_speed*D_THETA)*(-1);	
 		}
 	}

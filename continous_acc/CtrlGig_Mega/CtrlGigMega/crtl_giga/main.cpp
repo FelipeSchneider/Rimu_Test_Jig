@@ -65,7 +65,6 @@ void setup() {
 	gs_base_ctrl.f_dir = DIR_POSITIVE;
 	gcs.base_limit = 0;
 	gfs.state = IDLE;
-	SET_NATIVE_LED;
 }
 
 void loop() {
