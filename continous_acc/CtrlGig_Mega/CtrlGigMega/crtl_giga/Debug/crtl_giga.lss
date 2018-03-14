@@ -7,7 +7,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         00002344  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000271  00800360  00800360  00002538  2**0
+  2 .bss          000008b1  00800360  00800360  00002538  2**0
                   ALLOC
   3 .comment      00000030  00000000  00000000  00002538  2**0
                   CONTENTS, READONLY
@@ -320,7 +320,7 @@ Disassembly of section .text:
      7da:	d9 f7       	brne	.-10     	; 0x7d2 <__do_copy_data+0x10>
 
 000007dc <__do_clear_bss>:
-     7dc:	25 e0       	ldi	r18, 0x05	; 5
+     7dc:	2c e0       	ldi	r18, 0x0C	; 12
      7de:	a0 e6       	ldi	r26, 0x60	; 96
      7e0:	b3 e0       	ldi	r27, 0x03	; 3
      7e2:	01 c0       	rjmp	.+2      	; 0x7e6 <.do_clear_bss_start>
@@ -329,7 +329,7 @@ Disassembly of section .text:
      7e4:	1d 92       	st	X+, r1
 
 000007e6 <.do_clear_bss_start>:
-     7e6:	a1 3d       	cpi	r26, 0xD1	; 209
+     7e6:	a1 31       	cpi	r26, 0x11	; 17
      7e8:	b2 07       	cpc	r27, r18
      7ea:	e1 f7       	brne	.-8      	; 0x7e4 <.do_clear_bss_loop>
 
@@ -367,8 +367,8 @@ Disassembly of section .text:
      818:	51 ee       	ldi	r21, 0xE1	; 225
      81a:	60 e0       	ldi	r22, 0x00	; 0
      81c:	70 e0       	ldi	r23, 0x00	; 0
-     81e:	86 e2       	ldi	r24, 0x26	; 38
-     820:	95 e0       	ldi	r25, 0x05	; 5
+     81e:	86 e6       	ldi	r24, 0x66	; 102
+     820:	9b e0       	ldi	r25, 0x0B	; 11
 void setup() {
 	// put your setup code here, to run once:
 
@@ -452,13 +452,13 @@ void setup() {
      884:	86 e1       	ldi	r24, 0x16	; 22
      886:	f9 d5       	rcall	.+3058   	; 0x147a <digitalWrite>
      888:	81 e0       	ldi	r24, 0x01	; 1
-     88a:	80 93 f6 04 	sts	0x04F6, r24	; 0x8004f6 <gs_base_ctrl+0x4>
-     88e:	10 92 22 05 	sts	0x0522, r1	; 0x800522 <gcs>
+     88a:	80 93 36 0b 	sts	0x0B36, r24	; 0x800b36 <gs_base_ctrl+0x4>
+     88e:	10 92 62 0b 	sts	0x0B62, r1	; 0x800b62 <gcs>
 	gfs.state = IDLE;
-     892:	10 92 23 05 	sts	0x0523, r1	; 0x800523 <gcs+0x1>
-     896:	10 92 24 05 	sts	0x0524, r1	; 0x800524 <gcs+0x2>
-     89a:	10 92 25 05 	sts	0x0525, r1	; 0x800525 <gcs+0x3>
-     89e:	10 92 1e 05 	sts	0x051E, r1	; 0x80051e <gfs>
+     892:	10 92 63 0b 	sts	0x0B63, r1	; 0x800b63 <gcs+0x1>
+     896:	10 92 64 0b 	sts	0x0B64, r1	; 0x800b64 <gcs+0x2>
+     89a:	10 92 65 0b 	sts	0x0B65, r1	; 0x800b65 <gcs+0x3>
+     89e:	10 92 5e 0b 	sts	0x0B5E, r1	; 0x800b5e <gfs>
      8a2:	08 95       	ret
 
 000008a4 <loop>:
@@ -474,8 +474,8 @@ void loop() {
 	//check for serial income
 	
 	if (Serial.available()){
-     8b0:	86 e2       	ldi	r24, 0x26	; 38
-     8b2:	95 e0       	ldi	r25, 0x05	; 5
+     8b0:	86 e6       	ldi	r24, 0x66	; 102
+     8b2:	9b e0       	ldi	r25, 0x0B	; 11
      8b4:	77 d1       	rcall	.+750    	; 0xba4 <_ZN14HardwareSerial9availableEv>
      8b6:	89 2b       	or	r24, r25
 		treatSerialIncome();
@@ -487,11 +487,11 @@ void loop() {
 	// HEADER1, HEADER2, S_BASE_HIGH, S_BASE_LOW, N_BASE_HIGH, N_BASE_LOW, S_TOP_HIGH, S_TOP_LOW, N_TOP_HIGH, N_TOP_LOW, ...N*8 Bytes ..., 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00
 	//                int16_t         uint16_t           int16_t          uint16_t                      END_MSG	- MATLAB SENDS FIRST THE LOW BYTE
 	if((gs_base_ctrl.f_rdy_4_command == 1)&&(gs_top_ctrl.f_rdy_4_command == 1)){
-     8bc:	80 91 f2 04 	lds	r24, 0x04F2	; 0x8004f2 <gs_base_ctrl>
+     8bc:	80 91 32 0b 	lds	r24, 0x0B32	; 0x800b32 <gs_base_ctrl>
      8c0:	88 23       	and	r24, r24
      8c2:	09 f4       	brne	.+2      	; 0x8c6 <loop+0x22>
      8c4:	eb c0       	rjmp	.+470    	; 0xa9c <loop+0x1f8>
-     8c6:	80 91 08 05 	lds	r24, 0x0508	; 0x800508 <gs_top_ctrl>
+     8c6:	80 91 48 0b 	lds	r24, 0x0B48	; 0x800b48 <gs_top_ctrl>
      8ca:	88 23       	and	r24, r24
      8cc:	09 f4       	brne	.+2      	; 0x8d0 <loop+0x2c>
 		uint8_t keep_turning_base, keep_turning_top;
@@ -499,24 +499,24 @@ void loop() {
      8ce:	e6 c0       	rjmp	.+460    	; 0xa9c <loop+0x1f8>
      8d0:	cd d6       	rcall	.+3482   	; 0x166c <_Z18readNewSetCommandsv>
 		gs_base_ctrl.f_rdy_4_command = 0;
-     8d2:	10 92 f2 04 	sts	0x04F2, r1	; 0x8004f2 <gs_base_ctrl>
+     8d2:	10 92 32 0b 	sts	0x0B32, r1	; 0x800b32 <gs_base_ctrl>
 		gs_top_ctrl.f_rdy_4_command = 0;
-     8d6:	10 92 08 05 	sts	0x0508, r1	; 0x800508 <gs_top_ctrl>
+     8d6:	10 92 48 0b 	sts	0x0B48, r1	; 0x800b48 <gs_top_ctrl>
 		
 		#ifdef _DEBUG
 		Serial.println("nova vel:");
      8da:	60 e0       	ldi	r22, 0x00	; 0
      8dc:	72 e0       	ldi	r23, 0x02	; 2
-     8de:	86 e2       	ldi	r24, 0x26	; 38
-     8e0:	95 e0       	ldi	r25, 0x05	; 5
+     8de:	86 e6       	ldi	r24, 0x66	; 102
+     8e0:	9b e0       	ldi	r25, 0x0B	; 11
      8e2:	af d3       	rcall	.+1886   	; 0x1042 <_ZN5Print7printlnEPKc>
 		Serial.println(gs_base_ctrl.prog_speed);
-     8e4:	60 91 fa 04 	lds	r22, 0x04FA	; 0x8004fa <gs_base_ctrl+0x8>
-     8e8:	70 91 fb 04 	lds	r23, 0x04FB	; 0x8004fb <gs_base_ctrl+0x9>
+     8e4:	60 91 3a 0b 	lds	r22, 0x0B3A	; 0x800b3a <gs_base_ctrl+0x8>
+     8e8:	70 91 3b 0b 	lds	r23, 0x0B3B	; 0x800b3b <gs_base_ctrl+0x9>
      8ec:	4a e0       	ldi	r20, 0x0A	; 10
      8ee:	50 e0       	ldi	r21, 0x00	; 0
-     8f0:	86 e2       	ldi	r24, 0x26	; 38
-     8f2:	95 e0       	ldi	r25, 0x05	; 5
+     8f0:	86 e6       	ldi	r24, 0x66	; 102
+     8f2:	9b e0       	ldi	r25, 0x0B	; 11
 // 		Serial.write(lo8(gs_base_ctrl.prog_speed));
 // 		Serial.write(hi8(gs_base_ctrl.prog_speed));
 
@@ -524,20 +524,20 @@ void loop() {
 		
 		keep_turning_base = processCommands(&gs_base_ctrl);		//calculate how many steps we must do to reach the end of acceleration, how many to start deceleration, the cruse speed and the direction
      8f4:	6a d4       	rcall	.+2260   	; 0x11ca <_ZN5Print7printlnEii>
-     8f6:	82 ef       	ldi	r24, 0xF2	; 242
-     8f8:	94 e0       	ldi	r25, 0x04	; 4
+     8f6:	82 e3       	ldi	r24, 0x32	; 50
+     8f8:	9b e0       	ldi	r25, 0x0B	; 11
      8fa:	f2 d6       	rcall	.+3556   	; 0x16e0 <_Z15processCommandsP12s_motor_ctrl>
 		keep_turning_top = processCommands(&gs_top_ctrl);
      8fc:	d8 2f       	mov	r29, r24
-     8fe:	88 e0       	ldi	r24, 0x08	; 8
-     900:	95 e0       	ldi	r25, 0x05	; 5
+     8fe:	88 e4       	ldi	r24, 0x48	; 72
+     900:	9b e0       	ldi	r25, 0x0B	; 11
      902:	ee d6       	rcall	.+3548   	; 0x16e0 <_Z15processCommandsP12s_motor_ctrl>
 		gfs.rdy_to_rotate = 1;
      904:	c8 2f       	mov	r28, r24
      906:	81 e0       	ldi	r24, 0x01	; 1
 		
 		digitalWrite(MBASE_ENABLE,LOW);			//enabling the drivers
-     908:	80 93 21 05 	sts	0x0521, r24	; 0x800521 <gfs+0x3>
+     908:	80 93 61 0b 	sts	0x0B61, r24	; 0x800b61 <gfs+0x3>
      90c:	60 e0       	ldi	r22, 0x00	; 0
 		digitalWrite(MTOP_ENABLE,LOW);
      90e:	85 e0       	ldi	r24, 0x05	; 5
@@ -547,14 +547,14 @@ void loop() {
 		digitalWrite(MBASE_DIR,gs_base_ctrl.f_dir);
      914:	8c e0       	ldi	r24, 0x0C	; 12
      916:	b1 d5       	rcall	.+2914   	; 0x147a <digitalWrite>
-     918:	60 91 f6 04 	lds	r22, 0x04F6	; 0x8004f6 <gs_base_ctrl+0x4>
+     918:	60 91 36 0b 	lds	r22, 0x0B36	; 0x800b36 <gs_base_ctrl+0x4>
      91c:	86 e1       	ldi	r24, 0x16	; 22
 		digitalWrite(MTOP_DIR,gs_top_ctrl.f_dir);
      91e:	ad d5       	rcall	.+2906   	; 0x147a <digitalWrite>
-     920:	60 91 0c 05 	lds	r22, 0x050C	; 0x80050c <gs_top_ctrl+0x4>
+     920:	60 91 4c 0b 	lds	r22, 0x0B4C	; 0x800b4c <gs_top_ctrl+0x4>
      924:	86 e0       	ldi	r24, 0x06	; 6
      926:	a9 d5       	rcall	.+2898   	; 0x147a <digitalWrite>
-     928:	80 91 1e 05 	lds	r24, 0x051E	; 0x80051e <gfs>
+     928:	80 91 5e 0b 	lds	r24, 0x0B5E	; 0x800b5e <gfs>
 		
 		if((keep_turning_base == 1)&&(keep_turning_top == 1)&&(gfs.state == ROTATING)){	//The rotating status is given at treatSerialIncome(void) when an "St" is received
      92c:	d1 30       	cpi	r29, 0x01	; 1
@@ -570,14 +570,14 @@ void loop() {
      93c:	80 c0       	rjmp	.+256    	; 0xa3e <loop+0x19a>
      93e:	6a e0       	ldi	r22, 0x0A	; 10
      940:	72 e0       	ldi	r23, 0x02	; 2
-     942:	86 e2       	ldi	r24, 0x26	; 38
-     944:	95 e0       	ldi	r25, 0x05	; 5
+     942:	86 e6       	ldi	r24, 0x66	; 102
+     944:	9b e0       	ldi	r25, 0x0B	; 11
 			#endif // _DEBUG
 			
 			if (abs(gs_base_ctrl.prog_speed)>=INITIAL_SPEED){gs_base_ctrl.speed = INITIAL_SPEED;}		//TODO:: VERIFICAR A NECESSIDADE DISTO AQUI, JÁ DEVE TER SIDO FEITO EM PROCESSCOMMANDS
      946:	7d d3       	rcall	.+1786   	; 0x1042 <_ZN5Print7printlnEPKc>
-     948:	80 91 fa 04 	lds	r24, 0x04FA	; 0x8004fa <gs_base_ctrl+0x8>
-     94c:	90 91 fb 04 	lds	r25, 0x04FB	; 0x8004fb <gs_base_ctrl+0x9>
+     948:	80 91 3a 0b 	lds	r24, 0x0B3A	; 0x800b3a <gs_base_ctrl+0x8>
+     94c:	90 91 3b 0b 	lds	r25, 0x0B3B	; 0x800b3b <gs_base_ctrl+0x9>
      950:	97 ff       	sbrs	r25, 7
      952:	03 c0       	rjmp	.+6      	; 0x95a <loop+0xb6>
      954:	91 95       	neg	r25
@@ -589,21 +589,21 @@ void loop() {
      960:	90 e0       	ldi	r25, 0x00	; 0
      962:	a0 e2       	ldi	r26, 0x20	; 32
      964:	b1 e4       	ldi	r27, 0x41	; 65
-     966:	80 93 04 05 	sts	0x0504, r24	; 0x800504 <gs_base_ctrl+0x12>
-     96a:	90 93 05 05 	sts	0x0505, r25	; 0x800505 <gs_base_ctrl+0x13>
-     96e:	a0 93 06 05 	sts	0x0506, r26	; 0x800506 <gs_base_ctrl+0x14>
-     972:	b0 93 07 05 	sts	0x0507, r27	; 0x800507 <gs_base_ctrl+0x15>
+     966:	80 93 44 0b 	sts	0x0B44, r24	; 0x800b44 <gs_base_ctrl+0x12>
+     96a:	90 93 45 0b 	sts	0x0B45, r25	; 0x800b45 <gs_base_ctrl+0x13>
+     96e:	a0 93 46 0b 	sts	0x0B46, r26	; 0x800b46 <gs_base_ctrl+0x14>
+     972:	b0 93 47 0b 	sts	0x0B47, r27	; 0x800b47 <gs_base_ctrl+0x15>
 				else{										 gs_base_ctrl.speed = 0;}
      976:	08 c0       	rjmp	.+16     	; 0x988 <loop+0xe4>
-     978:	10 92 04 05 	sts	0x0504, r1	; 0x800504 <gs_base_ctrl+0x12>
-     97c:	10 92 05 05 	sts	0x0505, r1	; 0x800505 <gs_base_ctrl+0x13>
-     980:	10 92 06 05 	sts	0x0506, r1	; 0x800506 <gs_base_ctrl+0x14>
-     984:	10 92 07 05 	sts	0x0507, r1	; 0x800507 <gs_base_ctrl+0x15>
+     978:	10 92 44 0b 	sts	0x0B44, r1	; 0x800b44 <gs_base_ctrl+0x12>
+     97c:	10 92 45 0b 	sts	0x0B45, r1	; 0x800b45 <gs_base_ctrl+0x13>
+     980:	10 92 46 0b 	sts	0x0B46, r1	; 0x800b46 <gs_base_ctrl+0x14>
+     984:	10 92 47 0b 	sts	0x0B47, r1	; 0x800b47 <gs_base_ctrl+0x15>
 			updateMbaseSpeed((abs(gs_base_ctrl.speed)));
-     988:	c0 90 04 05 	lds	r12, 0x0504	; 0x800504 <gs_base_ctrl+0x12>
-     98c:	d0 90 05 05 	lds	r13, 0x0505	; 0x800505 <gs_base_ctrl+0x13>
-     990:	e0 90 06 05 	lds	r14, 0x0506	; 0x800506 <gs_base_ctrl+0x14>
-     994:	f0 90 07 05 	lds	r15, 0x0507	; 0x800507 <gs_base_ctrl+0x15>
+     988:	c0 90 44 0b 	lds	r12, 0x0B44	; 0x800b44 <gs_base_ctrl+0x12>
+     98c:	d0 90 45 0b 	lds	r13, 0x0B45	; 0x800b45 <gs_base_ctrl+0x13>
+     990:	e0 90 46 0b 	lds	r14, 0x0B46	; 0x800b46 <gs_base_ctrl+0x14>
+     994:	f0 90 47 0b 	lds	r15, 0x0B47	; 0x800b47 <gs_base_ctrl+0x15>
      998:	20 e0       	ldi	r18, 0x00	; 0
      99a:	30 e0       	ldi	r19, 0x00	; 0
      99c:	a9 01       	movw	r20, r18
@@ -625,8 +625,8 @@ void loop() {
      9bc:	0e 94 3b 0d 	call	0x1a76	; 0x1a76 <_Z16enableTimerMbasev>
 			
 			if (abs(gs_top_ctrl.prog_speed)>=INITIAL_SPEED){gs_top_ctrl.speed = INITIAL_SPEED;}
-     9c0:	80 91 10 05 	lds	r24, 0x0510	; 0x800510 <gs_top_ctrl+0x8>
-     9c4:	90 91 11 05 	lds	r25, 0x0511	; 0x800511 <gs_top_ctrl+0x9>
+     9c0:	80 91 50 0b 	lds	r24, 0x0B50	; 0x800b50 <gs_top_ctrl+0x8>
+     9c4:	90 91 51 0b 	lds	r25, 0x0B51	; 0x800b51 <gs_top_ctrl+0x9>
      9c8:	97 ff       	sbrs	r25, 7
      9ca:	03 c0       	rjmp	.+6      	; 0x9d2 <loop+0x12e>
      9cc:	91 95       	neg	r25
@@ -638,21 +638,21 @@ void loop() {
      9d8:	90 e0       	ldi	r25, 0x00	; 0
      9da:	a0 e2       	ldi	r26, 0x20	; 32
      9dc:	b1 e4       	ldi	r27, 0x41	; 65
-     9de:	80 93 1a 05 	sts	0x051A, r24	; 0x80051a <gs_top_ctrl+0x12>
-     9e2:	90 93 1b 05 	sts	0x051B, r25	; 0x80051b <gs_top_ctrl+0x13>
-     9e6:	a0 93 1c 05 	sts	0x051C, r26	; 0x80051c <gs_top_ctrl+0x14>
-     9ea:	b0 93 1d 05 	sts	0x051D, r27	; 0x80051d <gs_top_ctrl+0x15>
+     9de:	80 93 5a 0b 	sts	0x0B5A, r24	; 0x800b5a <gs_top_ctrl+0x12>
+     9e2:	90 93 5b 0b 	sts	0x0B5B, r25	; 0x800b5b <gs_top_ctrl+0x13>
+     9e6:	a0 93 5c 0b 	sts	0x0B5C, r26	; 0x800b5c <gs_top_ctrl+0x14>
+     9ea:	b0 93 5d 0b 	sts	0x0B5D, r27	; 0x800b5d <gs_top_ctrl+0x15>
 			else{											gs_top_ctrl.speed = 0;}
      9ee:	08 c0       	rjmp	.+16     	; 0xa00 <loop+0x15c>
-     9f0:	10 92 1a 05 	sts	0x051A, r1	; 0x80051a <gs_top_ctrl+0x12>
-     9f4:	10 92 1b 05 	sts	0x051B, r1	; 0x80051b <gs_top_ctrl+0x13>
-     9f8:	10 92 1c 05 	sts	0x051C, r1	; 0x80051c <gs_top_ctrl+0x14>
+     9f0:	10 92 5a 0b 	sts	0x0B5A, r1	; 0x800b5a <gs_top_ctrl+0x12>
+     9f4:	10 92 5b 0b 	sts	0x0B5B, r1	; 0x800b5b <gs_top_ctrl+0x13>
+     9f8:	10 92 5c 0b 	sts	0x0B5C, r1	; 0x800b5c <gs_top_ctrl+0x14>
 			updateMtopSpeed((abs(gs_top_ctrl.speed)));
-     9fc:	10 92 1d 05 	sts	0x051D, r1	; 0x80051d <gs_top_ctrl+0x15>
-     a00:	c0 90 1a 05 	lds	r12, 0x051A	; 0x80051a <gs_top_ctrl+0x12>
-     a04:	d0 90 1b 05 	lds	r13, 0x051B	; 0x80051b <gs_top_ctrl+0x13>
-     a08:	e0 90 1c 05 	lds	r14, 0x051C	; 0x80051c <gs_top_ctrl+0x14>
-     a0c:	f0 90 1d 05 	lds	r15, 0x051D	; 0x80051d <gs_top_ctrl+0x15>
+     9fc:	10 92 5d 0b 	sts	0x0B5D, r1	; 0x800b5d <gs_top_ctrl+0x15>
+     a00:	c0 90 5a 0b 	lds	r12, 0x0B5A	; 0x800b5a <gs_top_ctrl+0x12>
+     a04:	d0 90 5b 0b 	lds	r13, 0x0B5B	; 0x800b5b <gs_top_ctrl+0x13>
+     a08:	e0 90 5c 0b 	lds	r14, 0x0B5C	; 0x800b5c <gs_top_ctrl+0x14>
+     a0c:	f0 90 5d 0b 	lds	r15, 0x0B5D	; 0x800b5d <gs_top_ctrl+0x15>
      a10:	20 e0       	ldi	r18, 0x00	; 0
      a12:	30 e0       	ldi	r19, 0x00	; 0
      a14:	a9 01       	movw	r20, r18
@@ -690,30 +690,30 @@ void loop() {
      a46:	02 c0       	rjmp	.+4      	; 0xa4c <loop+0x1a8>
      a48:	63 e3       	ldi	r22, 0x33	; 51
      a4a:	72 e0       	ldi	r23, 0x02	; 2
-     a4c:	86 e2       	ldi	r24, 0x26	; 38
+     a4c:	86 e6       	ldi	r24, 0x66	; 102
 			}
 			#endif // _DEBUG
 			if (gfs.state == ROTATING){
-     a4e:	95 e0       	ldi	r25, 0x05	; 5
+     a4e:	9b e0       	ldi	r25, 0x0B	; 11
      a50:	f8 d2       	rcall	.+1520   	; 0x1042 <_ZN5Print7printlnEPKc>
-     a52:	80 91 1e 05 	lds	r24, 0x051E	; 0x80051e <gfs>
+     a52:	80 91 5e 0b 	lds	r24, 0x0B5E	; 0x800b5e <gfs>
 				gfs.state = IDLE;
      a56:	81 30       	cpi	r24, 0x01	; 1
      a58:	09 f5       	brne	.+66     	; 0xa9c <loop+0x1f8>
 				gc_ctrl_com = 0;
-     a5a:	10 92 1e 05 	sts	0x051E, r1	; 0x80051e <gfs>
+     a5a:	10 92 5e 0b 	sts	0x0B5E, r1	; 0x800b5e <gfs>
      a5e:	10 92 61 03 	sts	0x0361, r1	; 0x800361 <__data_end+0x1>
 				gs_base_ctrl.c_steps_made = 0;
      a62:	10 92 60 03 	sts	0x0360, r1	; 0x800360 <__data_end>
-     a66:	10 92 03 05 	sts	0x0503, r1	; 0x800503 <gs_base_ctrl+0x11>
+     a66:	10 92 43 0b 	sts	0x0B43, r1	; 0x800b43 <gs_base_ctrl+0x11>
 				gs_base_ctrl.speed = 0;
-     a6a:	10 92 02 05 	sts	0x0502, r1	; 0x800502 <gs_base_ctrl+0x10>
-     a6e:	10 92 04 05 	sts	0x0504, r1	; 0x800504 <gs_base_ctrl+0x12>
-     a72:	10 92 05 05 	sts	0x0505, r1	; 0x800505 <gs_base_ctrl+0x13>
+     a6a:	10 92 42 0b 	sts	0x0B42, r1	; 0x800b42 <gs_base_ctrl+0x10>
+     a6e:	10 92 44 0b 	sts	0x0B44, r1	; 0x800b44 <gs_base_ctrl+0x12>
+     a72:	10 92 45 0b 	sts	0x0B45, r1	; 0x800b45 <gs_base_ctrl+0x13>
 				cli();					//avoid going into the rx interruption when disabling the timer 1 here
-     a76:	10 92 06 05 	sts	0x0506, r1	; 0x800506 <gs_base_ctrl+0x14>
+     a76:	10 92 46 0b 	sts	0x0B46, r1	; 0x800b46 <gs_base_ctrl+0x14>
 				disableTimerMbase();
-     a7a:	10 92 07 05 	sts	0x0507, r1	; 0x800507 <gs_base_ctrl+0x15>
+     a7a:	10 92 47 0b 	sts	0x0B47, r1	; 0x800b47 <gs_base_ctrl+0x15>
 				disableTimerMtop();
 				disableTimerAcc();
      a7e:	f8 94       	cli
@@ -1271,26 +1271,26 @@ void loop() {
      e82:	9f 93       	push	r25
      e84:	ef 93       	push	r30
      e86:	ff 93       	push	r31
-     e88:	e0 91 36 05 	lds	r30, 0x0536	; 0x800536 <Serial+0x10>
-     e8c:	f0 91 37 05 	lds	r31, 0x0537	; 0x800537 <Serial+0x11>
+     e88:	e0 91 76 0b 	lds	r30, 0x0B76	; 0x800b76 <Serial+0x10>
+     e8c:	f0 91 77 0b 	lds	r31, 0x0B77	; 0x800b77 <Serial+0x11>
      e90:	80 81       	ld	r24, Z
-     e92:	e0 91 3c 05 	lds	r30, 0x053C	; 0x80053c <Serial+0x16>
-     e96:	f0 91 3d 05 	lds	r31, 0x053D	; 0x80053d <Serial+0x17>
+     e92:	e0 91 7c 0b 	lds	r30, 0x0B7C	; 0x800b7c <Serial+0x16>
+     e96:	f0 91 7d 0b 	lds	r31, 0x0B7D	; 0x800b7d <Serial+0x17>
      e9a:	82 fd       	sbrc	r24, 2
      e9c:	12 c0       	rjmp	.+36     	; 0xec2 <__vector_25+0x52>
      e9e:	90 81       	ld	r25, Z
-     ea0:	80 91 3f 05 	lds	r24, 0x053F	; 0x80053f <Serial+0x19>
+     ea0:	80 91 7f 0b 	lds	r24, 0x0B7F	; 0x800b7f <Serial+0x19>
      ea4:	8f 5f       	subi	r24, 0xFF	; 255
      ea6:	8f 73       	andi	r24, 0x3F	; 63
-     ea8:	20 91 40 05 	lds	r18, 0x0540	; 0x800540 <Serial+0x1a>
+     ea8:	20 91 80 0b 	lds	r18, 0x0B80	; 0x800b80 <Serial+0x1a>
      eac:	82 17       	cp	r24, r18
      eae:	51 f0       	breq	.+20     	; 0xec4 <__vector_25+0x54>
-     eb0:	e0 91 3f 05 	lds	r30, 0x053F	; 0x80053f <Serial+0x19>
+     eb0:	e0 91 7f 0b 	lds	r30, 0x0B7F	; 0x800b7f <Serial+0x19>
      eb4:	f0 e0       	ldi	r31, 0x00	; 0
-     eb6:	ea 5d       	subi	r30, 0xDA	; 218
-     eb8:	fa 4f       	sbci	r31, 0xFA	; 250
+     eb6:	ea 59       	subi	r30, 0x9A	; 154
+     eb8:	f4 4f       	sbci	r31, 0xF4	; 244
      eba:	95 8f       	std	Z+29, r25	; 0x1d
-     ebc:	80 93 3f 05 	sts	0x053F, r24	; 0x80053f <Serial+0x19>
+     ebc:	80 93 7f 0b 	sts	0x0B7F, r24	; 0x800b7f <Serial+0x19>
      ec0:	01 c0       	rjmp	.+2      	; 0xec4 <__vector_25+0x54>
      ec2:	80 81       	ld	r24, Z
      ec4:	ff 91       	pop	r31
@@ -1326,8 +1326,8 @@ void loop() {
      efc:	bf 93       	push	r27
      efe:	ef 93       	push	r30
      f00:	ff 93       	push	r31
-     f02:	86 e2       	ldi	r24, 0x26	; 38
-     f04:	95 e0       	ldi	r25, 0x05	; 5
+     f02:	86 e6       	ldi	r24, 0x66	; 102
+     f04:	9b e0       	ldi	r25, 0x0B	; 11
      f06:	c7 de       	rcall	.-626    	; 0xc96 <_ZN14HardwareSerial17_tx_udr_empty_irqEv>
      f08:	ff 91       	pop	r31
      f0a:	ef 91       	pop	r30
@@ -1350,8 +1350,8 @@ void loop() {
      f2c:	18 95       	reti
 
 00000f2e <_Z17Serial0_availablev>:
-     f2e:	86 e2       	ldi	r24, 0x26	; 38
-     f30:	95 e0       	ldi	r25, 0x05	; 5
+     f2e:	86 e6       	ldi	r24, 0x66	; 102
+     f30:	9b e0       	ldi	r25, 0x0B	; 11
      f32:	38 de       	rcall	.-912    	; 0xba4 <_ZN14HardwareSerial9availableEv>
      f34:	21 e0       	ldi	r18, 0x01	; 1
      f36:	89 2b       	or	r24, r25
@@ -1361,8 +1361,8 @@ void loop() {
      f3e:	08 95       	ret
 
 00000f40 <_GLOBAL__sub_I___vector_25>:
-     f40:	e6 e2       	ldi	r30, 0x26	; 38
-     f42:	f5 e0       	ldi	r31, 0x05	; 5
+     f40:	e6 e6       	ldi	r30, 0x66	; 102
+     f42:	fb e0       	ldi	r31, 0x0B	; 11
      f44:	13 82       	std	Z+3, r1	; 0x03
      f46:	12 82       	std	Z+2, r1	; 0x02
      f48:	88 ee       	ldi	r24, 0xE8	; 232
@@ -1742,11 +1742,11 @@ void loop() {
     11fa:	9f 93       	push	r25
     11fc:	af 93       	push	r26
     11fe:	bf 93       	push	r27
-    1200:	80 91 c4 05 	lds	r24, 0x05C4	; 0x8005c4 <timer0_millis>
-    1204:	90 91 c5 05 	lds	r25, 0x05C5	; 0x8005c5 <timer0_millis+0x1>
-    1208:	a0 91 c6 05 	lds	r26, 0x05C6	; 0x8005c6 <timer0_millis+0x2>
-    120c:	b0 91 c7 05 	lds	r27, 0x05C7	; 0x8005c7 <timer0_millis+0x3>
-    1210:	30 91 c3 05 	lds	r19, 0x05C3	; 0x8005c3 <timer0_fract>
+    1200:	80 91 04 0c 	lds	r24, 0x0C04	; 0x800c04 <timer0_millis>
+    1204:	90 91 05 0c 	lds	r25, 0x0C05	; 0x800c05 <timer0_millis+0x1>
+    1208:	a0 91 06 0c 	lds	r26, 0x0C06	; 0x800c06 <timer0_millis+0x2>
+    120c:	b0 91 07 0c 	lds	r27, 0x0C07	; 0x800c07 <timer0_millis+0x3>
+    1210:	30 91 03 0c 	lds	r19, 0x0C03	; 0x800c03 <timer0_fract>
     1214:	23 e0       	ldi	r18, 0x03	; 3
     1216:	23 0f       	add	r18, r19
     1218:	2d 37       	cpi	r18, 0x7D	; 125
@@ -1760,22 +1760,22 @@ void loop() {
     1228:	02 96       	adiw	r24, 0x02	; 2
     122a:	a1 1d       	adc	r26, r1
     122c:	b1 1d       	adc	r27, r1
-    122e:	20 93 c3 05 	sts	0x05C3, r18	; 0x8005c3 <timer0_fract>
-    1232:	80 93 c4 05 	sts	0x05C4, r24	; 0x8005c4 <timer0_millis>
-    1236:	90 93 c5 05 	sts	0x05C5, r25	; 0x8005c5 <timer0_millis+0x1>
-    123a:	a0 93 c6 05 	sts	0x05C6, r26	; 0x8005c6 <timer0_millis+0x2>
-    123e:	b0 93 c7 05 	sts	0x05C7, r27	; 0x8005c7 <timer0_millis+0x3>
-    1242:	80 91 c8 05 	lds	r24, 0x05C8	; 0x8005c8 <timer0_overflow_count>
-    1246:	90 91 c9 05 	lds	r25, 0x05C9	; 0x8005c9 <timer0_overflow_count+0x1>
-    124a:	a0 91 ca 05 	lds	r26, 0x05CA	; 0x8005ca <timer0_overflow_count+0x2>
-    124e:	b0 91 cb 05 	lds	r27, 0x05CB	; 0x8005cb <timer0_overflow_count+0x3>
+    122e:	20 93 03 0c 	sts	0x0C03, r18	; 0x800c03 <timer0_fract>
+    1232:	80 93 04 0c 	sts	0x0C04, r24	; 0x800c04 <timer0_millis>
+    1236:	90 93 05 0c 	sts	0x0C05, r25	; 0x800c05 <timer0_millis+0x1>
+    123a:	a0 93 06 0c 	sts	0x0C06, r26	; 0x800c06 <timer0_millis+0x2>
+    123e:	b0 93 07 0c 	sts	0x0C07, r27	; 0x800c07 <timer0_millis+0x3>
+    1242:	80 91 08 0c 	lds	r24, 0x0C08	; 0x800c08 <timer0_overflow_count>
+    1246:	90 91 09 0c 	lds	r25, 0x0C09	; 0x800c09 <timer0_overflow_count+0x1>
+    124a:	a0 91 0a 0c 	lds	r26, 0x0C0A	; 0x800c0a <timer0_overflow_count+0x2>
+    124e:	b0 91 0b 0c 	lds	r27, 0x0C0B	; 0x800c0b <timer0_overflow_count+0x3>
     1252:	01 96       	adiw	r24, 0x01	; 1
     1254:	a1 1d       	adc	r26, r1
     1256:	b1 1d       	adc	r27, r1
-    1258:	80 93 c8 05 	sts	0x05C8, r24	; 0x8005c8 <timer0_overflow_count>
-    125c:	90 93 c9 05 	sts	0x05C9, r25	; 0x8005c9 <timer0_overflow_count+0x1>
-    1260:	a0 93 ca 05 	sts	0x05CA, r26	; 0x8005ca <timer0_overflow_count+0x2>
-    1264:	b0 93 cb 05 	sts	0x05CB, r27	; 0x8005cb <timer0_overflow_count+0x3>
+    1258:	80 93 08 0c 	sts	0x0C08, r24	; 0x800c08 <timer0_overflow_count>
+    125c:	90 93 09 0c 	sts	0x0C09, r25	; 0x800c09 <timer0_overflow_count+0x1>
+    1260:	a0 93 0a 0c 	sts	0x0C0A, r26	; 0x800c0a <timer0_overflow_count+0x2>
+    1264:	b0 93 0b 0c 	sts	0x0C0B, r27	; 0x800c0b <timer0_overflow_count+0x3>
     1268:	bf 91       	pop	r27
     126a:	af 91       	pop	r26
     126c:	9f 91       	pop	r25
@@ -2221,10 +2221,10 @@ void loop() {
 void checkBaseBlock(void){
 	// Turn on the limiting led
 	if(gcs.base_limit >= MAX_STEPS_SINGLE_DIR_BASE){
-    15d2:	80 91 22 05 	lds	r24, 0x0522	; 0x800522 <gcs>
-    15d6:	90 91 23 05 	lds	r25, 0x0523	; 0x800523 <gcs+0x1>
-    15da:	a0 91 24 05 	lds	r26, 0x0524	; 0x800524 <gcs+0x2>
-    15de:	b0 91 25 05 	lds	r27, 0x0525	; 0x800525 <gcs+0x3>
+    15d2:	80 91 62 0b 	lds	r24, 0x0B62	; 0x800b62 <gcs>
+    15d6:	90 91 63 0b 	lds	r25, 0x0B63	; 0x800b63 <gcs+0x1>
+    15da:	a0 91 64 0b 	lds	r26, 0x0B64	; 0x800b64 <gcs+0x2>
+    15de:	b0 91 65 0b 	lds	r27, 0x0B65	; 0x800b65 <gcs+0x3>
     15e2:	81 15       	cp	r24, r1
     15e4:	29 e1       	ldi	r18, 0x19	; 25
     15e6:	92 07       	cpc	r25, r18
@@ -2233,7 +2233,7 @@ void checkBaseBlock(void){
     15ec:	24 f0       	brlt	.+8      	; 0x15f6 <_Z14checkBaseBlockv+0x24>
 		gfs.positive_limit = 1;
     15ee:	81 e0       	ldi	r24, 0x01	; 1
-    15f0:	80 93 1f 05 	sts	0x051F, r24	; 0x80051f <gfs+0x1>
+    15f0:	80 93 5f 0b 	sts	0x0B5F, r24	; 0x800b5f <gfs+0x1>
     15f4:	08 c0       	rjmp	.+16     	; 0x1606 <_Z14checkBaseBlockv+0x34>
 		digitalWrite(PIN_LED_BASE_LOCK, HIGH);
 	}
@@ -2245,15 +2245,15 @@ void checkBaseBlock(void){
     15fe:	2c f4       	brge	.+10     	; 0x160a <_Z14checkBaseBlockv+0x38>
 		gfs.negative_limit = 1;
     1600:	81 e0       	ldi	r24, 0x01	; 1
-    1602:	80 93 20 05 	sts	0x0520, r24	; 0x800520 <gfs+0x2>
+    1602:	80 93 60 0b 	sts	0x0B60, r24	; 0x800b60 <gfs+0x2>
 		digitalWrite(PIN_LED_BASE_LOCK, HIGH);
     1606:	61 e0       	ldi	r22, 0x01	; 1
     1608:	05 c0       	rjmp	.+10     	; 0x1614 <_Z14checkBaseBlockv+0x42>
 	}
 	else{
 		gfs.positive_limit = gfs.negative_limit = 0;
-    160a:	10 92 20 05 	sts	0x0520, r1	; 0x800520 <gfs+0x2>
-    160e:	10 92 1f 05 	sts	0x051F, r1	; 0x80051f <gfs+0x1>
+    160a:	10 92 60 0b 	sts	0x0B60, r1	; 0x800b60 <gfs+0x2>
+    160e:	10 92 5f 0b 	sts	0x0B5F, r1	; 0x800b5f <gfs+0x1>
 		digitalWrite(PIN_LED_BASE_LOCK, LOW);
     1612:	60 e0       	ldi	r22, 0x00	; 0
     1614:	89 e1       	ldi	r24, 0x19	; 25
@@ -2266,11 +2266,11 @@ void checkBaseBlock(void){
 void limitBaseSteps(void){
 	//check if we can make one more step. Set the flags if we cannot, if we can, rise the step pin
 	if (gs_base_ctrl.f_dir == DIR_NEGATIVE) {          //if we are turning in the CCW direction
-    1618:	20 91 f6 04 	lds	r18, 0x04F6	; 0x8004f6 <gs_base_ctrl+0x4>
-    161c:	80 91 22 05 	lds	r24, 0x0522	; 0x800522 <gcs>
-    1620:	90 91 23 05 	lds	r25, 0x0523	; 0x800523 <gcs+0x1>
-    1624:	a0 91 24 05 	lds	r26, 0x0524	; 0x800524 <gcs+0x2>
-    1628:	b0 91 25 05 	lds	r27, 0x0525	; 0x800525 <gcs+0x3>
+    1618:	20 91 36 0b 	lds	r18, 0x0B36	; 0x800b36 <gs_base_ctrl+0x4>
+    161c:	80 91 62 0b 	lds	r24, 0x0B62	; 0x800b62 <gcs>
+    1620:	90 91 63 0b 	lds	r25, 0x0B63	; 0x800b63 <gcs+0x1>
+    1624:	a0 91 64 0b 	lds	r26, 0x0B64	; 0x800b64 <gcs+0x2>
+    1628:	b0 91 65 0b 	lds	r27, 0x0B65	; 0x800b65 <gcs+0x3>
     162c:	21 11       	cpse	r18, r1
     162e:	0b c0       	rjmp	.+22     	; 0x1646 <_Z14limitBaseStepsv+0x2e>
 		if(gcs.base_limit > -MAX_STEPS_SINGLE_DIR_BASE){    //if we still able to turn a bit more:
@@ -2301,10 +2301,10 @@ void limitBaseSteps(void){
     1652:	01 96       	adiw	r24, 0x01	; 1
     1654:	a1 1d       	adc	r26, r1
     1656:	b1 1d       	adc	r27, r1
-    1658:	80 93 22 05 	sts	0x0522, r24	; 0x800522 <gcs>
-    165c:	90 93 23 05 	sts	0x0523, r25	; 0x800523 <gcs+0x1>
-    1660:	a0 93 24 05 	sts	0x0524, r26	; 0x800524 <gcs+0x2>
-    1664:	b0 93 25 05 	sts	0x0525, r27	; 0x800525 <gcs+0x3>
+    1658:	80 93 62 0b 	sts	0x0B62, r24	; 0x800b62 <gcs>
+    165c:	90 93 63 0b 	sts	0x0B63, r25	; 0x800b63 <gcs+0x1>
+    1660:	a0 93 64 0b 	sts	0x0B64, r26	; 0x800b64 <gcs+0x2>
+    1664:	b0 93 65 0b 	sts	0x0B65, r27	; 0x800b65 <gcs+0x3>
 			SET_MBASE_STEP_PIN;
     1668:	12 9a       	sbi	0x02, 2	; 2
     166a:	08 95       	ret
@@ -2318,8 +2318,8 @@ void readNewSetCommands(void){
 	gs_base_ctrl.prog_speed = (int16_t)(gv_ctrl_com[gc_ctrl_com] |((uint16_t)(gv_ctrl_com[gc_ctrl_com+1])<<8));
     166c:	20 91 60 03 	lds	r18, 0x0360	; 0x800360 <__data_end>
     1670:	30 91 61 03 	lds	r19, 0x0361	; 0x800361 <__data_end+0x1>
-    1674:	a2 ef       	ldi	r26, 0xF2	; 242
-    1676:	b4 e0       	ldi	r27, 0x04	; 4
+    1674:	a2 e3       	ldi	r26, 0x32	; 50
+    1676:	bb e0       	ldi	r27, 0x0B	; 11
     1678:	f9 01       	movw	r30, r18
     167a:	ee 59       	subi	r30, 0x9E	; 158
     167c:	fc 4f       	sbci	r31, 0xFC	; 252
@@ -2346,8 +2346,8 @@ void readNewSetCommands(void){
     16a4:	16 97       	sbiw	r26, 0x06	; 6
 	
 	gs_top_ctrl.prog_speed = (int16_t)(gv_ctrl_com[gc_ctrl_com+4] |((uint16_t)(gv_ctrl_com[gc_ctrl_com+5])<<8));
-    16a6:	a8 e0       	ldi	r26, 0x08	; 8
-    16a8:	b5 e0       	ldi	r27, 0x05	; 5
+    16a6:	a8 e4       	ldi	r26, 0x48	; 72
+    16a8:	bb e0       	ldi	r27, 0x0B	; 11
     16aa:	85 81       	ldd	r24, Z+5	; 0x05
     16ac:	90 e0       	ldi	r25, 0x00	; 0
     16ae:	98 2f       	mov	r25, r24
@@ -2404,8 +2404,8 @@ uint8_t processCommands(s_motor_ctrl *s){
 			Serial.println("Controle: fim dos comandos");
     16fe:	62 e6       	ldi	r22, 0x62	; 98
     1700:	72 e0       	ldi	r23, 0x02	; 2
-    1702:	86 e2       	ldi	r24, 0x26	; 38
-    1704:	95 e0       	ldi	r25, 0x05	; 5
+    1702:	86 e6       	ldi	r24, 0x66	; 102
+    1704:	9b e0       	ldi	r25, 0x0B	; 11
     1706:	9d dc       	rcall	.-1734   	; 0x1042 <_ZN5Print7printlnEPKc>
 		#endif // _DEBUG
 		return(0);
@@ -2465,8 +2465,8 @@ uint8_t processCommands(s_motor_ctrl *s){
 			Serial.println("Vel. Pos.");
     174a:	6d e7       	ldi	r22, 0x7D	; 125
     174c:	72 e0       	ldi	r23, 0x02	; 2
-    174e:	86 e2       	ldi	r24, 0x26	; 38
-    1750:	95 e0       	ldi	r25, 0x05	; 5
+    174e:	86 e6       	ldi	r24, 0x66	; 102
+    1750:	9b e0       	ldi	r25, 0x0B	; 11
     1752:	77 dc       	rcall	.-1810   	; 0x1042 <_ZN5Print7printlnEPKc>
 		#endif // _DEBUG
 		s->speed = INITIAL_SPEED;
@@ -2521,8 +2521,8 @@ uint8_t processCommands(s_motor_ctrl *s){
     17a0:	46 c0       	rjmp	.+140    	; 0x182e <_Z15processCommandsP12s_motor_ctrl+0x14e>
     17a2:	69 ea       	ldi	r22, 0xA9	; 169
     17a4:	72 e0       	ldi	r23, 0x02	; 2
-    17a6:	86 e2       	ldi	r24, 0x26	; 38
-    17a8:	95 e0       	ldi	r25, 0x05	; 5
+    17a6:	86 e6       	ldi	r24, 0x66	; 102
+    17a8:	9b e0       	ldi	r25, 0x0B	; 11
 			#endif // _DEBUG
 			s->n_to_cruse_speed = RATIO_ACC_BREAKING * s->prog_steps;
     17aa:	4b dc       	rcall	.-1898   	; 0x1042 <_ZN5Print7printlnEPKc>
@@ -2560,8 +2560,8 @@ uint8_t processCommands(s_motor_ctrl *s){
     17d8:	50 c0       	rjmp	.+160    	; 0x187a <_Z15processCommandsP12s_motor_ctrl+0x19a>
     17da:	6b ec       	ldi	r22, 0xCB	; 203
     17dc:	72 e0       	ldi	r23, 0x02	; 2
-    17de:	86 e2       	ldi	r24, 0x26	; 38
-    17e0:	95 e0       	ldi	r25, 0x05	; 5
+    17de:	86 e6       	ldi	r24, 0x66	; 102
+    17e0:	9b e0       	ldi	r25, 0x0B	; 11
 		#endif // _DEBUG
 		s->speed = INITIAL_SPEED;
     17e2:	2f dc       	rcall	.-1954   	; 0x1042 <_ZN5Print7printlnEPKc>
@@ -2621,16 +2621,16 @@ uint8_t processCommands(s_motor_ctrl *s){
 				Serial.println("Velocidade de cruzeiro com cortes");
     1838:	67 e8       	ldi	r22, 0x87	; 135
     183a:	72 e0       	ldi	r23, 0x02	; 2
-    183c:	86 e2       	ldi	r24, 0x26	; 38
-    183e:	95 e0       	ldi	r25, 0x05	; 5
+    183c:	86 e6       	ldi	r24, 0x66	; 102
+    183e:	9b e0       	ldi	r25, 0x0B	; 11
     1840:	00 dc       	rcall	.-2048   	; 0x1042 <_ZN5Print7printlnEPKc>
     1842:	1d c0       	rjmp	.+58     	; 0x187e <_Z15processCommandsP12s_motor_ctrl+0x19e>
 			#endif // _DEBUG
 			s->n_to_cruse_speed = RATIO_ACC_BREAKING*s->prog_steps;
     1844:	69 ea       	ldi	r22, 0xA9	; 169
     1846:	72 e0       	ldi	r23, 0x02	; 2
-    1848:	86 e2       	ldi	r24, 0x26	; 38
-    184a:	95 e0       	ldi	r25, 0x05	; 5
+    1848:	86 e6       	ldi	r24, 0x66	; 102
+    184a:	9b e0       	ldi	r25, 0x0B	; 11
     184c:	fa db       	rcall	.-2060   	; 0x1042 <_ZN5Print7printlnEPKc>
     184e:	0e 81       	ldd	r16, Y+6	; 0x06
     1850:	1f 81       	ldd	r17, Y+7	; 0x07
@@ -2666,8 +2666,8 @@ uint8_t processCommands(s_motor_ctrl *s){
     187e:	65 ed       	ldi	r22, 0xD5	; 213
 		Serial.println(s->n_to_cruse_speed);
     1880:	72 e0       	ldi	r23, 0x02	; 2
-    1882:	86 e2       	ldi	r24, 0x26	; 38
-    1884:	95 e0       	ldi	r25, 0x05	; 5
+    1882:	86 e6       	ldi	r24, 0x66	; 102
+    1884:	9b e0       	ldi	r25, 0x0B	; 11
     1886:	dd db       	rcall	.-2118   	; 0x1042 <_ZN5Print7printlnEPKc>
     1888:	6a 85       	ldd	r22, Y+10	; 0x0a
     188a:	7b 85       	ldd	r23, Y+11	; 0x0b
@@ -2676,8 +2676,8 @@ uint8_t processCommands(s_motor_ctrl *s){
 	#endif // _DEBUG
 	
 	return(1);
-    1890:	86 e2       	ldi	r24, 0x26	; 38
-    1892:	95 e0       	ldi	r25, 0x05	; 5
+    1890:	86 e6       	ldi	r24, 0x66	; 102
+    1892:	9b e0       	ldi	r25, 0x0B	; 11
     1894:	3f dc       	rcall	.-1922   	; 0x1114 <_ZN5Print7printlnEji>
     1896:	81 e0       	ldi	r24, 0x01	; 1
     1898:	df 91       	pop	r29
@@ -2697,17 +2697,17 @@ void treatSerialIncome(void){
 	static uint16_t p_vector = 0;
 	static uint8_t  c_end_msg = 0;
 	uint8_t data = Serial.read();
-    18aa:	86 e2       	ldi	r24, 0x26	; 38
-    18ac:	95 e0       	ldi	r25, 0x05	; 5
+    18aa:	86 e6       	ldi	r24, 0x66	; 102
+    18ac:	9b e0       	ldi	r25, 0x0B	; 11
     18ae:	94 d9       	rcall	.-3288   	; 0xbd8 <_ZN14HardwareSerial4readEv>
 	if ((gfs.state == IDLE)||(gfs.state == RECEIVING)){
-    18b0:	90 91 1e 05 	lds	r25, 0x051E	; 0x80051e <gfs>
+    18b0:	90 91 5e 0b 	lds	r25, 0x0B5E	; 0x800b5e <gfs>
     18b4:	9d 7f       	andi	r25, 0xFD	; 253
     18b6:	09 f0       	breq	.+2      	; 0x18ba <_Z17treatSerialIncomev+0x10>
     18b8:	84 c0       	rjmp	.+264    	; 0x19c2 <_Z17treatSerialIncomev+0x118>
 		if(c_rec == 0){     //waiting for first header
-    18ba:	20 91 cf 05 	lds	r18, 0x05CF	; 0x8005cf <_ZZ17treatSerialIncomevE5c_rec>
-    18be:	30 91 d0 05 	lds	r19, 0x05D0	; 0x8005d0 <_ZZ17treatSerialIncomevE5c_rec+0x1>
+    18ba:	20 91 0f 0c 	lds	r18, 0x0C0F	; 0x800c0f <_ZZ17treatSerialIncomevE5c_rec>
+    18be:	30 91 10 0c 	lds	r19, 0x0C10	; 0x800c10 <_ZZ17treatSerialIncomevE5c_rec+0x1>
     18c2:	21 15       	cp	r18, r1
     18c4:	31 05       	cpc	r19, r1
     18c6:	49 f4       	brne	.+18     	; 0x18da <_Z17treatSerialIncomev+0x30>
@@ -2716,8 +2716,8 @@ void treatSerialIncome(void){
     18ca:	a9 f5       	brne	.+106    	; 0x1936 <_Z17treatSerialIncomev+0x8c>
     18cc:	81 e0       	ldi	r24, 0x01	; 1
     18ce:	90 e0       	ldi	r25, 0x00	; 0
-    18d0:	90 93 d0 05 	sts	0x05D0, r25	; 0x8005d0 <_ZZ17treatSerialIncomevE5c_rec+0x1>
-    18d4:	80 93 cf 05 	sts	0x05CF, r24	; 0x8005cf <_ZZ17treatSerialIncomevE5c_rec>
+    18d0:	90 93 10 0c 	sts	0x0C10, r25	; 0x800c10 <_ZZ17treatSerialIncomevE5c_rec+0x1>
+    18d4:	80 93 0f 0c 	sts	0x0C0F, r24	; 0x800c0f <_ZZ17treatSerialIncomevE5c_rec>
     18d8:	08 95       	ret
 			else{             Serial.println("Header errado");  }
 		}                   //end of waiting for first header
@@ -2731,15 +2731,15 @@ void treatSerialIncome(void){
 				c_rec = 2;
     18e4:	82 e0       	ldi	r24, 0x02	; 2
     18e6:	90 e0       	ldi	r25, 0x00	; 0
-    18e8:	90 93 d0 05 	sts	0x05D0, r25	; 0x8005d0 <_ZZ17treatSerialIncomevE5c_rec+0x1>
-    18ec:	80 93 cf 05 	sts	0x05CF, r24	; 0x8005cf <_ZZ17treatSerialIncomevE5c_rec>
+    18e8:	90 93 10 0c 	sts	0x0C10, r25	; 0x800c10 <_ZZ17treatSerialIncomevE5c_rec+0x1>
+    18ec:	80 93 0f 0c 	sts	0x0C0F, r24	; 0x800c0f <_ZZ17treatSerialIncomevE5c_rec>
     18f0:	11 c0       	rjmp	.+34     	; 0x1914 <_Z17treatSerialIncomev+0x6a>
 				gfs.state = RECEIVING;
 			}
 			else if(data == UART_HEADER_START){
 				c_rec = 0;
-    18f2:	10 92 d0 05 	sts	0x05D0, r1	; 0x8005d0 <_ZZ17treatSerialIncomevE5c_rec+0x1>
-    18f6:	10 92 cf 05 	sts	0x05CF, r1	; 0x8005cf <_ZZ17treatSerialIncomevE5c_rec>
+    18f2:	10 92 10 0c 	sts	0x0C10, r1	; 0x800c10 <_ZZ17treatSerialIncomevE5c_rec+0x1>
+    18f6:	10 92 0f 0c 	sts	0x0C0F, r1	; 0x800c0f <_ZZ17treatSerialIncomevE5c_rec>
 		else if(c_rec == 1){          //waiting for second header
 			if (data == UART_HEADER_COM){   //if it is the correct second byte
 				c_rec = 2;
@@ -2750,7 +2750,7 @@ void treatSerialIncome(void){
     18fc:	89 f4       	brne	.+34     	; 0x1920 <_Z17treatSerialIncomev+0x76>
 				c_rec = 0;
 				if(gfs.rdy_to_rotate == 1){		//first init of a command set, the next start will be given automatically in the main
-    18fe:	80 91 21 05 	lds	r24, 0x0521	; 0x800521 <gfs+0x3>
+    18fe:	80 91 61 0b 	lds	r24, 0x0B61	; 0x800b61 <gfs+0x3>
 					enableTimerMbase();
 					enableTimerMtop();
     1902:	88 23       	and	r24, r24
@@ -2762,10 +2762,10 @@ void treatSerialIncome(void){
     190a:	4d d1       	rcall	.+666    	; 0x1ba6 <_Z14enableTimerAccv>
 					gfs.rdy_to_rotate = 0;
     190c:	11 9a       	sbi	0x02, 1	; 2
-    190e:	10 92 21 05 	sts	0x0521, r1	; 0x800521 <gfs+0x3>
+    190e:	10 92 61 0b 	sts	0x0B61, r1	; 0x800b61 <gfs+0x3>
 					gfs.state = ROTATING;
     1912:	81 e0       	ldi	r24, 0x01	; 1
-    1914:	80 93 1e 05 	sts	0x051E, r24	; 0x80051e <gfs>
+    1914:	80 93 5e 0b 	sts	0x0B5E, r24	; 0x800b5e <gfs>
 				}		
 				else{                         
 					Serial.println("Comandos nao enviados");
@@ -2778,16 +2778,16 @@ void treatSerialIncome(void){
 				c_rec = 0;
 				p_vector = 0;
     191e:	56 c0       	rjmp	.+172    	; 0x19cc <_Z17treatSerialIncomev+0x122>
-    1920:	10 92 ce 05 	sts	0x05CE, r1	; 0x8005ce <_ZZ17treatSerialIncomevE8p_vector+0x1>
-    1924:	10 92 cd 05 	sts	0x05CD, r1	; 0x8005cd <_ZZ17treatSerialIncomevE8p_vector>
+    1920:	10 92 0e 0c 	sts	0x0C0E, r1	; 0x800c0e <_ZZ17treatSerialIncomevE8p_vector+0x1>
+    1924:	10 92 0d 0c 	sts	0x0C0D, r1	; 0x800c0d <_ZZ17treatSerialIncomevE8p_vector>
 				c_end_msg = 0;
 				gfs.state = IDLE;
-    1928:	10 92 cc 05 	sts	0x05CC, r1	; 0x8005cc <_ZZ17treatSerialIncomevE9c_end_msg>
+    1928:	10 92 0c 0c 	sts	0x0C0C, r1	; 0x800c0c <_ZZ17treatSerialIncomevE9c_end_msg>
 				Serial.flush();
-    192c:	10 92 1e 05 	sts	0x051E, r1	; 0x80051e <gfs>
-    1930:	86 e2       	ldi	r24, 0x26	; 38
+    192c:	10 92 5e 0b 	sts	0x0B5E, r1	; 0x800b5e <gfs>
+    1930:	86 e6       	ldi	r24, 0x66	; 102
 				Serial.println("Header errado");    
-    1932:	95 e0       	ldi	r25, 0x05	; 5
+    1932:	9b e0       	ldi	r25, 0x0B	; 11
     1934:	17 da       	rcall	.-3026   	; 0xd64 <_ZN14HardwareSerial5flushEv>
     1936:	62 e0       	ldi	r22, 0x02	; 2
 			}
@@ -2796,8 +2796,8 @@ void treatSerialIncome(void){
 			gv_ctrl_com[p_vector] = data;               //saving into the buffer
     1938:	73 e0       	ldi	r23, 0x03	; 3
     193a:	48 c0       	rjmp	.+144    	; 0x19cc <_Z17treatSerialIncomev+0x122>
-    193c:	20 91 cd 05 	lds	r18, 0x05CD	; 0x8005cd <_ZZ17treatSerialIncomevE8p_vector>
-    1940:	30 91 ce 05 	lds	r19, 0x05CE	; 0x8005ce <_ZZ17treatSerialIncomevE8p_vector+0x1>
+    193c:	20 91 0d 0c 	lds	r18, 0x0C0D	; 0x800c0d <_ZZ17treatSerialIncomevE8p_vector>
+    1940:	30 91 0e 0c 	lds	r19, 0x0C0E	; 0x800c0e <_ZZ17treatSerialIncomevE8p_vector+0x1>
     1944:	f9 01       	movw	r30, r18
     1946:	ee 59       	subi	r30, 0x9E	; 158
 			if(((p_vector % 8) == 1)&&(data == END_MSG[1])){  //if the velocity starts with an 0x80, than we must end the command section
@@ -2813,36 +2813,36 @@ void treatSerialIncome(void){
     1958:	80 38       	cpi	r24, 0x80	; 128
     195a:	21 f4       	brne	.+8      	; 0x1964 <_Z17treatSerialIncomev+0xba>
     195c:	82 e0       	ldi	r24, 0x02	; 2
-    195e:	80 93 cc 05 	sts	0x05CC, r24	; 0x8005cc <_ZZ17treatSerialIncomevE9c_end_msg>
+    195e:	80 93 0c 0c 	sts	0x0C0C, r24	; 0x800c0c <_ZZ17treatSerialIncomevE9c_end_msg>
 			}
 			else if(c_end_msg != 0){
     1962:	1d c0       	rjmp	.+58     	; 0x199e <_Z17treatSerialIncomev+0xf4>
-    1964:	80 91 cc 05 	lds	r24, 0x05CC	; 0x8005cc <_ZZ17treatSerialIncomevE9c_end_msg>
+    1964:	80 91 0c 0c 	lds	r24, 0x0C0C	; 0x800c0c <_ZZ17treatSerialIncomevE9c_end_msg>
 				c_end_msg++;
     1968:	88 23       	and	r24, r24
     196a:	c9 f0       	breq	.+50     	; 0x199e <_Z17treatSerialIncomev+0xf4>
     196c:	8f 5f       	subi	r24, 0xFF	; 255
 				if (c_end_msg == 8){
-    196e:	80 93 cc 05 	sts	0x05CC, r24	; 0x8005cc <_ZZ17treatSerialIncomevE9c_end_msg>
+    196e:	80 93 0c 0c 	sts	0x0C0C, r24	; 0x800c0c <_ZZ17treatSerialIncomevE9c_end_msg>
 					p_vector = 0;
     1972:	88 30       	cpi	r24, 0x08	; 8
     1974:	a1 f4       	brne	.+40     	; 0x199e <_Z17treatSerialIncomev+0xf4>
-    1976:	10 92 ce 05 	sts	0x05CE, r1	; 0x8005ce <_ZZ17treatSerialIncomevE8p_vector+0x1>
+    1976:	10 92 0e 0c 	sts	0x0C0E, r1	; 0x800c0e <_ZZ17treatSerialIncomevE8p_vector+0x1>
 					c_end_msg = 0;
-    197a:	10 92 cd 05 	sts	0x05CD, r1	; 0x8005cd <_ZZ17treatSerialIncomevE8p_vector>
+    197a:	10 92 0d 0c 	sts	0x0C0D, r1	; 0x800c0d <_ZZ17treatSerialIncomevE8p_vector>
 					c_rec = 0;
-    197e:	10 92 cc 05 	sts	0x05CC, r1	; 0x8005cc <_ZZ17treatSerialIncomevE9c_end_msg>
-    1982:	10 92 d0 05 	sts	0x05D0, r1	; 0x8005d0 <_ZZ17treatSerialIncomevE5c_rec+0x1>
+    197e:	10 92 0c 0c 	sts	0x0C0C, r1	; 0x800c0c <_ZZ17treatSerialIncomevE9c_end_msg>
+    1982:	10 92 10 0c 	sts	0x0C10, r1	; 0x800c10 <_ZZ17treatSerialIncomevE5c_rec+0x1>
 					gfs.state = IDLE;
-    1986:	10 92 cf 05 	sts	0x05CF, r1	; 0x8005cf <_ZZ17treatSerialIncomevE5c_rec>
+    1986:	10 92 0f 0c 	sts	0x0C0F, r1	; 0x800c0f <_ZZ17treatSerialIncomevE5c_rec>
 					gs_base_ctrl.f_rdy_4_command = 1;	//the commands will be evaluated at main loop
-    198a:	10 92 1e 05 	sts	0x051E, r1	; 0x80051e <gfs>
+    198a:	10 92 5e 0b 	sts	0x0B5E, r1	; 0x800b5e <gfs>
     198e:	81 e0       	ldi	r24, 0x01	; 1
 					gs_top_ctrl.f_rdy_4_command = 1;
-    1990:	80 93 f2 04 	sts	0x04F2, r24	; 0x8004f2 <gs_base_ctrl>
+    1990:	80 93 32 0b 	sts	0x0B32, r24	; 0x800b32 <gs_base_ctrl>
 					#ifdef _DEBUG
 						Serial.println("fim da msg identificado");
-    1994:	80 93 08 05 	sts	0x0508, r24	; 0x800508 <gs_top_ctrl>
+    1994:	80 93 48 0b 	sts	0x0B48, r24	; 0x800b48 <gs_top_ctrl>
     1998:	66 e2       	ldi	r22, 0x26	; 38
 					#endif // _DEBUG
 					return;
@@ -2854,8 +2854,8 @@ void treatSerialIncome(void){
 			if(p_vector >= REC_VECTOR_SIZE) p_vector = REC_VECTOR_SIZE - 1;
     199e:	2f 5f       	subi	r18, 0xFF	; 255
     19a0:	3f 4f       	sbci	r19, 0xFF	; 255
-    19a2:	20 39       	cpi	r18, 0x90	; 144
-    19a4:	81 e0       	ldi	r24, 0x01	; 1
+    19a2:	20 3d       	cpi	r18, 0xD0	; 208
+    19a4:	87 e0       	ldi	r24, 0x07	; 7
 						Serial.println("fim da msg identificado");
 					#endif // _DEBUG
 					return;
@@ -2864,28 +2864,28 @@ void treatSerialIncome(void){
 			p_vector++;
     19a6:	38 07       	cpc	r19, r24
     19a8:	28 f4       	brcc	.+10     	; 0x19b4 <_Z17treatSerialIncomev+0x10a>
-    19aa:	30 93 ce 05 	sts	0x05CE, r19	; 0x8005ce <_ZZ17treatSerialIncomevE8p_vector+0x1>
-    19ae:	20 93 cd 05 	sts	0x05CD, r18	; 0x8005cd <_ZZ17treatSerialIncomevE8p_vector>
+    19aa:	30 93 0e 0c 	sts	0x0C0E, r19	; 0x800c0e <_ZZ17treatSerialIncomevE8p_vector+0x1>
+    19ae:	20 93 0d 0c 	sts	0x0C0D, r18	; 0x800c0d <_ZZ17treatSerialIncomevE8p_vector>
 			if(p_vector >= REC_VECTOR_SIZE) p_vector = REC_VECTOR_SIZE - 1;
     19b2:	08 95       	ret
-    19b4:	8f e8       	ldi	r24, 0x8F	; 143
-    19b6:	91 e0       	ldi	r25, 0x01	; 1
-    19b8:	90 93 ce 05 	sts	0x05CE, r25	; 0x8005ce <_ZZ17treatSerialIncomevE8p_vector+0x1>
+    19b4:	8f ec       	ldi	r24, 0xCF	; 207
+    19b6:	97 e0       	ldi	r25, 0x07	; 7
+    19b8:	90 93 0e 0c 	sts	0x0C0E, r25	; 0x800c0e <_ZZ17treatSerialIncomevE8p_vector+0x1>
 		}           //end of dealing with the rest of the messages
 	}             //if ((gfs.state == IDLE)||(gfs.state == RECEIVING)){
 	else{           //if the system is not able to receive any data, flush the serial
 		Serial.flush();
-    19bc:	80 93 cd 05 	sts	0x05CD, r24	; 0x8005cd <_ZZ17treatSerialIncomevE8p_vector>
+    19bc:	80 93 0d 0c 	sts	0x0C0D, r24	; 0x800c0d <_ZZ17treatSerialIncomevE8p_vector>
     19c0:	08 95       	ret
 		#ifdef _DEBUG
 			Serial.println("Msg desconsiderada, motor rodando");
-    19c2:	86 e2       	ldi	r24, 0x26	; 38
-    19c4:	95 e0       	ldi	r25, 0x05	; 5
+    19c2:	86 e6       	ldi	r24, 0x66	; 102
+    19c4:	9b e0       	ldi	r25, 0x0B	; 11
     19c6:	ce d9       	rcall	.-3172   	; 0xd64 <_ZN14HardwareSerial5flushEv>
     19c8:	6e e3       	ldi	r22, 0x3E	; 62
     19ca:	73 e0       	ldi	r23, 0x03	; 3
-    19cc:	86 e2       	ldi	r24, 0x26	; 38
-    19ce:	95 e0       	ldi	r25, 0x05	; 5
+    19cc:	86 e6       	ldi	r24, 0x66	; 102
+    19ce:	9b e0       	ldi	r25, 0x0B	; 11
     19d0:	38 cb       	rjmp	.-2448   	; 0x1042 <_ZN5Print7printlnEPKc>
 
 000019d2 <_Z16updateMbaseSpeedj>:
@@ -2928,8 +2928,8 @@ void updateMbaseSpeed(uint16_t speed){
 		//SREG = old_SREG;
 		TCCR1B |= 1<<(CS11);
 	}
-	else if (speed < 15){
-    19fc:	0f 97       	sbiw	r24, 0x0f	; 15
+	else if (speed <= 15){
+    19fc:	40 97       	sbiw	r24, 0x10	; 16
     19fe:	98 f4       	brcc	.+38     	; 0x1a26 <_Z16updateMbaseSpeedj+0x54>
 		TCCR1B &= ~(1<<(CS10) | 1<<(CS11) | 1<<(CS12));
     1a00:	80 91 81 00 	lds	r24, 0x0081	; 0x800081 <__TEXT_REGION_LENGTH__+0x700081>
@@ -2992,10 +2992,10 @@ void initTimerMbase(void){
     1a5a:	90 e0       	ldi	r25, 0x00	; 0
     1a5c:	a0 e2       	ldi	r26, 0x20	; 32
     1a5e:	b1 e4       	ldi	r27, 0x41	; 65
-    1a60:	80 93 04 05 	sts	0x0504, r24	; 0x800504 <gs_base_ctrl+0x12>
-    1a64:	90 93 05 05 	sts	0x0505, r25	; 0x800505 <gs_base_ctrl+0x13>
-    1a68:	a0 93 06 05 	sts	0x0506, r26	; 0x800506 <gs_base_ctrl+0x14>
-    1a6c:	b0 93 07 05 	sts	0x0507, r27	; 0x800507 <gs_base_ctrl+0x15>
+    1a60:	80 93 44 0b 	sts	0x0B44, r24	; 0x800b44 <gs_base_ctrl+0x12>
+    1a64:	90 93 45 0b 	sts	0x0B45, r25	; 0x800b45 <gs_base_ctrl+0x13>
+    1a68:	a0 93 46 0b 	sts	0x0B46, r26	; 0x800b46 <gs_base_ctrl+0x14>
+    1a6c:	b0 93 47 0b 	sts	0x0B47, r27	; 0x800b47 <gs_base_ctrl+0x15>
 	updateMbaseSpeed(INITIAL_SPEED);
     1a70:	8a e0       	ldi	r24, 0x0A	; 10
     1a72:	90 e0       	ldi	r25, 0x00	; 0
@@ -3078,8 +3078,8 @@ void updateMtopSpeed(uint16_t speed){
 		//SREG = old_SREG;
 		TCCR3B |= 1<<(CS11);							// prescale by /8
 	}	
-	else if (speed < 15){
-    1ad8:	0f 97       	sbiw	r24, 0x0f	; 15
+	else if (speed <= 15){
+    1ad8:	40 97       	sbiw	r24, 0x10	; 16
     1ada:	98 f4       	brcc	.+38     	; 0x1b02 <_Z15updateMtopSpeedj+0x54>
 		TCCR3B &= ~(1<<(CS10) | 1<<(CS11) | 1<<(CS12));
     1adc:	80 91 91 00 	lds	r24, 0x0091	; 0x800091 <__TEXT_REGION_LENGTH__+0x700091>
@@ -3142,10 +3142,10 @@ void initTimerMtop(void){
     1b36:	90 e0       	ldi	r25, 0x00	; 0
     1b38:	a0 e2       	ldi	r26, 0x20	; 32
     1b3a:	b1 e4       	ldi	r27, 0x41	; 65
-    1b3c:	80 93 1a 05 	sts	0x051A, r24	; 0x80051a <gs_top_ctrl+0x12>
-    1b40:	90 93 1b 05 	sts	0x051B, r25	; 0x80051b <gs_top_ctrl+0x13>
-    1b44:	a0 93 1c 05 	sts	0x051C, r26	; 0x80051c <gs_top_ctrl+0x14>
-    1b48:	b0 93 1d 05 	sts	0x051D, r27	; 0x80051d <gs_top_ctrl+0x15>
+    1b3c:	80 93 5a 0b 	sts	0x0B5A, r24	; 0x800b5a <gs_top_ctrl+0x12>
+    1b40:	90 93 5b 0b 	sts	0x0B5B, r25	; 0x800b5b <gs_top_ctrl+0x13>
+    1b44:	a0 93 5c 0b 	sts	0x0B5C, r26	; 0x800b5c <gs_top_ctrl+0x14>
+    1b48:	b0 93 5d 0b 	sts	0x0B5D, r27	; 0x800b5d <gs_top_ctrl+0x15>
 	updateMtopSpeed(INITIAL_SPEED);
     1b4c:	8a e0       	ldi	r24, 0x0A	; 10
     1b4e:	90 e0       	ldi	r25, 0x00	; 0
@@ -3274,14 +3274,14 @@ ISR(TIMER1_OVF_vect) {
 	//A step is only given in the rising edge
 //	CLEAR_NATIVE_LED;
 	gs_base_ctrl.c_steps_made++;
-    1bfa:	80 91 02 05 	lds	r24, 0x0502	; 0x800502 <gs_base_ctrl+0x10>
-    1bfe:	90 91 03 05 	lds	r25, 0x0503	; 0x800503 <gs_base_ctrl+0x11>
+    1bfa:	80 91 42 0b 	lds	r24, 0x0B42	; 0x800b42 <gs_base_ctrl+0x10>
+    1bfe:	90 91 43 0b 	lds	r25, 0x0B43	; 0x800b43 <gs_base_ctrl+0x11>
     1c02:	01 96       	adiw	r24, 0x01	; 1
-    1c04:	90 93 03 05 	sts	0x0503, r25	; 0x800503 <gs_base_ctrl+0x11>
-    1c08:	80 93 02 05 	sts	0x0502, r24	; 0x800502 <gs_base_ctrl+0x10>
+    1c04:	90 93 43 0b 	sts	0x0B43, r25	; 0x800b43 <gs_base_ctrl+0x11>
+    1c08:	80 93 42 0b 	sts	0x0B42, r24	; 0x800b42 <gs_base_ctrl+0x10>
 	if (abs(gs_base_ctrl.prog_speed) >= INITIAL_SPEED){	// if the command is to really move the motor:
-    1c0c:	80 91 fa 04 	lds	r24, 0x04FA	; 0x8004fa <gs_base_ctrl+0x8>
-    1c10:	90 91 fb 04 	lds	r25, 0x04FB	; 0x8004fb <gs_base_ctrl+0x9>
+    1c0c:	80 91 3a 0b 	lds	r24, 0x0B3A	; 0x800b3a <gs_base_ctrl+0x8>
+    1c10:	90 91 3b 0b 	lds	r25, 0x0B3B	; 0x800b3b <gs_base_ctrl+0x9>
     1c14:	97 ff       	sbrs	r25, 7
     1c16:	03 c0       	rjmp	.+6      	; 0x1c1e <__vector_20+0x4a>
     1c18:	91 95       	neg	r25
@@ -3294,28 +3294,28 @@ ISR(TIMER1_OVF_vect) {
 	}
 	if(gs_base_ctrl.c_steps_made == gs_base_ctrl.prog_steps){
     1c22:	fa dc       	rcall	.-1548   	; 0x1618 <_Z14limitBaseStepsv>
-    1c24:	20 91 02 05 	lds	r18, 0x0502	; 0x800502 <gs_base_ctrl+0x10>
-    1c28:	30 91 03 05 	lds	r19, 0x0503	; 0x800503 <gs_base_ctrl+0x11>
-    1c2c:	80 91 f8 04 	lds	r24, 0x04F8	; 0x8004f8 <gs_base_ctrl+0x6>
-    1c30:	90 91 f9 04 	lds	r25, 0x04F9	; 0x8004f9 <gs_base_ctrl+0x7>
+    1c24:	20 91 42 0b 	lds	r18, 0x0B42	; 0x800b42 <gs_base_ctrl+0x10>
+    1c28:	30 91 43 0b 	lds	r19, 0x0B43	; 0x800b43 <gs_base_ctrl+0x11>
+    1c2c:	80 91 38 0b 	lds	r24, 0x0B38	; 0x800b38 <gs_base_ctrl+0x6>
+    1c30:	90 91 39 0b 	lds	r25, 0x0B39	; 0x800b39 <gs_base_ctrl+0x7>
     1c34:	28 17       	cp	r18, r24
 		disableTimerMbase();
     1c36:	39 07       	cpc	r19, r25
     1c38:	81 f4       	brne	.+32     	; 0x1c5a <__vector_20+0x86>
 		gs_base_ctrl.c_steps_made = 0;
     1c3a:	2f df       	rcall	.-418    	; 0x1a9a <_Z17disableTimerMbasev>
-    1c3c:	10 92 03 05 	sts	0x0503, r1	; 0x800503 <gs_base_ctrl+0x11>
-    1c40:	10 92 02 05 	sts	0x0502, r1	; 0x800502 <gs_base_ctrl+0x10>
+    1c3c:	10 92 43 0b 	sts	0x0B43, r1	; 0x800b43 <gs_base_ctrl+0x11>
+    1c40:	10 92 42 0b 	sts	0x0B42, r1	; 0x800b42 <gs_base_ctrl+0x10>
 		gs_base_ctrl.speed = 0;
-    1c44:	10 92 04 05 	sts	0x0504, r1	; 0x800504 <gs_base_ctrl+0x12>
-    1c48:	10 92 05 05 	sts	0x0505, r1	; 0x800505 <gs_base_ctrl+0x13>
-    1c4c:	10 92 06 05 	sts	0x0506, r1	; 0x800506 <gs_base_ctrl+0x14>
-    1c50:	10 92 07 05 	sts	0x0507, r1	; 0x800507 <gs_base_ctrl+0x15>
+    1c44:	10 92 44 0b 	sts	0x0B44, r1	; 0x800b44 <gs_base_ctrl+0x12>
+    1c48:	10 92 45 0b 	sts	0x0B45, r1	; 0x800b45 <gs_base_ctrl+0x13>
+    1c4c:	10 92 46 0b 	sts	0x0B46, r1	; 0x800b46 <gs_base_ctrl+0x14>
+    1c50:	10 92 47 0b 	sts	0x0B47, r1	; 0x800b47 <gs_base_ctrl+0x15>
 		gs_base_ctrl.f_rdy_4_command = 1;		
     1c54:	81 e0       	ldi	r24, 0x01	; 1
 	}
 	delayMicroseconds(2);	
-    1c56:	80 93 f2 04 	sts	0x04F2, r24	; 0x8004f2 <gs_base_ctrl>
+    1c56:	80 93 32 0b 	sts	0x0B32, r24	; 0x800b32 <gs_base_ctrl>
     1c5a:	82 e0       	ldi	r24, 0x02	; 2
 	CLEAR_MBASE_STEP_PIN;
     1c5c:	90 e0       	ldi	r25, 0x00	; 0
@@ -3366,14 +3366,14 @@ ISR(TIMER3_OVF_vect) {
     1cac:	ff 93       	push	r31
 //	CLEAR_NATIVE_LED;
 	gs_top_ctrl.c_steps_made++;
-    1cae:	80 91 18 05 	lds	r24, 0x0518	; 0x800518 <gs_top_ctrl+0x10>
-    1cb2:	90 91 19 05 	lds	r25, 0x0519	; 0x800519 <gs_top_ctrl+0x11>
+    1cae:	80 91 58 0b 	lds	r24, 0x0B58	; 0x800b58 <gs_top_ctrl+0x10>
+    1cb2:	90 91 59 0b 	lds	r25, 0x0B59	; 0x800b59 <gs_top_ctrl+0x11>
     1cb6:	01 96       	adiw	r24, 0x01	; 1
-    1cb8:	90 93 19 05 	sts	0x0519, r25	; 0x800519 <gs_top_ctrl+0x11>
-    1cbc:	80 93 18 05 	sts	0x0518, r24	; 0x800518 <gs_top_ctrl+0x10>
+    1cb8:	90 93 59 0b 	sts	0x0B59, r25	; 0x800b59 <gs_top_ctrl+0x11>
+    1cbc:	80 93 58 0b 	sts	0x0B58, r24	; 0x800b58 <gs_top_ctrl+0x10>
 	if (abs(gs_top_ctrl.prog_speed) >= INITIAL_SPEED){
-    1cc0:	80 91 10 05 	lds	r24, 0x0510	; 0x800510 <gs_top_ctrl+0x8>
-    1cc4:	90 91 11 05 	lds	r25, 0x0511	; 0x800511 <gs_top_ctrl+0x9>
+    1cc0:	80 91 50 0b 	lds	r24, 0x0B50	; 0x800b50 <gs_top_ctrl+0x8>
+    1cc4:	90 91 51 0b 	lds	r25, 0x0B51	; 0x800b51 <gs_top_ctrl+0x9>
     1cc8:	97 ff       	sbrs	r25, 7
     1cca:	03 c0       	rjmp	.+6      	; 0x1cd2 <__vector_35+0x4a>
     1ccc:	91 95       	neg	r25
@@ -3388,26 +3388,26 @@ ISR(TIMER3_OVF_vect) {
 	}
 	
 	if(gs_top_ctrl.c_steps_made == gs_top_ctrl.prog_steps){
-    1ce0:	20 91 18 05 	lds	r18, 0x0518	; 0x800518 <gs_top_ctrl+0x10>
-    1ce4:	30 91 19 05 	lds	r19, 0x0519	; 0x800519 <gs_top_ctrl+0x11>
-    1ce8:	80 91 0e 05 	lds	r24, 0x050E	; 0x80050e <gs_top_ctrl+0x6>
-    1cec:	90 91 0f 05 	lds	r25, 0x050F	; 0x80050f <gs_top_ctrl+0x7>
+    1ce0:	20 91 58 0b 	lds	r18, 0x0B58	; 0x800b58 <gs_top_ctrl+0x10>
+    1ce4:	30 91 59 0b 	lds	r19, 0x0B59	; 0x800b59 <gs_top_ctrl+0x11>
+    1ce8:	80 91 4e 0b 	lds	r24, 0x0B4E	; 0x800b4e <gs_top_ctrl+0x6>
+    1cec:	90 91 4f 0b 	lds	r25, 0x0B4F	; 0x800b4f <gs_top_ctrl+0x7>
     1cf0:	28 17       	cp	r18, r24
     1cf2:	39 07       	cpc	r19, r25
 		disableTimerMtop();
     1cf4:	81 f4       	brne	.+32     	; 0x1d16 <__vector_35+0x8e>
 		gs_top_ctrl.c_steps_made = 0;
     1cf6:	3f df       	rcall	.-386    	; 0x1b76 <_Z16disableTimerMtopv>
-    1cf8:	10 92 19 05 	sts	0x0519, r1	; 0x800519 <gs_top_ctrl+0x11>
-    1cfc:	10 92 18 05 	sts	0x0518, r1	; 0x800518 <gs_top_ctrl+0x10>
+    1cf8:	10 92 59 0b 	sts	0x0B59, r1	; 0x800b59 <gs_top_ctrl+0x11>
+    1cfc:	10 92 58 0b 	sts	0x0B58, r1	; 0x800b58 <gs_top_ctrl+0x10>
 		gs_top_ctrl.speed = 0;
-    1d00:	10 92 1a 05 	sts	0x051A, r1	; 0x80051a <gs_top_ctrl+0x12>
-    1d04:	10 92 1b 05 	sts	0x051B, r1	; 0x80051b <gs_top_ctrl+0x13>
-    1d08:	10 92 1c 05 	sts	0x051C, r1	; 0x80051c <gs_top_ctrl+0x14>
-    1d0c:	10 92 1d 05 	sts	0x051D, r1	; 0x80051d <gs_top_ctrl+0x15>
+    1d00:	10 92 5a 0b 	sts	0x0B5A, r1	; 0x800b5a <gs_top_ctrl+0x12>
+    1d04:	10 92 5b 0b 	sts	0x0B5B, r1	; 0x800b5b <gs_top_ctrl+0x13>
+    1d08:	10 92 5c 0b 	sts	0x0B5C, r1	; 0x800b5c <gs_top_ctrl+0x14>
+    1d0c:	10 92 5d 0b 	sts	0x0B5D, r1	; 0x800b5d <gs_top_ctrl+0x15>
 		gs_top_ctrl.f_rdy_4_command = 1;		
     1d10:	81 e0       	ldi	r24, 0x01	; 1
-    1d12:	80 93 08 05 	sts	0x0508, r24	; 0x800508 <gs_top_ctrl>
+    1d12:	80 93 48 0b 	sts	0x0B48, r24	; 0x800b48 <gs_top_ctrl>
 	}		
 	delayMicroseconds(2);	
     1d16:	82 e0       	ldi	r24, 0x02	; 2
@@ -3465,8 +3465,8 @@ ISR(TIMER4_OVF_vect){
     1d76:	ef 93       	push	r30
     1d78:	ff 93       	push	r31
 	if (abs(gs_base_ctrl.prog_speed) >= INITIAL_SPEED){
-    1d7a:	80 91 fa 04 	lds	r24, 0x04FA	; 0x8004fa <gs_base_ctrl+0x8>
-    1d7e:	90 91 fb 04 	lds	r25, 0x04FB	; 0x8004fb <gs_base_ctrl+0x9>
+    1d7a:	80 91 3a 0b 	lds	r24, 0x0B3A	; 0x800b3a <gs_base_ctrl+0x8>
+    1d7e:	90 91 3b 0b 	lds	r25, 0x0B3B	; 0x800b3b <gs_base_ctrl+0x9>
     1d82:	97 ff       	sbrs	r25, 7
     1d84:	03 c0       	rjmp	.+6      	; 0x1d8c <__vector_45+0x40>
     1d86:	91 95       	neg	r25
@@ -3477,18 +3477,18 @@ ISR(TIMER4_OVF_vect){
     1d90:	0c f4       	brge	.+2      	; 0x1d94 <__vector_45+0x48>
     1d92:	6f c0       	rjmp	.+222    	; 0x1e72 <__vector_45+0x126>
 		if (gs_base_ctrl.c_steps_made <= gs_base_ctrl.n_to_cruse_speed){	//if we need to speed up
-    1d94:	20 91 02 05 	lds	r18, 0x0502	; 0x800502 <gs_base_ctrl+0x10>
-    1d98:	30 91 03 05 	lds	r19, 0x0503	; 0x800503 <gs_base_ctrl+0x11>
-    1d9c:	40 91 fc 04 	lds	r20, 0x04FC	; 0x8004fc <gs_base_ctrl+0xa>
-    1da0:	50 91 fd 04 	lds	r21, 0x04FD	; 0x8004fd <gs_base_ctrl+0xb>
+    1d94:	20 91 42 0b 	lds	r18, 0x0B42	; 0x800b42 <gs_base_ctrl+0x10>
+    1d98:	30 91 43 0b 	lds	r19, 0x0B43	; 0x800b43 <gs_base_ctrl+0x11>
+    1d9c:	40 91 3c 0b 	lds	r20, 0x0B3C	; 0x800b3c <gs_base_ctrl+0xa>
+    1da0:	50 91 3d 0b 	lds	r21, 0x0B3D	; 0x800b3d <gs_base_ctrl+0xb>
     1da4:	42 17       	cp	r20, r18
     1da6:	53 07       	cpc	r21, r19
     1da8:	f8 f0       	brcs	.+62     	; 0x1de8 <__vector_45+0x9c>
 			gs_base_ctrl.speed = max(INITIAL_SPEED,gs_base_ctrl.speed);
-    1daa:	c0 90 04 05 	lds	r12, 0x0504	; 0x800504 <gs_base_ctrl+0x12>
-    1dae:	d0 90 05 05 	lds	r13, 0x0505	; 0x800505 <gs_base_ctrl+0x13>
-    1db2:	e0 90 06 05 	lds	r14, 0x0506	; 0x800506 <gs_base_ctrl+0x14>
-    1db6:	f0 90 07 05 	lds	r15, 0x0507	; 0x800507 <gs_base_ctrl+0x15>
+    1daa:	c0 90 44 0b 	lds	r12, 0x0B44	; 0x800b44 <gs_base_ctrl+0x12>
+    1dae:	d0 90 45 0b 	lds	r13, 0x0B45	; 0x800b45 <gs_base_ctrl+0x13>
+    1db2:	e0 90 46 0b 	lds	r14, 0x0B46	; 0x800b46 <gs_base_ctrl+0x14>
+    1db6:	f0 90 47 0b 	lds	r15, 0x0B47	; 0x800b47 <gs_base_ctrl+0x15>
     1dba:	20 e0       	ldi	r18, 0x00	; 0
     1dbc:	30 e0       	ldi	r19, 0x00	; 0
     1dbe:	40 e2       	ldi	r20, 0x20	; 32
@@ -3517,17 +3517,17 @@ ISR(TIMER4_OVF_vect){
 			updateMbaseSpeed((uint16_t)(gs_base_ctrl.speed));		//apply the timer period table according to the actual speed
 		}
 		else if(gs_base_ctrl.c_steps_made >= gs_base_ctrl.n_to_start_breaking){	//if we net to reduce the angular speed
-    1de8:	40 91 fe 04 	lds	r20, 0x04FE	; 0x8004fe <gs_base_ctrl+0xc>
-    1dec:	50 91 ff 04 	lds	r21, 0x04FF	; 0x8004ff <gs_base_ctrl+0xd>
+    1de8:	40 91 3e 0b 	lds	r20, 0x0B3E	; 0x800b3e <gs_base_ctrl+0xc>
+    1dec:	50 91 3f 0b 	lds	r21, 0x0B3F	; 0x800b3f <gs_base_ctrl+0xd>
     1df0:	24 17       	cp	r18, r20
     1df2:	35 07       	cpc	r19, r21
     1df4:	08 f4       	brcc	.+2      	; 0x1df8 <__vector_45+0xac>
     1df6:	3f c0       	rjmp	.+126    	; 0x1e76 <__vector_45+0x12a>
 			gs_base_ctrl.speed = max(INITIAL_SPEED,gs_base_ctrl.speed);
-    1df8:	c0 90 04 05 	lds	r12, 0x0504	; 0x800504 <gs_base_ctrl+0x12>
-    1dfc:	d0 90 05 05 	lds	r13, 0x0505	; 0x800505 <gs_base_ctrl+0x13>
-    1e00:	e0 90 06 05 	lds	r14, 0x0506	; 0x800506 <gs_base_ctrl+0x14>
-    1e04:	f0 90 07 05 	lds	r15, 0x0507	; 0x800507 <gs_base_ctrl+0x15>
+    1df8:	c0 90 44 0b 	lds	r12, 0x0B44	; 0x800b44 <gs_base_ctrl+0x12>
+    1dfc:	d0 90 45 0b 	lds	r13, 0x0B45	; 0x800b45 <gs_base_ctrl+0x13>
+    1e00:	e0 90 46 0b 	lds	r14, 0x0B46	; 0x800b46 <gs_base_ctrl+0x14>
+    1e04:	f0 90 47 0b 	lds	r15, 0x0B47	; 0x800b47 <gs_base_ctrl+0x15>
     1e08:	20 e0       	ldi	r18, 0x00	; 0
     1e0a:	30 e0       	ldi	r19, 0x00	; 0
     1e0c:	40 e2       	ldi	r20, 0x20	; 32
@@ -3568,10 +3568,10 @@ ISR(TIMER4_OVF_vect){
     1e50:	e3 2e       	mov	r14, r19
     1e52:	34 e4       	ldi	r19, 0x44	; 68
     1e54:	f3 2e       	mov	r15, r19
-    1e56:	c0 92 04 05 	sts	0x0504, r12	; 0x800504 <gs_base_ctrl+0x12>
-    1e5a:	d0 92 05 05 	sts	0x0505, r13	; 0x800505 <gs_base_ctrl+0x13>
-    1e5e:	e0 92 06 05 	sts	0x0506, r14	; 0x800506 <gs_base_ctrl+0x14>
-    1e62:	f0 92 07 05 	sts	0x0507, r15	; 0x800507 <gs_base_ctrl+0x15>
+    1e56:	c0 92 44 0b 	sts	0x0B44, r12	; 0x800b44 <gs_base_ctrl+0x12>
+    1e5a:	d0 92 45 0b 	sts	0x0B45, r13	; 0x800b45 <gs_base_ctrl+0x13>
+    1e5e:	e0 92 46 0b 	sts	0x0B46, r14	; 0x800b46 <gs_base_ctrl+0x14>
+    1e62:	f0 92 47 0b 	sts	0x0B47, r15	; 0x800b47 <gs_base_ctrl+0x15>
 			updateMbaseSpeed((uint16_t)(gs_base_ctrl.speed));
     1e66:	c7 01       	movw	r24, r14
     1e68:	b6 01       	movw	r22, r12
@@ -3590,8 +3590,8 @@ ISR(TIMER4_OVF_vect){
 	}
 	
 	if (abs(gs_top_ctrl.prog_speed) >= INITIAL_SPEED){
-    1e78:	80 91 10 05 	lds	r24, 0x0510	; 0x800510 <gs_top_ctrl+0x8>
-    1e7c:	90 91 11 05 	lds	r25, 0x0511	; 0x800511 <gs_top_ctrl+0x9>
+    1e78:	80 91 50 0b 	lds	r24, 0x0B50	; 0x800b50 <gs_top_ctrl+0x8>
+    1e7c:	90 91 51 0b 	lds	r25, 0x0B51	; 0x800b51 <gs_top_ctrl+0x9>
     1e80:	97 ff       	sbrs	r25, 7
     1e82:	03 c0       	rjmp	.+6      	; 0x1e8a <__vector_45+0x13e>
     1e84:	91 95       	neg	r25
@@ -3602,20 +3602,20 @@ ISR(TIMER4_OVF_vect){
     1e8e:	0c f4       	brge	.+2      	; 0x1e92 <__vector_45+0x146>
     1e90:	71 c0       	rjmp	.+226    	; 0x1f74 <__vector_45+0x228>
 		if (gs_top_ctrl.c_steps_made <= gs_top_ctrl.n_to_cruse_speed){	//if we need to speed up
-    1e92:	20 91 18 05 	lds	r18, 0x0518	; 0x800518 <gs_top_ctrl+0x10>
-    1e96:	30 91 19 05 	lds	r19, 0x0519	; 0x800519 <gs_top_ctrl+0x11>
-    1e9a:	40 91 12 05 	lds	r20, 0x0512	; 0x800512 <gs_top_ctrl+0xa>
-    1e9e:	50 91 13 05 	lds	r21, 0x0513	; 0x800513 <gs_top_ctrl+0xb>
+    1e92:	20 91 58 0b 	lds	r18, 0x0B58	; 0x800b58 <gs_top_ctrl+0x10>
+    1e96:	30 91 59 0b 	lds	r19, 0x0B59	; 0x800b59 <gs_top_ctrl+0x11>
+    1e9a:	40 91 52 0b 	lds	r20, 0x0B52	; 0x800b52 <gs_top_ctrl+0xa>
+    1e9e:	50 91 53 0b 	lds	r21, 0x0B53	; 0x800b53 <gs_top_ctrl+0xb>
     1ea2:	42 17       	cp	r20, r18
     1ea4:	53 07       	cpc	r21, r19
     1ea6:	00 f1       	brcs	.+64     	; 0x1ee8 <__vector_45+0x19c>
 			SET_NATIVE_LED;
     1ea8:	2f 9a       	sbi	0x05, 7	; 5
 			gs_top_ctrl.speed = max(INITIAL_SPEED,gs_top_ctrl.speed);
-    1eaa:	c0 90 1a 05 	lds	r12, 0x051A	; 0x80051a <gs_top_ctrl+0x12>
-    1eae:	d0 90 1b 05 	lds	r13, 0x051B	; 0x80051b <gs_top_ctrl+0x13>
-    1eb2:	e0 90 1c 05 	lds	r14, 0x051C	; 0x80051c <gs_top_ctrl+0x14>
-    1eb6:	f0 90 1d 05 	lds	r15, 0x051D	; 0x80051d <gs_top_ctrl+0x15>
+    1eaa:	c0 90 5a 0b 	lds	r12, 0x0B5A	; 0x800b5a <gs_top_ctrl+0x12>
+    1eae:	d0 90 5b 0b 	lds	r13, 0x0B5B	; 0x800b5b <gs_top_ctrl+0x13>
+    1eb2:	e0 90 5c 0b 	lds	r14, 0x0B5C	; 0x800b5c <gs_top_ctrl+0x14>
+    1eb6:	f0 90 5d 0b 	lds	r15, 0x0B5D	; 0x800b5d <gs_top_ctrl+0x15>
     1eba:	20 e0       	ldi	r18, 0x00	; 0
     1ebc:	30 e0       	ldi	r19, 0x00	; 0
     1ebe:	40 e2       	ldi	r20, 0x20	; 32
@@ -3644,8 +3644,8 @@ ISR(TIMER4_OVF_vect){
 		}
 		else if(gs_top_ctrl.c_steps_made >= gs_top_ctrl.n_to_start_breaking){	//if we net to reduce the angular speed
     1ee6:	27 c0       	rjmp	.+78     	; 0x1f36 <__vector_45+0x1ea>
-    1ee8:	40 91 14 05 	lds	r20, 0x0514	; 0x800514 <gs_top_ctrl+0xc>
-    1eec:	50 91 15 05 	lds	r21, 0x0515	; 0x800515 <gs_top_ctrl+0xd>
+    1ee8:	40 91 54 0b 	lds	r20, 0x0B54	; 0x800b54 <gs_top_ctrl+0xc>
+    1eec:	50 91 55 0b 	lds	r21, 0x0B55	; 0x800b55 <gs_top_ctrl+0xd>
     1ef0:	24 17       	cp	r18, r20
     1ef2:	35 07       	cpc	r19, r21
     1ef4:	08 f4       	brcc	.+2      	; 0x1ef8 <__vector_45+0x1ac>
@@ -3653,10 +3653,10 @@ ISR(TIMER4_OVF_vect){
     1ef6:	40 c0       	rjmp	.+128    	; 0x1f78 <__vector_45+0x22c>
 			gs_top_ctrl.speed = max(INITIAL_SPEED,gs_top_ctrl.speed);
     1ef8:	2f 98       	cbi	0x05, 7	; 5
-    1efa:	c0 90 1a 05 	lds	r12, 0x051A	; 0x80051a <gs_top_ctrl+0x12>
-    1efe:	d0 90 1b 05 	lds	r13, 0x051B	; 0x80051b <gs_top_ctrl+0x13>
-    1f02:	e0 90 1c 05 	lds	r14, 0x051C	; 0x80051c <gs_top_ctrl+0x14>
-    1f06:	f0 90 1d 05 	lds	r15, 0x051D	; 0x80051d <gs_top_ctrl+0x15>
+    1efa:	c0 90 5a 0b 	lds	r12, 0x0B5A	; 0x800b5a <gs_top_ctrl+0x12>
+    1efe:	d0 90 5b 0b 	lds	r13, 0x0B5B	; 0x800b5b <gs_top_ctrl+0x13>
+    1f02:	e0 90 5c 0b 	lds	r14, 0x0B5C	; 0x800b5c <gs_top_ctrl+0x14>
+    1f06:	f0 90 5d 0b 	lds	r15, 0x0B5D	; 0x800b5d <gs_top_ctrl+0x15>
     1f0a:	20 e0       	ldi	r18, 0x00	; 0
     1f0c:	30 e0       	ldi	r19, 0x00	; 0
     1f0e:	40 e2       	ldi	r20, 0x20	; 32
@@ -3697,11 +3697,11 @@ ISR(TIMER4_OVF_vect){
     1f52:	e8 2e       	mov	r14, r24
     1f54:	84 e4       	ldi	r24, 0x44	; 68
     1f56:	f8 2e       	mov	r15, r24
-    1f58:	c0 92 1a 05 	sts	0x051A, r12	; 0x80051a <gs_top_ctrl+0x12>
-    1f5c:	d0 92 1b 05 	sts	0x051B, r13	; 0x80051b <gs_top_ctrl+0x13>
-    1f60:	e0 92 1c 05 	sts	0x051C, r14	; 0x80051c <gs_top_ctrl+0x14>
+    1f58:	c0 92 5a 0b 	sts	0x0B5A, r12	; 0x800b5a <gs_top_ctrl+0x12>
+    1f5c:	d0 92 5b 0b 	sts	0x0B5B, r13	; 0x800b5b <gs_top_ctrl+0x13>
+    1f60:	e0 92 5c 0b 	sts	0x0B5C, r14	; 0x800b5c <gs_top_ctrl+0x14>
 			updateMtopSpeed((uint16_t)(gs_top_ctrl.speed));
-    1f64:	f0 92 1d 05 	sts	0x051D, r15	; 0x80051d <gs_top_ctrl+0x15>
+    1f64:	f0 92 5d 0b 	sts	0x0B5D, r15	; 0x800b5d <gs_top_ctrl+0x15>
     1f68:	c7 01       	movw	r24, r14
     1f6a:	b6 01       	movw	r22, r12
     1f6c:	0e 94 55 05 	call	0xaaa	; 0xaaa <__fixunssfsi>

@@ -26,7 +26,7 @@
 #define UART_HEADER_1		'S'
 #define UART_HEADER_COM     'c'
 #define UART_HEADER_START   't'
-#define REC_VECTOR_SIZE      400
+#define REC_VECTOR_SIZE      2000
 
 const uint8_t END_MSG[] = {0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00};
 

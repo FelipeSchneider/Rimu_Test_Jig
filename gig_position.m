@@ -1,9 +1,9 @@
 run('gig_speed.m');
 
-ACC_MOD = .25;  %every time that the interruption happens, we will speed up .25 degrees per second
+ACC_MOD = 1;  %every time that the interruption happens, we will speed up .25 degrees per second
                 %we must remember that the possible speeds are int
                 %variable.
-BREAKING_MOD = .25;
+BREAKING_MOD = 1;
 
 d_theta = 360/(FS_REVOLUTION*DEFAULT_MS);
 real_period = (1e-6 * real_period); real_period(1) = inf;        % now in microseconds
@@ -24,7 +24,7 @@ apply_period(1:4) = 0;
 s_step_t = cumsum(apply_period); %singular step time, the time that each step happened
 ang_position = (1:length(s_step_t))*d_theta;
 d_angle = diff(ang_position);       d_angle(numel(ang_position)) = 0;
-dt = diff(s_step_t);                dt(numel(ang_position)) = 1;
+dt = diff(s_step_t);                dt(numel(dt)+1:numel(ang_position)) = 1;
 ang_vel = d_angle./dt;
 d_vel = diff(ang_vel);       d_vel(numel(ang_position)) = 0;
 ang_acc = d_vel./dt;

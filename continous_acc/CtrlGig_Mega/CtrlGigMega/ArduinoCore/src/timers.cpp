@@ -61,7 +61,7 @@ void updateMbaseSpeed(uint16_t speed){
 		//SREG = old_SREG;
 		TCCR1B |= 1<<(CS11);
 	}
-	else if (speed < 15){
+	else if (speed <= 15){
 		TCCR1B &= ~(1<<(CS10) | 1<<(CS11) | 1<<(CS12));
 		//old_SREG = SREG;
 		cli();											// Disable interrupts for 16 bit register access
@@ -116,7 +116,7 @@ void updateMtopSpeed(uint16_t speed){
 		//SREG = old_SREG;
 		TCCR3B |= 1<<(CS11);							// prescale by /8
 	}	
-	else if (speed < 15){
+	else if (speed <= 15){
 		TCCR3B &= ~(1<<(CS10) | 1<<(CS11) | 1<<(CS12));
 		//old_SREG = SREG;
 		cli();											// Disable interrupts for 16 bit register access

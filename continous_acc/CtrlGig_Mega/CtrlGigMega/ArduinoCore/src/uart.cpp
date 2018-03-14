@@ -22,8 +22,8 @@
 // From the third byte, we start the action section: two bytes for the cruse speed of base (negative means one direction, positive another)
 //    another two bytes for the number of steps in this direction (base). The next for bytes are the cruse speed of top and number of steps for top motor.
 // So the protocol will be like this:
-// HEADER1, HEADER2, S_BASE_HIGH, S_BASE_LOW, N_BASE_HIGH, N_BASE_LOW, S_TOP_HIGH, S_TOP_LOW, N_TOP_HIGH, N_TOP_LOW, ...N*8 Bytes ..., 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00
-//                int16_t         uint16_t           int16_t          uint16_t                      END_MSG - MATLAB SENDS FIRST THE LOW BYTE
+// HEADER1, HEADER2, S_BASE_HIGH, S_BASE_LOW, N_BASE_HIGH, N_BASE_LOW, S_TOP_HIGH, S_TOP_LOW, N_TOP_HIGH, N_TOP_LOW, ...N*8 Bytes ..., 0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00
+//							 int16_t				  uint16_t                 int16_t               uint16_t                      END_MSG - MATLAB SENDS FIRST THE LOW BYTE
 
 //the acceleration and break is predefined by the program and its goal is to reduce vibration. Its module cannot be changed by communication
 
