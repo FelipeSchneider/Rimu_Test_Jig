@@ -177,7 +177,7 @@ ISR(TIMER1_OVF_vect) {
 		limitBaseSteps();		//check if we can make one more step. Set the flags if we cannot, if we can, rise the step pin
 		
 	}
-	if(gs_base_ctrl.c_steps_made == gs_base_ctrl.prog_steps){
+	if(gs_base_ctrl.c_steps_made >= gs_base_ctrl.prog_steps){
 		disableTimerMbase();
 		gs_base_ctrl.c_steps_made = 0;
 		gs_base_ctrl.speed = 0;
@@ -194,7 +194,7 @@ ISR(TIMER3_OVF_vect) {
 		SET_MTOP_STEP_PIN;
 	}
 	
-	if(gs_top_ctrl.c_steps_made == gs_top_ctrl.prog_steps){
+	if(gs_top_ctrl.c_steps_made >= gs_top_ctrl.prog_steps){
 		disableTimerMtop();
 		gs_top_ctrl.c_steps_made = 0;
 		gs_top_ctrl.speed = 0;

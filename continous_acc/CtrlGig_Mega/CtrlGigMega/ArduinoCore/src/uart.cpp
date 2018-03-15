@@ -133,8 +133,8 @@ uint8_t processCommands(s_motor_ctrl *s){
 		#endif // _DEBUG
 		s->speed = INITIAL_SPEED;
 		s->f_dir = DIR_POSITIVE;
-		s->n_to_cruse_speed = (uint16_t)(((aux_speed*aux_speed) - INITIAL_SPEED_2)/DEN_CALC_ACC_STEPS); //TORRICELLI EQUATION
-		s->steps_breaking = (uint16_t)(((aux_speed*aux_speed) - INITIAL_SPEED_2)/DEN_CALC_ACC_STEPS);
+		s->n_to_cruse_speed = (uint16_t)(round(((aux_speed*aux_speed) - INITIAL_SPEED_2)/DEN_CALC_ACC_STEPS)); //TORRICELLI EQUATION
+		s->steps_breaking = (uint16_t)(round(((aux_speed*aux_speed) - INITIAL_SPEED_2)/DEN_CALC_ACC_STEPS));
 		if(s->prog_steps >= (s->steps_breaking+s->n_to_cruse_speed)){	//if we have enough time to speed up and break, we can go up to the programmed speed
 			s->n_to_start_breaking = s->prog_steps - s->steps_breaking;
 			#ifdef _DEBUG
@@ -148,7 +148,7 @@ uint8_t processCommands(s_motor_ctrl *s){
 			s->n_to_cruse_speed = RATIO_ACC_BREAKING * s->prog_steps;
 			s->n_to_start_breaking = s->n_to_cruse_speed;
 			s->steps_breaking = s->prog_steps - s->n_to_cruse_speed;
-			s->prog_speed = sqrt(INITIAL_SPEED_2 + 2*ACC_MODULE*s->n_to_cruse_speed*D_THETA);				//TORRICELLI EQUATION
+			s->prog_speed = round(sqrt(INITIAL_SPEED_2 + 2*ACC_MODULE*s->n_to_cruse_speed*D_THETA));				//TORRICELLI EQUATION
 		}
 		
 	}
@@ -158,8 +158,8 @@ uint8_t processCommands(s_motor_ctrl *s){
 		#endif // _DEBUG
 		s->speed = INITIAL_SPEED;
 		s->f_dir = DIR_NEGATIVE;
-		s->n_to_cruse_speed = (uint16_t)(((aux_speed*aux_speed) - INITIAL_SPEED_2)/DEN_CALC_ACC_STEPS); //TORRICELLI EQUATION
-		s->steps_breaking = (uint16_t)(((aux_speed*aux_speed) - INITIAL_SPEED_2)/DEN_CALC_ACC_STEPS);
+		s->n_to_cruse_speed = (uint16_t)(round(((aux_speed*aux_speed) - INITIAL_SPEED_2)/DEN_CALC_ACC_STEPS)); //TORRICELLI EQUATION
+		s->steps_breaking = (uint16_t)(round(((aux_speed*aux_speed) - INITIAL_SPEED_2)/DEN_CALC_ACC_STEPS));
 		if(s->prog_steps >= (s->steps_breaking+s->n_to_cruse_speed)){	//if we have enough time to speed up and break, we can go up to the programmed speed
 			s->n_to_start_breaking = s->prog_steps - s->steps_breaking;
 			#ifdef _DEBUG
@@ -173,7 +173,7 @@ uint8_t processCommands(s_motor_ctrl *s){
 			s->n_to_cruse_speed = RATIO_ACC_BREAKING*s->prog_steps;
 			s->n_to_start_breaking = s->n_to_cruse_speed;
 			s->steps_breaking = s->prog_steps - s->n_to_cruse_speed;
-			s->prog_speed = sqrt(INITIAL_SPEED_2 + 2*ACC_MODULE*s->n_to_cruse_speed*D_THETA)*(-1);	
+			s->prog_speed = round(sqrt(INITIAL_SPEED_2 + 2*ACC_MODULE*s->n_to_cruse_speed*D_THETA)*(-1));	
 		}
 	}
 	#ifdef _DEBUG

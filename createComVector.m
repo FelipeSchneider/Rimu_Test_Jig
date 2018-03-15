@@ -1,6 +1,6 @@
-function [com_vector, b_angles, t_angles] = createComVector( base_angle, base_speed, top_angle, top_speed , d_theta)
-%createComVector Create the command vector that will be send to the
-%microcontroler afterward
+function [com_vector, b_angles, t_angles] = createComVector( base_angle, base_speed, top_angle, top_speed , gig_const)
+%[com_vector, b_angles, t_angles] = createComVector( base_angle, base_speed, top_angle, top_speed , d_theta)
+%Create the command vector that will be send to the microcontroler afterward
 %   base_angle      set of angles (in degrees) that the base motor will move. 
 %                   The direction will be given by the signal of speed. The
 %                   base motor has a limit for turning in the same
@@ -12,40 +12,64 @@ function [com_vector, b_angles, t_angles] = createComVector( base_angle, base_sp
 %   top_angle       similar to the base_angle for the top motor. The top
 %                   does not have a turning limitation
 %   top_speed       similar to the base speed for the top motor
-%   d_theta         Angle step size in degrees
+%   gig_const       The constants structure related to the gig
 %   com_vector      command vector that will be send to the microcontroller
 %   b_angles        The final set of angles described by the base motor
 %                   real angles - (double)
 %   t_angles        The final set of angles described by the top motor
 %                   real angles - (double)
-
+%
+%
+%  Communication protocol
+%  First byte -> UART_HEADER_1
+%  Second byte -> UART_HEADER_COM for sending the squence of steps and UART_HEADER_START to start executing the squence of steps
+%  From the third byte, we start the action section: two bytes for the cruse speed of base (negative means one direction, positive another)
+%  another two bytes for the number of steps in this direction (base). The next for bytes are the cruse speed of top and number of steps for top motor.
+%  So the protocol will be like this:
+%  HEADER1, HEADER2, S_BASE_HIGH, S_BASE_LOW, N_BASE_HIGH, N_BASE_LOW, S_TOP_HIGH, S_TOP_LOW, N_TOP_HIGH, N_TOP_LOW, ...N*8 Bytes ..., 0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00
+% 							 int16_t				  uint16_t                 int16_t               uint16_t                      END_MSG - MATLAB SENDS FIRST THE LOW BYTE
+d_theta = gig_const.d_theta;
+max_size = gig_const.limit_com_size;
 L_ba = length(base_angle);
 L_bs = length(base_speed);
 L_ta = length(top_angle);
 L_ts = length(top_speed);
+
+%check if there are some speed above the maximum speed
+if(max(base_speed)>gig_const.max_w)
+     warning('Base speed higher than the maximum allowed');
+     base_speed(base_speed>gig_const.max_w) = 720;  % limiting the speed
+end
+
+if(max(top_speed)>gig_const.max_w)
+     warning('Top speed higher than the maximum allowed');
+     top_speed(top_speed>gig_const.max_w) = 720;  % limiting the speed
+end
+
+
 %check to verify is the number of commands is bigger than what is 
-if(L_ba> 249) %249 is the size that is defined in the gig microcontroler
+if(L_ba> max_size) %249 is the size that is defined in the gig microcontroler
     warning('The number of comands is bigger than the microcontroller buffer size');
     warning('cutting the number of base angles commands');
-    base_angle(249:end) = [];
+    base_angle(max_size:end) = [];
 end
     
-if(L_bs> 249)
+if(L_bs> max_size)
     warning('The number of comands is bigger than the microcontroller buffer size');
     warning('cutting the number of base speed commands');
-    base_speed(249:end) = [];
+    base_speed(max_size:end) = [];
 end  
 
-if(L_ta> 249)
+if(L_ta> max_size)
     warning('The number of comands is bigger than the microcontroller buffer size');
     warning('cutting the number of top angles commands');
-    top_angle(249:end) = [];
+    top_angle(max_size:end) = [];
 end
     
-if(L_ts> 249)
+if(L_ts> max_size)
     warning('The number of comands is bigger than the microcontroller buffer size');
     warning('cutting the number of top speed commands');
-    top_speed(249:end) = [];
+    top_speed(max_size:end) = [];
 end  
 
 if(L_ba>L_bs)
