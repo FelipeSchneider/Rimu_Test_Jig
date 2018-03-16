@@ -26,14 +26,14 @@ for i=1:4:length(com_vector)
     %B_ means a variable relative to the base motor
     %T_ a variable relative to top motor
     % _w is related to angle displacement
-    B_speed = com_vector(i)
-    B_st = com_vector(i+1)        %programmed base steps
-    T_speed = com_vector(i+2)
-    T_st = com_vector(i+3)        %programmed top steps
+    B_speed = com_vector(i);
+    B_st = com_vector(i+1);         %programmed base steps
+    T_speed = com_vector(i+2);
+    T_st = com_vector(i+3);         %programmed top steps
     B_w = 0;                        %angle moved in a single command for the base motor
     T_w = 0;                        %angle moved in a single command for the top motor
 
-    if(abs(B_speed) >= cnt.min_w)   %if the base motor will move at this command
+    if(B_speed >= cnt.min_w)   %if the base motor will move at this command
         B_step_to_cruse = round((B_speed^2 - cnt.min_w^2)/(2*cnt.acc_mod*cnt.d_theta)); %   V^2 = Vo^2 + 2*a*DS;
         B_step_breaking = round((B_speed^2 - cnt.min_w^2)/(2*cnt.breaking_mod*cnt.d_theta)); %   V^2 = Vo^2 + 2*a*DS;
         
@@ -77,7 +77,7 @@ for i=1:4:length(com_vector)
     
         
     %now for the top motor
-    if(abs(T_speed) >= cnt.min_w)   %if the base motor will move at this command
+    if(T_speed >= cnt.min_w)   %if the base motor will move at this command
         T_step_to_cruse = round((T_speed^2 - cnt.min_w^2)/(2*cnt.acc_mod*cnt.d_theta)); %   V^2 = Vo^2 + 2*a*DS;
         T_step_breaking = round((T_speed^2 - cnt.min_w^2)/(2*cnt.breaking_mod*cnt.d_theta)); %   V^2 = Vo^2 + 2*a*DS;
         
@@ -125,7 +125,7 @@ for i=1:4:length(com_vector)
         B_command_time = 0:dt:T_command_time(end); 
   %      B_command_time = T_command_time;
     else %if the base motor takes longer to complete the command
-         %make sure that the partial time vector has all time steps
+                %make sure that the partial time vector has all time steps
         B_command_time = 0:dt:B_command_time(end); 
       %  T_command_time = B_command_time;
     end
@@ -136,25 +136,12 @@ for i=1:4:length(com_vector)
     B_w(numel(B_w)+1:numel(B_command_time)) = w_aux;
     w_aux = T_w(end);
     T_w(numel(T_w)+1:numel(B_command_time)) = w_aux;
-    
-    %concatenating the time vector
     time_aux = t(end)+dt;
-    B_command_time = B_command_time+time_aux;
-    t = [t B_command_time];
+    t = 
     
-    %concatenating the base angle
-    w_aux = base_angle(end);
-    B_w = B_w + w_aux;
-    base_angle = [base_angle B_w];
-    
-    %concatenating the top angle
-    w_aux = top_angle(end);
-    T_w = T_w + w_aux;
-    top_angle = [top_angle T_w];
 end  %FOR END
-    t(1) = [];
-    base_angle(1) = [];
-    top_angle(1) = [];
+    
+
 end
 
 
