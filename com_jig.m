@@ -8,8 +8,8 @@ close all;
 % base_angle = [90 90 90 90 90 90];
 % base_speed = [30 120 180 -180 -120 -15];
 
-top_angle = [90 90 90 90 90 90 120 150 800 20 10 10 30];
-top_speed = [35 60 120 -120 -60 -20 120 300 -720 12 -30 50 -30];
+top_angle = [90 90 90 90 90 90 120 150 3000 800 20 10 10 30];
+top_speed = [35 60 120 -120 -60 -20 120 300 0 -720 12 -30 50 -30];
 
 base_angle = [150 90 90 90 90 90];
 base_speed = [350 120 180 -180 -120 -15];
@@ -27,10 +27,14 @@ disp('Calculating the commands');
 com_vector2 = typecast(int32(com_vector), 'uint16');
 com_vector2 = com_vector2(1:2:end); %taking only the odd positions
 
-[t, real_base_angle, real_top_angle ] = reconstructCinematic( com_vector, gig_const);
+[t, real_base_angle, real_top_angle, com_data ] = reconstructCinematic( com_vector, gig_const);
 figure(1);
-subplot(211);plot(t,real_base_angle); title('Jig angles'); ylabel('Base angles (°)');
-subplot(212);plot(t,real_top_angle);xlabel('Time [s]'); ylabel('Top angles (°)');
+subplot(211);plot(t,real_base_angle); hold on;
+plot(com_data(1,:),com_data(2,:),'*');
+title('Jig angles'); ylabel('Base angles (°)'); 
+subplot(212);plot(t,real_top_angle); hold on;
+plot(com_data(1,:),com_data(3,:),'*');
+xlabel('Time [s]'); ylabel('Top angles (°)');
 
 figure(2);
 subplot(211); plot(repelem(b_angles,5)); title('Ilustrative jig angles');

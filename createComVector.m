@@ -105,6 +105,7 @@ for i=1:L_ba                            %calculating the real angle that the mot
         b_angles(i+1) = b_angles(i) - n_steps_b(i)*d_theta;
     else
         b_angles(i+1) = b_angles(i);
+        n_steps_b(i) = base_angle(i); %when the speed is smaller than the minimum speed, then we just have to make a delay
     end
 end
 
@@ -121,6 +122,7 @@ for i=1:L_ta
         t_angles(i+1) = t_angles(i) - n_steps_t(i)*d_theta;
     else
         t_angles(i+1) = t_angles(i);
+        n_steps_t(i) = top_angle(i); %when the speed is smaller than the minimum speed, then we just have to make a delay
     end
 end
 

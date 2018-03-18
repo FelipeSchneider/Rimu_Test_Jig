@@ -1,4 +1,4 @@
-function [ t, base_angle, top_angle ] = reconstructCinematic( com_vector, gig_const)
+function [ t, base_angle, top_angle, start_com ] = reconstructCinematic( com_vector, gig_const)
 %[ t, base_angle, top_angle ] = reconstructCinematic( com_vector, dt )
 % This function reconstructs the gig cinematics and its in a determinated 
 %time acording to the set of commands that are send to the microcontroller
@@ -11,7 +11,10 @@ function [ t, base_angle, top_angle ] = reconstructCinematic( com_vector, gig_co
 %   t               output the time vector
 %   base_angle      output the base angle for each time position
 %   top_angle       output the top angle for each time position
-
+%   start_com       line matrix that return the start time of each command
+%                   in the first line, in the second and third line it return the
+%                   angle that each command have started for the base and
+%                   top motors
 %equations for the Uniformly Varied Moviment (still linear)
 %   V = Vo + a*t;
 %   S = So + Vo*t + (1/2)*a*t^2
@@ -22,17 +25,22 @@ cnt = gig_const;
 t = -dt;              %the values that will be returned
 base_angle = 0;
 top_angle = 0;
+start_com = zeros(3,ceil(length(com_vector)-4/4));
 for i=1:4:length(com_vector)-4 %-4 to not consider the end of commands
     %B_ means a variable relative to the base motor
     %T_ a variable relative to top motor
     % _w is related to angle displacement
-    B_speed = com_vector(i)
-    B_st = com_vector(i+1)        %programmed base steps
+    B_speed = com_vector(i);
+    B_st = com_vector(i+1);        %programmed base steps
     T_speed = com_vector(i+2)
     T_st = com_vector(i+3)        %programmed top steps
-    B_w = 0;                        %angle moved in a single command for the base motor
-    T_w = 0;                        %angle moved in a single command for the top motor
-
+    B_w = 0;                       %angle moved in a single command for the base motor
+    T_w = 0;                       %angle moved in a single command for the top motor
+    
+    start_com(1,ceil(i/4)) = t(end)+dt;
+    start_com(2,ceil(i/4)) = base_angle(end);
+    start_com(3,ceil(i/4)) = top_angle(end);
+    
     if(abs(B_speed) >= cnt.min_w)   %if the base motor will move at this command
         B_step_to_cruse = round((B_speed^2 - cnt.min_w^2)/(2*cnt.acc_mod*cnt.d_theta)); %   V^2 = Vo^2 + 2*a*DS;
         B_step_breaking = round((B_speed^2 - cnt.min_w^2)/(2*cnt.breaking_mod*cnt.d_theta)); %   V^2 = Vo^2 + 2*a*DS;
