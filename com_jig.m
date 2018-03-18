@@ -1,7 +1,7 @@
 clear all; clc; 
 close all;
 %fclose(instrfind);
-%% angles and speed configurations - user configurable up to 
+%% angles and speed configurations - user configurable up to 249 commands for each motor
 % top_angle = [90 90 90 90 90 90];
 % top_speed = [15 60 120 -120 -60 -20];
 % 
