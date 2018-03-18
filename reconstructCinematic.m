@@ -22,7 +22,7 @@ cnt = gig_const;
 t = -dt;              %the values that will be returned
 base_angle = 0;
 top_angle = 0;
-for i=1:4:length(com_vector)
+for i=1:4:length(com_vector)-4 %-4 to not consider the end of commands
     %B_ means a variable relative to the base motor
     %T_ a variable relative to top motor
     % _w is related to angle displacement
@@ -49,25 +49,34 @@ for i=1:4:length(com_vector)
         end
         %calculating the duration of each phase
         B_time_speed_up = roots([cnt.acc_mod/2, cnt.min_w,  -B_step_to_cruse*cnt.d_theta]);
-        B_time_speed_up = B_time_speed_up(B_time_speed_up>0);
-        B_time_cruse = (B_step_start_break-B_step_to_cruse)*cnt.d_theta/B_speed;
-        B_time_break = roots([-cnt.breaking_mod/2, B_speed,  -B_step_breaking*cnt.d_theta]);
-        B_time_break(B_time_break>0);
+        B_time_speed_up = B_time_speed_up(B_time_speed_up>=0);
+        B_time_cruse = (B_step_start_break-B_step_to_cruse)*cnt.d_theta/abs(B_speed);
+        B_time_break = roots([-cnt.breaking_mod/2, abs(B_speed),  -B_step_breaking*cnt.d_theta]);
+        B_time_break(B_time_break>=0);
         B_time_break = min(B_time_break); %I have to get the smaller time, the bigger one corresponds to go futher and return to that desired position
         
         B_t1 = 0:dt:(B_time_speed_up);      
         B_t2 = dt:dt:B_time_cruse;
         B_t3 = dt:dt:B_time_break;
         B_command_time = 0:dt:(B_time_speed_up+B_time_cruse+B_time_break);
-        B_w = [B_w cnt.min_w.*B_t1+(cnt.acc_mod/2).*B_t1.^2]; %   S = So + Vo*t + (1/2)*a*t^2  -- speed up
+        if(B_speed>0)
+            B_w = [B_w cnt.min_w.*B_t1+(cnt.acc_mod/2).*B_t1.^2]; %   S = So + Vo*t + (1/2)*a*t^2  -- speed up
+        else
+            B_w = [B_w (cnt.min_w.*B_t1+(cnt.acc_mod/2).*B_t1.^2).*-1]; %   S = So + Vo*t + (1/2)*a*t^2  -- speed up
+        end
         w_aux = B_w(end);
         if(~isempty(B_t2))                        %if there is a phase of constant speed:
-            B_w = [B_w (w_aux+ B_speed.*B_t2)];     %
+            B_w = [B_w (w_aux+ B_speed.*B_t2)];
             w_aux = B_w(end);
         end
-        B_w = [B_w (w_aux+ B_speed.*B_t3-(cnt.breaking_mod/2).*B_t3.^2)];
+        if(B_speed>0)
+            B_w = [B_w (w_aux+ B_speed.*B_t3-(cnt.breaking_mod/2).*B_t3.^2)];
+        else
+            B_w = [B_w (w_aux+ B_speed.*B_t3+(cnt.breaking_mod/2).*B_t3.^2)];
+        end
+        
         B_w(1) = [];
-        rescale = B_w(end)/(B_st*cnt.d_theta); %factor to compensate the errors that will accumulate along with the reconstruction of cinematic
+        rescale = abs(B_w(end)/(B_st*cnt.d_theta)); %factor to compensate the errors that will accumulate along with the reconstruction of cinematic
         B_w = B_w./rescale;
     else    %the base motor will not move, just make a delay
         B_command_time = B_st*0.001; %just tell me when is the end of the delay - every step here is equal to one millisecond 
@@ -93,30 +102,39 @@ for i=1:4:length(com_vector)
         end
         %calculating the duration of each phase
         T_time_speed_up = roots([cnt.acc_mod/2, cnt.min_w,  -T_step_to_cruse*cnt.d_theta]);
-        T_time_speed_up = T_time_speed_up(T_time_speed_up>0);
-        T_time_cruse = (T_step_start_break-T_step_to_cruse)*cnt.d_theta/T_speed;
-        T_time_break = roots([-cnt.breaking_mod/2, T_speed,  -T_step_breaking*cnt.d_theta]);
-        T_time_break(T_time_break>0);
+        T_time_speed_up = T_time_speed_up(T_time_speed_up>=0);
+        T_time_cruse = (T_step_start_break-T_step_to_cruse)*cnt.d_theta/abs(T_speed);
+        T_time_break = roots([-cnt.breaking_mod/2, abs(T_speed),  -T_step_breaking*cnt.d_theta]);
+        T_time_break(T_time_break>=0);
         T_time_break = min(T_time_break); %I have to get the smaller time, the bigger one corresponds to go futher and return to that desired position
         
         T_t1 = 0:dt:(T_time_speed_up);      
         T_t2 = dt:dt:T_time_cruse;
         T_t3 = dt:dt:T_time_break;
         T_command_time = 0:dt:(T_time_speed_up+T_time_cruse+T_time_break);
-        T_w = [T_w cnt.min_w.*T_t1+(cnt.acc_mod/2).*T_t1.^2]; %   S = So + Vo*t + (1/2)*a*t^2  -- speed up
+        if(T_speed>0)
+            T_w = [T_w cnt.min_w.*T_t1+(cnt.acc_mod/2).*T_t1.^2]; %   S = So + Vo*t + (1/2)*a*t^2  -- speed up
+        else
+            T_w = [T_w (cnt.min_w.*T_t1+(cnt.acc_mod/2).*T_t1.^2).*-1]; %   S = So + Vo*t + (1/2)*a*t^2  -- speed up
+        end
         w_aux = T_w(end);
         if(~isempty(T_t2))                        %if there is a phase of constant speed:
-            T_w = [T_w (w_aux+ T_speed.*T_t2)];     %
+            T_w = [T_w (w_aux+ T_speed.*T_t2)];
             w_aux = T_w(end);
         end
-        T_w = [T_w (w_aux+ T_speed.*T_t3-(cnt.breaking_mod/2).*T_t3.^2)];
+        if(T_speed>0)
+            T_w = [T_w (w_aux+ T_speed.*T_t3-(cnt.breaking_mod/2).*T_t3.^2)];
+        else
+            T_w = [T_w (w_aux+ T_speed.*T_t3+(cnt.breaking_mod/2).*T_t3.^2)];
+        end
+        
         T_w(1) = [];
-        rescale = T_w(end)/(T_st*cnt.d_theta); %factor to compensate the errors that will accumulate along with the reconstruction of cinematic
+        rescale = abs(T_w(end)/(T_st*cnt.d_theta)); %factor to compensate the errors that will accumulate along with the reconstruction of cinematic
         T_w = T_w./rescale;
     else    %the base motor will not move, just make a delay
         T_command_time = T_st*0.001; %just tell me when is the end of the delay - every step here is equal to one millisecond 
         T_w = 0;
-    end
+     end
     
     % fusioning the time vector for the command
     % acumulating the time and the angular positions
@@ -151,6 +169,7 @@ for i=1:4:length(com_vector)
     w_aux = top_angle(end);
     T_w = T_w + w_aux;
     top_angle = [top_angle T_w];
+    
 end  %FOR END
     t(1) = [];
     base_angle(1) = [];

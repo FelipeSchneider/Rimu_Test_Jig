@@ -27,10 +27,13 @@ disp('Calculating the commands');
 com_vector2 = typecast(int32(com_vector), 'uint16');
 com_vector2 = com_vector2(1:2:end); %taking only the odd positions
 
-[t, real_base_angle, real_top_angle ] = reconstructCinematic( com_vector, gig_const)
-
+[t, real_base_angle, real_top_angle ] = reconstructCinematic( com_vector, gig_const);
 figure(1);
-subplot(211); plot(repelem(b_angles,5)); title('Ilustrative gig angles');
+subplot(211);plot(t,real_base_angle); title('Jig angles'); ylabel('Base angles (°)');
+subplot(212);plot(t,real_top_angle);xlabel('Time [s]'); ylabel('Top angles (°)');
+
+figure(2);
+subplot(211); plot(repelem(b_angles,5)); title('Ilustrative jig angles');
 ylabel('Base angles (°)'); 
 subplot(212);
 plot(repelem(t_angles,5)); ylabel('Top angles (°)'); xlabel('commands sequence');
