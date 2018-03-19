@@ -46,6 +46,9 @@ void treatSerialIncome(void){
 			else if(data == UART_HEADER_START){
 				c_rec = 0;
 				if(gfs.rdy_to_rotate == 1){		//first init of a command set, the next start will be given automatically in the main
+					#ifdef ANSWER_COM
+						Serial.write('S');
+					#endif
 					enableTimerMbase();
 					enableTimerMtop();
 					enableTimerAcc();

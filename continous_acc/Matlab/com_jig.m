@@ -14,6 +14,8 @@ top_speed = [35 60 120 -120 -60 -20 120 300 0 -720 12 -30 50 -30];
 base_angle = [150 90 90 90 90 90];
 base_speed = [350 120 180 -180 -120 -15];
 
+COM_gig_num = 11;
+
 %% constants
 gig_const = struct('microstep', 16, 'step_per_rev', 200,... 
             'd_theta', 360/(16*200),'min_w',10,'max_w',720,...
@@ -49,7 +51,7 @@ plot(repelem(t_angles,5)); ylabel('Top angles (°)'); xlabel('commands sequence')
 %  with an 'N' every new command and with an 'E' the end of the set of commands
 header_start_gig = 'St';
 header_command_gig = 'Sc';
-COM_gig_num = 11;   COM_gig_name = sprintf('COM%d',COM_gig_num);
+COM_gig_name = sprintf('COM%d',COM_gig_num);
 COM_gig_baud = 57600;
 s_gig = serial(COM_gig_name,'BaudRate',COM_gig_baud,'DataBits',8);
 s_gig.InputBufferSize = 2^16;
@@ -90,5 +92,5 @@ while(rec ~= 'E')
     end
 end
 
-fclose(instrfind);
+fclose(s_gig);
 

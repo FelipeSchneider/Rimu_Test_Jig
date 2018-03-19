@@ -3,7 +3,8 @@
 
 #include <Arduino.h>
 #define F_CPU 16000000UL
-#define _DEBUG
+//#define _DEBUG
+#define ANSWER_COM		//the board will answer with an 'S' the start of a set of commands, with an 'N' every new command and with an 'E' the end of the set of commands
 
 //#define _DEBUG_COM_WHILE_SPEED_CTRL
 

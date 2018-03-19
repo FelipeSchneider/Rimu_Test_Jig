@@ -87,10 +87,10 @@ void loop() {
 		gs_top_ctrl.f_rdy_4_command = 0;
 		
 		#ifdef _DEBUG
-		Serial.println("nova vel:");
-		Serial.println(gs_base_ctrl.prog_speed);
-// 		Serial.write(lo8(gs_base_ctrl.prog_speed));
-// 		Serial.write(hi8(gs_base_ctrl.prog_speed));
+			Serial.println("nova vel:");
+			Serial.println(gs_base_ctrl.prog_speed);
+	// 		Serial.write(lo8(gs_base_ctrl.prog_speed));
+	// 		Serial.write(hi8(gs_base_ctrl.prog_speed));
 		#endif // _DEBUG
 		
 		keep_turning_base = processCommands(&gs_base_ctrl);		//calculate how many steps we must do to reach the end of acceleration, how many to start deceleration, the cruse speed and the direction
@@ -108,6 +108,10 @@ void loop() {
 				Serial.println("Continuar rodando");
 			#endif // _DEBUG
 			
+			#ifdef ANSWER_COM
+				Serial.write('N');
+			#endif
+			
 			if (abs(gs_base_ctrl.prog_speed)>=INITIAL_SPEED){gs_base_ctrl.speed = INITIAL_SPEED;}		//TODO:: VERIFICAR A NECESSIDADE DISTO AQUI, JÁ DEVE TER SIDO FEITO EM PROCESSCOMMANDS
 				else{										 gs_base_ctrl.speed = 0;}
 			updateMbaseSpeed((abs(gs_base_ctrl.speed)));
@@ -121,14 +125,17 @@ void loop() {
 		}
 		else{
 			#ifdef _DEBUG
-			if(gfs.state == ROTATING)	{
-				Serial.println("terminando o controle:");
-			}
-			else{
-				Serial.println("aguardando St");
-			}
+				if(gfs.state == ROTATING)	{
+					Serial.println("terminando o controle:");
+				}
+				else{
+					Serial.println("aguardando St");
+				}
 			#endif // _DEBUG
 			if (gfs.state == ROTATING){
+				#ifdef ANSWER_COM
+					Serial.write('E');
+				#endif
 				gfs.state = IDLE;
 				gc_ctrl_com = 0;
 				gs_base_ctrl.c_steps_made = 0;

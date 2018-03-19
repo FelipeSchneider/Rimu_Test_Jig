@@ -1,4 +1,4 @@
-function [com_vector, b_angles, t_angles] = createComVector( base_angle, base_speed, top_angle, top_speed , gig_const)
+function [com_vector, b_angles, t_angles] = createComVector( base_angle, base_speed, top_angle, top_speed , jig_const)
 %[com_vector, b_angles, t_angles] = createComVector( base_angle, base_speed, top_angle, top_speed , d_theta)
 %Create the command vector that will be send to the microcontroler afterward
 %   base_angle      set of angles (in degrees) that the base motor will move. 
@@ -12,7 +12,7 @@ function [com_vector, b_angles, t_angles] = createComVector( base_angle, base_sp
 %   top_angle       similar to the base_angle for the top motor. The top
 %                   does not have a turning limitation
 %   top_speed       similar to the base speed for the top motor
-%   gig_const       The constants structure related to the gig
+%   jig_const       The constants structure related to the jig
 %   com_vector      command vector that will be send to the microcontroller
 %   b_angles        The final set of angles described by the base motor
 %                   real angles - (double)
@@ -28,27 +28,27 @@ function [com_vector, b_angles, t_angles] = createComVector( base_angle, base_sp
 %  So the protocol will be like this:
 %  HEADER1, HEADER2, S_BASE_HIGH, S_BASE_LOW, N_BASE_HIGH, N_BASE_LOW, S_TOP_HIGH, S_TOP_LOW, N_TOP_HIGH, N_TOP_LOW, ...N*8 Bytes ..., 0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00
 % 							 int16_t				  uint16_t                 int16_t               uint16_t                      END_MSG - MATLAB SENDS FIRST THE LOW BYTE
-d_theta = gig_const.d_theta;
-max_size = gig_const.limit_com_size;
+d_theta = jig_const.d_theta;
+max_size = jig_const.limit_com_size;
 L_ba = length(base_angle);
 L_bs = length(base_speed);
 L_ta = length(top_angle);
 L_ts = length(top_speed);
 
 %check if there are some speed above the maximum speed
-if(max(base_speed)>gig_const.max_w)
+if(max(base_speed)>jig_const.max_w)
      warning('Base speed higher than the maximum allowed');
-     base_speed(base_speed>gig_const.max_w) = 720;  % limiting the speed
+     base_speed(base_speed>jig_const.max_w) = 720;  % limiting the speed
 end
 
-if(max(top_speed)>gig_const.max_w)
+if(max(top_speed)>jig_const.max_w)
      warning('Top speed higher than the maximum allowed');
-     top_speed(top_speed>gig_const.max_w) = 720;  % limiting the speed
+     top_speed(top_speed>jig_const.max_w) = 720;  % limiting the speed
 end
 
 
 %check to verify is the number of commands is bigger than what is 
-if(L_ba> max_size) %249 is the size that is defined in the gig microcontroler
+if(L_ba> max_size) %249 is the size that is defined in the jig microcontroler
     warning('The number of comands is bigger than the microcontroller buffer size');
     warning('cutting the number of base angles commands');
     base_angle(max_size:end) = [];
