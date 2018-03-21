@@ -130,9 +130,11 @@ com_vector = 0;
 if(L_ta<L_ba)              %if the number of comands for the base is bigger than the number of comands to the top
     top_speed(L_ba) = 0;
     n_steps_t(L_ba) = 0;
+    L_ta = L_ba;
 elseif(L_ta>L_ba)          %if the number of comands to the top is bigger
     base_speed(L_ta) = 0;
     n_steps_b(L_ta) = 0;
+    L_ba = L_ta;
 end
 
 for i=1:L_ta

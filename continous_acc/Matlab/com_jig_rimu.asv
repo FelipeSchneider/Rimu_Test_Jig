@@ -1,6 +1,9 @@
-clear all; clc; 
+clear all; %clc; 
 close all;
-fclose(instrfind);
+if(~isempty(instrfind))
+    disp('Closing all COM ports')
+    fclose(instrfind);
+end
 %% angles and speed configurations - user configurable up to 249 commands for each motor
 % top_angle = [90 90 90 90 90 90];
 % top_speed = [15 60 120 -120 -60 -20];
@@ -8,17 +11,26 @@ fclose(instrfind);
 % base_angle = [90 90 90 90 90 90];
 % base_speed = [30 120 180 -180 -120 -15];
 
-top_angle = [90 90 90 90 90 90 120 150 3000 800 20 10 10 30];
-top_speed = [35 60 120 -120 -60 -20 120 300 0 -720 12 -30 50 -30];
+% top_angle = [3000 90 90 90 90 90 90 120 150 6000 800 5000 20 10 10 30];
+% top_speed = [0 35 60 120 -120 -60 -20 120 300 0 -720 200 12 -30 50 -30];
 
-base_angle = [150 90 90 90 90 90];
-base_speed = [350 120 180 -180 -120 -15];
+% top_angle = [3000 3000];
+% top_speed = [0 0];
+% 
+% base_angle = [3000 150 90 90 90 90 90 120 120 30 200 200 150 150];
+% base_speed = [0 350 120 180 -180 -120 -15 50 -45 15 300 -300 -720 720];
+
+top_speed = [60 -60 120 -120 180 -180 240 -240 360 -360 540 -540 720 -720];
+top_angle = [900 900 1800 1800 2700 2700 3600 3600
+
+base_angle = [0];
+base_speed = [0];
 
 COM_jig_num = 11;
 
 %rimu definitions
 BLUETOOTH = 1;          %to use bluetooth set this flag
-time_sample = 30;       %number of seconds that we will collect
+time_sample = 300;       %number of seconds that we will collect
 fs = 100;               %sampling frequency -- system depedent
 n_sample = time_sample*fs;
 t_imu = 0:1/fs:time_sample-1/fs; %RIMU time vector
@@ -152,7 +164,7 @@ while((jig_rec ~= 'E')||(j<n_sample))
     end
     
     imu_bytes = s_imu.BytesAvailable;
-    if(imu_bytes >= 44)
+    if((imu_bytes >= 44)&&(j<=n_samples))
         giro_imu(:,j) = fread(s_imu,3,'int16');
         acc_imu(:,j) = fread(s_imu,3,'int16');
         mag_imu(:,j) = fread(s_imu,3,'int16');
@@ -171,7 +183,7 @@ while((jig_rec ~= 'E')||(j<n_sample))
 end
 
 fclose(s_jig);
-fclose(s_jig);
+fclose(s_imu);
 
 %% pos processing
 %LSM+LIS
@@ -189,23 +201,23 @@ mag_bno_gaus(3,:) = double(mag_bno(3,:))/(2^14)*MICRO_TESLA_MAX;
 %% plots
 
 figure(3);
-subplot(311);plot(t_imu,[giro_imu_dps(1,:); giro_bno_dps(1,:)]'); grid on;
+subplot(311);plot(t_imu,[giro_imu_dps(1,1:n_sample); giro_bno_dps(1,1:n_sample)]'); grid on;
 title('Giroscópio');ylabel('X [dps]');legend('Minimu','BNO','Location','northwest','Orientation','horizontal')
-subplot(312);plot(t_imu,[giro_imu_dps(2,:); giro_bno_dps(2,:)]'); ylabel('Y [dps]'); grid on;
-subplot(313);plot(t_imu,[giro_imu_dps(3,:); giro_bno_dps(3,:)]'); ylabel('Z [dps]'); grid on;
+subplot(312);plot(t_imu,[giro_imu_dps(2,1:n_sample); giro_bno_dps(2,1:n_sample)]'); ylabel('Y [dps]'); grid on;
+subplot(313);plot(t_imu,[giro_imu_dps(3,1:n_sample); giro_bno_dps(3,1:n_sample)]'); ylabel('Z [dps]'); grid on;
 xlabel('Tempo [s]')
 
 figure(4);
-subplot(311);plot(t_imu,[acc_imu_g(1,:); acc_bno_g(1,:)]'); grid on;
+subplot(311);plot(t_imu,[acc_imu_g(1,1:n_sample); acc_bno_g(1,1:n_sample)]'); grid on;
 title('Acelerômetro');ylabel('X [g]');legend('Minimu','BNO','Location','northwest','Orientation','horizontal')
-subplot(312);plot(t_imu,[acc_imu_g(2,:); acc_bno_g(2,:)]'); ylabel('Y [g]'); grid on;
-subplot(313);plot(t_imu,[acc_imu_g(3,:); acc_bno_g(3,:)]'); ylabel('Z [g]'); grid on;
+subplot(312);plot(t_imu,[acc_imu_g(2,1:n_sample); acc_bno_g(2,1:n_sample)]'); ylabel('Y [g]'); grid on;
+subplot(313);plot(t_imu,[acc_imu_g(3,1:n_sample); acc_bno_g(3,1:n_sample)]'); ylabel('Z [g]'); grid on;
 
 figure(5);
-subplot(311);plot(t_imu,[mag_imu_gaus(1,:); mag_bno_gaus(1,:)]'); grid on; grid on;
+subplot(311);plot(t_imu,[mag_imu_gaus(1,1:n_sample); mag_bno_gaus(1,1:n_sample)]'); grid on; grid on;
 title('Magnetômetro');ylabel('X');legend('Minimu','BNO','Location','northwest','Orientation','horizontal')
-subplot(312);plot(t_imu,[mag_imu_gaus(2,:); mag_bno_gaus(2,:)]'); ylabel('Y'); grid on;
-subplot(313);plot(t_imu,[mag_imu_gaus(3,:); mag_bno_gaus(3,:)]'); ylabel('Z'); grid on;
+subplot(312);plot(t_imu,[mag_imu_gaus(2,1:n_sample); mag_bno_gaus(2,1:n_sample)]'); ylabel('Y'); grid on;
+subplot(313);plot(t_imu,[mag_imu_gaus(3,1:n_sample); mag_bno_gaus(3,1:n_sample)]'); ylabel('Z'); grid on;
 xlabel('Tempo [s]')
 
 figure(6);

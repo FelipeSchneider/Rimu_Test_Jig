@@ -3,10 +3,10 @@ close all;
 fclose(instrfind);
 
 %% Definição dos parametros iniciais do ensaio
-BLUETOOTH = 0;          %se for usar bluetooth sete este define, se for usar 
+BLUETOOTH = 1;          %se for usar bluetooth sete este define, se for usar 
 
 WAIT_SYNC = 0;          %wait for the technaid synchronization or not
-time_sample = 60;       %número de segundos a se coletar
+time_sample = 20;       %número de segundos a se coletar
 fs = 100;               %Frequência de amostragem (depende do micro)
 n_amostras = time_sample*fs;
 
