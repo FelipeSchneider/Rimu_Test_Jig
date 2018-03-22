@@ -1,12 +1,12 @@
 clear all; %clc; 
-close all;
+%close all;
 if(~isempty(instrfind))
     disp('Closing all COM ports')
     fclose(instrfind);
 end
 %% angles and speed configurations - user configurable up to 249 commands for each motor
-% top_angle = [90 90 90 90 90 90];
-% top_speed = [15 60 120 -120 -60 -20];
+top_angle = [90 90 90 90 90 90];
+top_speed = [15 60 120 -120 -60 -20];
 % 
 % base_angle = [90 90 90 90 90 90];
 % base_speed = [30 120 180 -180 -120 -15];
@@ -20,8 +20,11 @@ end
 % base_angle = [3000 150 90 90 90 90 90 120 120 30 200 200 150 150];
 % base_speed = [0 350 120 180 -180 -120 -15 50 -45 15 300 -300 -720 720];
 
-top_speed = [300 310 320 330 340 350 360 370 380 390 400 410 420 430];
-top_angle = ones(size(top_speed))*3600;
+% top_speed = [300 310 320 330 340 350 360 370 380 390 400 410 420 430];
+% top_angle = ones(size(top_speed))*3600;
+
+% top_speed = [60 120 240 300 360 420 480 540 600 660 720];
+% top_angle = (1:length(top_speed))*900; top_angle(top_angle>7200) = 7200;
 
 base_angle = [0];
 base_speed = [0];
@@ -30,14 +33,16 @@ COM_jig_num = 11;
 
 %rimu definitions
 BLUETOOTH = 1;          %to use bluetooth set this flag
-time_sample = 180;      %number of seconds that we will collect
-n_sample = time_sample*fs;
-t_imu = 0:1/fs:time_sample-1/fs; %RIMU time vector
+time_sample = 15;      %number of seconds that we will collect
 COM_imu = 16;            %com port number
 COM_imu_baud = 230400;   %Baud rate
 COM_header_1 = 83;       %Header rimu 1
 COM_header_2 = 172;      %Header rimu 2
 ACTION = 165;            %read LSM + LIS + BNO + BNO quaternions
+%ACTION = 162;
+
+%sensor configurations -- BNO might change this automatically if the fusion
+%mode is on
 G_MAX_IMU = 8;
 G_MAX_BNO = 8;
 DPS_MAX_IMU = 1000;
@@ -74,14 +79,8 @@ plot(repelem(t_angles,5)); ylabel('Top angles (°)'); xlabel('commands sequence')
 
 %% Rimu start of communication
 COM_imu_name = sprintf('COM%d',COM_imu);
-giro_imu = zeros(3,n_sample); %performance improvement with prellocating
-acc_imu = zeros(3,n_sample); 
-mag_imu = zeros(3,n_sample); 
-
-giro_bno = zeros(3,n_sample); 
-acc_bno = zeros(3,n_sample); 
-mag_bno = zeros(3,n_sample);
-Q = zeros(4,n_sample);
+[t_imu, fs, n_sample, giro_imu, acc_imu, mag_imu, giro_bno, acc_bno, mag_bno, Q]...
+    = prelocateRimuVar( ACTION, time_sample );
 
 if(BLUETOOTH == 0)
     disp('Init. Serial-USB conversor')
@@ -157,21 +156,9 @@ while((jig_rec ~= 'E')||(j<n_sample))
         end
     end
     
-    imu_bytes = s_imu.BytesAvailable;
-    if((imu_bytes >= 44)&&(j<=n_sample))
-        giro_imu(:,j) = fread(s_imu,3,'int16');
-        acc_imu(:,j) = fread(s_imu,3,'int16');
-        mag_imu(:,j) = fread(s_imu,3,'int16');
-        
-        acc_bno(:,j) = fread(s_imu,3,'int16');
-        mag_bno(:,j) = fread(s_imu,3,'int16');
-        giro_bno(:,j) = fread(s_imu,3,'int16');
-        
-        Q(:,j) = fread(s_imu,4,'int16');
-        j = j+1;
-        if(mod(j,fs)==0)                    %print o segundo atual
-            fprintf('Second number %d \r',j/fs)
-        end
+    if(j<=n_sample)
+        [ j,giro_imu, acc_imu, mag_imu, giro_bno, acc_bno, mag_bno, Q ]...
+    = readDataImu(j, ACTION, s_imu, giro_imu, acc_imu, mag_imu, giro_bno, acc_bno, mag_bno, Q);  
     end
     
 end
