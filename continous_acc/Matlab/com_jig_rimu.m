@@ -20,8 +20,8 @@ end
 % base_angle = [3000 150 90 90 90 90 90 120 120 30 200 200 150 150];
 % base_speed = [0 350 120 180 -180 -120 -15 50 -45 15 300 -300 -720 720];
 
-top_speed = [60 -60 120 -120 180 -180 240 -240 360 -360 540 -540 720 -720];
-top_angle = [900 900 1800 1800 2700 2700 3600 3600 4500 4500 7000 7000 7000 7000];
+top_speed = [300 310 320 330 340 350 360 370 380 390 400 410 420 430];
+top_angle = ones(size(top_speed))*3600;
 
 base_angle = [0];
 base_speed = [0];
@@ -30,8 +30,7 @@ COM_jig_num = 11;
 
 %rimu definitions
 BLUETOOTH = 1;          %to use bluetooth set this flag
-time_sample = 210;       %number of seconds that we will collect
-fs = 100;               %sampling frequency -- system depedent
+time_sample = 180;      %number of seconds that we will collect
 n_sample = time_sample*fs;
 t_imu = 0:1/fs:time_sample-1/fs; %RIMU time vector
 COM_imu = 16;            %com port number
@@ -83,12 +82,7 @@ giro_bno = zeros(3,n_sample);
 acc_bno = zeros(3,n_sample); 
 mag_bno = zeros(3,n_sample);
 Q = zeros(4,n_sample);
-%pre-processing minimu
-giro_imu_dps = zeros(3,n_sample);
-acc_imu_g = zeros(3,n_sample);
-%pre-processing bno055 
-giro_bno_dps = zeros(3,n_sample);
-acc_bno_g = zeros(3,n_sample);
+
 if(BLUETOOTH == 0)
     disp('Init. Serial-USB conversor')
     s_imu = serial(COM_imu_name,'BaudRate',COM_imu_baud,'DataBits',8);
