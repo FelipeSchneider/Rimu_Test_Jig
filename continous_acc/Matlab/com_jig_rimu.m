@@ -1,5 +1,5 @@
 clear all; %clc; 
-%close all;
+close all;
 if(~isempty(instrfind))
     disp('Closing all COM ports')
     fclose(instrfind);
@@ -33,7 +33,7 @@ COM_jig_num = 11;
 
 %rimu definitions
 BLUETOOTH = 1;          %to use bluetooth set this flag
-time_sample = 15;      %number of seconds that we will collect
+time_sample = 20;      %number of seconds that we will collect
 COM_imu = 16;            %com port number
 COM_imu_baud = 230400;   %Baud rate
 COM_header_1 = 83;       %Header rimu 1
@@ -168,16 +168,48 @@ fclose(s_imu);
 
 %% pos processing
 %LSM+LIS
-giro_imu_dps = double(giro_imu)/(2^15)*DPS_MAX_IMU;
-acc_imu_g = double(acc_imu)/(2^15)*G_MAX_IMU;
-mag_imu_gaus = double(mag_imu)/(2^15)*MICRO_TESLA_MAX;
-
+if(~isempty(giro_imu)) 
+    giro_imu_dps = double(giro_imu)/(2^15)*DPS_MAX_IMU;
+else
+    giro_imu_dps = zeros(3,n_sample);
+end
+if(~isempty(acc_imu)) 
+    acc_imu_g = double(acc_imu)/(2^15)*G_MAX_IMU;
+else
+    acc_imu_g = zeros(3,n_sample);
+end
+if(~isempty(mag_imu)) 
+    mag_imu_gaus = double(mag_imu)/(2^15)*MICRO_TESLA_MAX;
+else
+    mag_imu_gaus = zeros(3,n_sample);
+end
 %bno055
-giro_bno_dps = double(giro_bno)/(2^15)*DPS_MAX_BNO;
-acc_bno_g = double(acc_bno)/(2^13)*G_MAX_BNO;
-mag_bno_gaus(1,:) = double(mag_bno(1,:))/(2^14)*MICRO_TESLA_MAX;
-mag_bno_gaus(2,:) = double(mag_bno(2,:))/(2^14)*MICRO_TESLA_MAX;
-mag_bno_gaus(3,:) = double(mag_bno(3,:))/(2^14)*MICRO_TESLA_MAX;
+if(~isempty(giro_bno)) 
+    giro_bno_dps = double(giro_bno)/(2^15)*DPS_MAX_BNO;
+else
+    giro_bno_dps = zeros(3,n_sample);
+end
+if(~isempty(acc_bno)) 
+    acc_bno_g = double(acc_bno)/(2^13)*G_MAX_BNO;
+else
+    acc_bno_g = zeros(3,n_sample);
+end
+if(~isempty(mag_bno)) 
+    mag_bno_gaus(1,:) = double(mag_bno(1,:))/(2^14)*MICRO_TESLA_MAX;
+    mag_bno_gaus(2,:) = double(mag_bno(2,:))/(2^14)*MICRO_TESLA_MAX;
+    mag_bno_gaus(3,:) = double(mag_bno(3,:))/(2^14)*MICRO_TESLA_MAX;
+else
+    mag_bno_gaus = zeros(3,n_sample);
+end
+
+if(isempty(Q)) 
+   Q = zeros(4,n_sample); 
+end 
+
+% [b,a] = butter(4,0.1);
+% filt_giro = filter(b,a,giro_imu_dps(2,1:n_sample));
+% figure(10)
+% plot(t_imu,[giro_imu_dps(2,1:n_sample); filt_giro]');
 
 %% plots
 

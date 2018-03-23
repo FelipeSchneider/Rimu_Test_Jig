@@ -3,7 +3,7 @@ close all;
 fclose(instrfind);
 
 %% Definição dos parametros iniciais do ensaio
-BLUETOOTH = 0;          %se for usar bluetooth sete este define, se for usar 
+BLUETOOTH = 1;          %se for usar bluetooth sete este define, se for usar 
                         %conversor serial USB configure em 0
 WAIT_SYNC = 0;          %wait for the technaid synchronization or not
                         

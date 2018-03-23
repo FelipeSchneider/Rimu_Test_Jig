@@ -49,52 +49,46 @@ switch ACTION
         fs = 100;
         imu_bytes = s_imu.BytesAvailable;
         if((imu_bytes >= 18))
-            for kk=1:floor(imu_bytes/18)
-                acc_bno(:,j) = fread(s_imu,3,'int16');
-                mag_bno(:,j) = fread(s_imu,3,'int16');
-                giro_bno(:,j) = fread(s_imu,3,'int16');
-                j = j+1;
-                if(mod(j,fs)==0)                    %print o segundo atual
-                    fprintf('Second number %d \r',j/fs)
-                end
+            acc_bno(:,j) = fread(s_imu,3,'int16');
+            mag_bno(:,j) = fread(s_imu,3,'int16');
+            giro_bno(:,j) = fread(s_imu,3,'int16');
+            j = j+1;
+            if(mod(j,fs)==0)                    %print o segundo atual
+                fprintf('Second number %d \r',j/fs)
             end
         end
     case 164    %0xA4 // acquire raw data from LSM, LIS and BNO at 100Hz
         fs = 100;
         imu_bytes = s_imu.BytesAvailable;
         if((imu_bytes >= 36))
-            for kk=1:floor(imu_bytes/36)
-                giro_imu(:,j) = fread(s_imu,3,'int16');
-                acc_imu(:,j) = fread(s_imu,3,'int16');
-                mag_imu(:,j) = fread(s_imu,3,'int16');
+            giro_imu(:,j) = fread(s_imu,3,'int16');
+            acc_imu(:,j) = fread(s_imu,3,'int16');
+            mag_imu(:,j) = fread(s_imu,3,'int16');
 
-                acc_bno(:,j) = fread(s_imu,3,'int16');
-                mag_bno(:,j) = fread(s_imu,3,'int16');
-                giro_bno(:,j) = fread(s_imu,3,'int16');
-                j = j+1;
-                if(mod(j,fs)==0)                    %print o segundo atual
-                    fprintf('Second number %d \r',j/fs)
-                end
+            acc_bno(:,j) = fread(s_imu,3,'int16');
+            mag_bno(:,j) = fread(s_imu,3,'int16');
+            giro_bno(:,j) = fread(s_imu,3,'int16');
+            j = j+1;
+            if(mod(j,fs)==0)                    %print o segundo atual
+                fprintf('Second number %d \r',j/fs)
             end
         end
     case 165    %0xA5// acquire raw data from LSM, LIS and BNO and fusion data in quaternion format from BNO at 100Hz
         fs = 100;
         imu_bytes = s_imu.BytesAvailable;
         if((imu_bytes >= 44))
-            for kk=1:floor(imu_bytes/44)
-                giro_imu(:,j) = fread(s_imu,3,'int16');
-                acc_imu(:,j) = fread(s_imu,3,'int16');
-                mag_imu(:,j) = fread(s_imu,3,'int16');
+            giro_imu(:,j) = fread(s_imu,3,'int16');
+            acc_imu(:,j) = fread(s_imu,3,'int16');
+            mag_imu(:,j) = fread(s_imu,3,'int16');
 
-                acc_bno(:,j) = fread(s_imu,3,'int16');
-                mag_bno(:,j) = fread(s_imu,3,'int16');
-                giro_bno(:,j) = fread(s_imu,3,'int16');
+            acc_bno(:,j) = fread(s_imu,3,'int16');
+            mag_bno(:,j) = fread(s_imu,3,'int16');
+            giro_bno(:,j) = fread(s_imu,3,'int16');
 
-                Q(:,j) = fread(s_imu,4,'int16');
-                j = j+1;
-                if(mod(j,fs)==0)                    %print o segundo atual
-                    fprintf('Second number %d \r',j/fs)
-                end
+            Q(:,j) = fread(s_imu,4,'int16');
+            j = j+1;
+            if(mod(j,fs)==0)                    %print o segundo atual
+                fprintf('Second number %d \r',j/fs)
             end
         end
     case 166    %0xA6// acquire raw data from LSM at 500Hz, LIS 100Hz and BNO 100Hz and fusion data in quaternion format from BNO at 100Hz
@@ -105,34 +99,30 @@ switch ACTION
         fs = 500;
         imu_bytes = s_imu.BytesAvailable;
         if((imu_bytes >= 18))
-            for kk=1:floor(imu_bytes/18)
-                giro_imu(:,j) = fread(s_imu,3,'int16');
-                acc_imu(:,j) = fread(s_imu,3,'int16');
-                mag_imu(:,j) = fread(s_imu,3,'int16');
-                j = j+1;
-                if(mod(j,fs)==0)                    %print o segundo atual
-                    fprintf('Second number %d \r',j/fs)
-                end
+            giro_imu(:,j) = fread(s_imu,3,'int16');
+            acc_imu(:,j) = fread(s_imu,3,'int16');
+            mag_imu(:,j) = fread(s_imu,3,'int16');
+            j = j+1;
+            if(mod(j,fs)==0)                    %print o segundo atual
+                fprintf('Second number %d \r',j/fs)
             end
         end
     case 169    %0xA9//same as ACT_AQR_BOTH_RAW_FUSION_100HZ  but only start when the PA1
         fs = 100;
         imu_bytes = s_imu.BytesAvailable;
         if((imu_bytes >= 44))
-            for kk=1:floor(imu_bytes/44)
-                giro_imu(:,j) = fread(s_imu,3,'int16');
-                acc_imu(:,j) = fread(s_imu,3,'int16');
-                mag_imu(:,j) = fread(s_imu,3,'int16');
+            giro_imu(:,j) = fread(s_imu,3,'int16');
+            acc_imu(:,j) = fread(s_imu,3,'int16');
+            mag_imu(:,j) = fread(s_imu,3,'int16');
 
-                acc_bno(:,j) = fread(s_imu,3,'int16');
-                mag_bno(:,j) = fread(s_imu,3,'int16');
-                giro_bno(:,j) = fread(s_imu,3,'int16');
+            acc_bno(:,j) = fread(s_imu,3,'int16');
+            mag_bno(:,j) = fread(s_imu,3,'int16');
+            giro_bno(:,j) = fread(s_imu,3,'int16');
 
-                Q(:,j) = fread(s_imu,4,'int16');
-                j = j+1;
-                if(mod(j,fs)==0)                    %print o segundo atual
-                    fprintf('Second number %d \r',j/fs)
-                end
+            Q(:,j) = fread(s_imu,4,'int16');
+            j = j+1;
+            if(mod(j,fs)==0)                    %print o segundo atual
+                fprintf('Second number %d \r',j/fs)
             end
         end
     otherwise
