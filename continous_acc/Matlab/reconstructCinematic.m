@@ -25,7 +25,8 @@ cnt = jig_const;
 t = -dt;              %the values that will be returned
 base_angle = 0;
 top_angle = 0;
-start_com = zeros(3,ceil(length(com_vector)-4/4));
+%start_com = zeros(3,ceil(length(com_vector)-4/4)); % useful to forecast where a new command starts
+start_com = 0;
 for i=1:4:length(com_vector)-4 %-4 to not consider the end of commands
     %B_ means a variable relative to the base motor
     %T_ a variable relative to top motor
@@ -50,10 +51,14 @@ for i=1:4:length(com_vector)-4 %-4 to not consider the end of commands
         if(B_st >= (B_step_to_cruse + B_step_breaking)) %if we have enough time to speed up and break, we can go up to the programmed speed
             B_step_start_break = B_st - B_step_breaking;      
         else %if we do not have enough steps to speed up to programmed speed, then we must reduce it
-            B_step_to_cruse = B_st* (cnt.acc_mod/(cnt.acc_mod+cnt.breaking_mod));
+            B_step_to_cruse = round(B_st* (cnt.acc_mod/(cnt.acc_mod+cnt.breaking_mod)));
             B_step_start_break = B_step_to_cruse;
             B_step_breaking = B_st - B_step_start_break;
-            B_speed = sqrt(cnt.min_w^2 + 2*cnt.acc_mod*cnt.d_theta*B_step_to_cruse); %   V^2 = Vo^2 + 2*a*DS;
+            if(B_speed > 0)
+                B_speed = round(sqrt(cnt.min_w^2 + 2*cnt.acc_mod*cnt.d_theta*B_step_to_cruse)); %   V^2 = Vo^2 + 2*a*DS;
+            else
+                 B_speed = -round(sqrt(cnt.min_w^2 + 2*cnt.acc_mod*cnt.d_theta*B_step_to_cruse)); %   V^2 = Vo^2 + 2*a*DS;
+            end
         end
         %calculating the duration of each phase
         B_time_speed_up = roots([cnt.acc_mod/2, cnt.min_w,  -B_step_to_cruse*cnt.d_theta]);
@@ -103,10 +108,14 @@ for i=1:4:length(com_vector)-4 %-4 to not consider the end of commands
         if(T_st >= (T_step_to_cruse + T_step_breaking)) %if we have enough time to speed up and break, we can go up to the programmed speed
             T_step_start_break = T_st - T_step_breaking;      
         else %if we do not have enough steps to speed up to programmed speed, then we must reduce it
-            T_step_to_cruse = T_st* (cnt.acc_mod/(cnt.acc_mod+cnt.breaking_mod));
+            T_step_to_cruse = round(T_st* (cnt.acc_mod/(cnt.acc_mod+cnt.breaking_mod)));
             T_step_start_break = T_step_to_cruse;
             T_step_breaking = T_st - T_step_start_break;
-            T_speed = sqrt(cnt.min_w^2 + 2*cnt.acc_mod*cnt.d_theta*T_step_to_cruse); %   V^2 = Vo^2 + 2*a*DS;
+            if(T_speed > 0)
+                T_speed = round(sqrt(cnt.min_w^2 + 2*cnt.acc_mod*cnt.d_theta*T_step_to_cruse)); %   V^2 = Vo^2 + 2*a*DS;
+            else
+                T_speed = -round(sqrt(cnt.min_w^2 + 2*cnt.acc_mod*cnt.d_theta*T_step_to_cruse)); %   V^2 = Vo^2 + 2*a*DS;
+            end
         end
         %calculating the duration of each phase
         T_time_speed_up = roots([cnt.acc_mod/2, cnt.min_w,  -T_step_to_cruse*cnt.d_theta]);

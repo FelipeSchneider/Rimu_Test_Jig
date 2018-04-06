@@ -1,9 +1,12 @@
 clear all; clc; 
 close all;
-fclose(instrfind);
+if(~isempty(instrfind))
+    disp('Closing all COM ports')
+    fclose(instrfind);
+end
 
 %% Definição dos parametros iniciais do ensaio
-BLUETOOTH = 0;          %se for usar bluetooth sete este define, se for usar 
+BLUETOOTH = 1;          %se for usar bluetooth sete este define, se for usar 
                         %conversor serial USB configure em 0
 time_sample = 10;       %número de segundos a se coletar
 fs = 1000;              %Frequência de amostragem (depende do micro)
@@ -20,7 +23,7 @@ COM_header_1 = 83;       %Header de inicio da comunicação
 COM_header_2 = 172;      %Header de inicio da comunicação
 ACTION = 167;            %ação: ler apenas o LSM+LIS
 
-G_MAX = 4;
+G_MAX = 8;
 DPS_MAX = 1000;
 GAUSS_MAX = 4;
 MICRO_TESLA_MAX = 40;
@@ -43,15 +46,9 @@ MICRO_TESLA_MAX = 40;
 
 %% Inicialização das portas e variáveis
 COM_imu_name = sprintf('COM%d',COM_imu);
-x_giro = zeros(1,n_amostras); %prealocação para melhora da performance
-y_giro = zeros(1,n_amostras);
-z_giro = zeros(1,n_amostras);
-x_acc = zeros(1,n_amostras); 
-y_acc = zeros(1,n_amostras);
-z_acc = zeros(1,n_amostras);
-x_mag = zeros(1,n_amostras); 
-y_mag = zeros(1,n_amostras);
-z_mag = zeros(1,n_amostras);
+giro_imu = zeros(3,n_amostras); %prealocação para melhora da performance
+acc_imu = zeros(3,n_amostras); 
+mag_imu = zeros(3,n_amostras/10); 
 
 if(BLUETOOTH == 0)
     disp('iniciando Conversor Serial USB')
@@ -89,29 +86,21 @@ for j=1:n_amostras
     if(mod(j,fs)==0)                    %print o segundo atual
         fprintf('Segundo %d \r',j/fs)
     end
-    if c_scale < 10
+     if c_scale < 10                    % envio sem os dados do magnetometro
+        bytes = s_imu.BytesAvailable;
         while (bytes < 12)
                  bytes = s_imu.BytesAvailable;
         end
-        x_giro(j) = fread(s_imu,1,'int16');
-        y_giro(j) = fread(s_imu,1,'int16');
-        z_giro(j) = fread(s_imu,1,'int16');
-        x_acc(j) = fread(s_imu,1,'int16');
-        y_acc(j) = fread(s_imu,1,'int16');
-        z_acc(j) = fread(s_imu,1,'int16');
-    else
+        giro_imu(:,j) = fread(s_imu,3,'int16');
+        acc_imu(:,j) = fread(s_imu,3,'int16');
+     else                               % envio com os dados do magnetometro
+        bytes = s_imu.BytesAvailable;
         while (bytes < 18)
                  bytes = s_imu.BytesAvailable;
         end
-        x_giro(j) = fread(s_imu,1,'int16');
-        y_giro(j) = fread(s_imu,1,'int16');
-        z_giro(j) = fread(s_imu,1,'int16');
-        x_acc(j) = fread(s_imu,1,'int16');
-        y_acc(j) = fread(s_imu,1,'int16');
-        z_acc(j) = fread(s_imu,1,'int16');
-        x_mag(j) = fread(s_imu,1,'int16');
-        y_mag(j) = fread(s_imu,1,'int16');
-        z_mag(j) = fread(s_imu,1,'int16'); 
+        giro_imu(:,j) = fread(s_imu,3,'int16');
+        acc_imu(:,j) = fread(s_imu,3,'int16');
+        mag_imu(:,round(j/10)) = fread(s_imu,3,'int16'); 
         c_scale = 0;
     end
 end
@@ -120,34 +109,31 @@ flushinput(s_imu);
 fclose(instrfind);
 
 %% Pós processing
-x_giro_dps = double(x_giro)/(2^15)*DPS_MAX;
-y_giro_dps = double(y_giro)/(2^15)*DPS_MAX;
-z_giro_dps = double(z_giro)/(2^15)*DPS_MAX;
-
-x_acc_g = double(x_acc)/(2^15)*G_MAX;
-y_acc_g = double(y_acc)/(2^15)*G_MAX;
-z_acc_g = double(z_acc)/(2^15)*G_MAX;
-
-x_mag_gaus = double(x_mag)/(2^15)*MICRO_TESLA_MAX;
-y_mag_gaus = double(y_mag)/(2^15)*MICRO_TESLA_MAX;
-z_mag_gaus = double(z_mag)/(2^15)*MICRO_TESLA_MAX;
+giro_imu_dps = double(giro_imu)/(2^15)*DPS_MAX;
+acc_imu_g = double(acc_imu)/(2^15)*G_MAX;
+mag_imu_gaus = double(mag_imu)/(2^15)*MICRO_TESLA_MAX;
 
 %total_field = sqrt(x_mag_gaus.^2 + 
 %% Plots
 figure;
-plot(t,[x_giro_dps; y_giro_dps; z_giro_dps]'); grid on;
-title('Giroscópio');
-xlabel('Tempo [s]'); ylabel('dps'); 
-legend('x','y','z');
+subplot(311);plot(t,giro_imu_dps(1,:)); grid on;
+title('Giroscópio');ylabel('X [dps]');legend('Minimu','Location','northwest','Orientation','horizontal')
+subplot(312);plot(t,giro_imu_dps(2,:)); ylabel('Y [dps]'); grid on;
+subplot(313);plot(t,giro_imu_dps(3,:)); ylabel('Z [dps]'); grid on;
+xlabel('Tempo [s]')
+
 
 figure;
-plot(t,[x_acc_g;y_acc_g;z_acc_g]'); grid on;
-title('Acelerômetro');
-xlabel('Tempo [s]'); ylabel('g');
-legend('x','y','z');
+subplot(311);plot(t,acc_imu_g(1,:)'); grid on;
+title('Acelerômetro');ylabel('X [g]');legend('Minimu','Location','northwest','Orientation','horizontal')
+subplot(312);plot(t,acc_imu_g(2,:)'); ylabel('Y [g]'); grid on;
+subplot(313);plot(t,acc_imu_g(3,:)'); ylabel('Z [g]'); grid on;
+xlabel('Tempo [s]')
 
+t2 = t(1:10:end);
 figure;
-plot(t_mag,[x_mag_gaus;y_mag_gaus;z_mag_gaus]'); grid on;
-title('Magnetômetro');
-xlabel('Tempo [s]'); ylabel('Micro Tesla');
-legend('x','y','z');
+subplot(311);plot(t2,mag_imu_gaus(1,:)'); grid on; grid on;
+title('Magnetômetro');ylabel('X');legend('Minimu','Location','northwest','Orientation','horizontal')
+subplot(312);plot(t2,mag_imu_gaus(2,:)'); ylabel('Y'); grid on;
+subplot(313);plot(t2,mag_imu_gaus(3,:)'); ylabel('Z'); grid on;
+xlabel('Tempo [s]')

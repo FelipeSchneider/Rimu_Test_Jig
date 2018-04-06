@@ -285,9 +285,6 @@ t_expect(end+1) = t(end);       %filling with the end of all comands here
 b_angle_expect = com_data(2,:); b_angle_expect(end+1) = real_base_angle(end);
 t_angle_expect = com_data(3,:); t_angle_expect(end+1) = real_top_angle(end);
 
-%avg_quaternion_markley
-
-
 % p_command = zeros(size(t_expect));    %vector positions of the moments where a new command is expected, this will be use to correct the time vector
 % for i=1:length(t_expect)              %finding those positions
 %     p_command(i) = find(t==t_expect(i));
@@ -307,8 +304,7 @@ t_angle_expect = com_data(3,:); t_angle_expect(end+1) = real_top_angle(end);
 %
 
 t = t-t_rec(1);
-comp_factor = 123.5/123.0383;   %took from graph FUSION4
-%comp_factor = 56.7/56.8678;   %took from graph FUSION5
+comp_factor = 123.5/123.0383;   %took from graph
 t_comp = t*comp_factor;
 
 [e_bno(:,1),e_bno(:,2),e_bno(:,3)] = quat2angle(Q','ZXY');
@@ -324,9 +320,9 @@ subplot(313);plot(t_imu,e_bno(:,3)*180/pi);hold all; plot(t,-t_angle); plot(t_ex
 
 
 figure; 
-subplot(311);plot(t_imu,e_bno(:,1)*180/pi); hold all; plot(t_comp,b_angle); plot(t_rec,b_angle_expect,'r*'); axis([0 inf -200 200]); grid on;
-subplot(312);plot(t_imu,e_bno(:,2)*180/pi);axis([0 inf -inf inf]); grid on;
-subplot(313);plot(t_imu,e_bno(:,3)*180/pi);hold all; plot(t_comp,-t_angle); plot(t_rec,-t_angle_expect,'r*');axis([0 inf -200 200]); grid on;
+subplot(311);plot(t_imu,e_bno(:,1)*180/pi); hold all; plot(t_comp,b_angle); plot(t_rec,b_angle_expect,'r*'); axis([0 inf -inf inf]));
+subplot(312);plot(t_imu,e_bno(:,2)*180/pi);
+subplot(313);plot(t_imu,e_bno(:,3)*180/pi);hold all; plot(t_comp,-t_angle); plot(t_rec,-t_angle_expect,'r*');
 
 
 
