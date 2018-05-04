@@ -31,17 +31,18 @@ end
 % top_angle = base_angle;
 % top_speed = base_speed;
 
-top_angle = [15 1000 15 1000];% move 15 degrees, wait 1000ms
-top_speed = [200 0 200 0];% move at 200 degrees per second, command to wait
-base_angle = [200 360 200 360];%wait 200ms, move 360 degrees
-base_speed = [0 200 0 -200]; %command to wait (wait for the base move), move at 200dps
+%fusion 3
+base_angle = [15 3000];% move 15 degrees, wait 1000ms
+base_speed = [200 0];% move at 200 degrees per second, command to wait
+top_angle = [2000 360];%wait 200ms, move 360 degrees
+top_speed = [0 200]; %command to wait (wait for the base move), move at 200dps
 j=0;
-for i=60:30:360
+for i=30:15:360
     j=j+1;
-   base_angle = [base_angle [200 360 200 360]];
-   base_speed = [base_speed [0 200 0 -200]];
-   top_angle = [top_angle [15 1000 15 1000]];
-   top_speed = [top_speed [200 0 200 0]];
+   base_angle = [base_angle [15 3000]];
+   base_speed = [base_speed [200 0]];
+   top_angle = [top_angle [2000 360]];
+   top_speed = [top_speed [0 200]];
 end
 
 
@@ -276,60 +277,4 @@ w = linspace(0,2*pi);plot(cos(w),sin(w),'r');
 title('Elipsoide BNO'); legend('XY','XZ','ZY');
 hs(2) = subplot(122);
 scatter3(hs(2),mag_bno_gaus(1,:),mag_bno_gaus(2,:),mag_bno_gaus(3,:),'*');
-
-%% Comparing the results
-%compensating the jig time
-t_rec(1) = [];                  %the first position is a zero, used only for prealocation
-t_expect = com_data(1,:);       %extracting the expect time for each command
-t_expect(end+1) = t(end);       %filling with the end of all comands here
-b_angle_expect = com_data(2,:); b_angle_expect(end+1) = real_base_angle(end);
-t_angle_expect = com_data(3,:); t_angle_expect(end+1) = real_top_angle(end);
-
-%avg_quaternion_markley
-
-
-% p_command = zeros(size(t_expect));    %vector positions of the moments where a new command is expected, this will be use to correct the time vector
-% for i=1:length(t_expect)              %finding those positions
-%     p_command(i) = find(t==t_expect(i));
-% end
-% 
-% t_comp = t;
-% for i=1:length(t_expect)-1              %compensating the time
-%     comp_factor = t_rec(i) - t_expect(i);
-%     t_comp(p_command(i):p_command(i+1)) = t(p_command(i):p_command(i+1))-comp_factor;
-% end
-
-
-% t_imu = t_imu+t_rec(1);         %the process starts with a small delay, compensate for it     
-% t_expect = t_expect+t_rec(1);   %the process starts with a small delay, compensate for it
-% t_comp_factor = (t_expect+t_rec(1))./t_rec; %time compensation factor
-% t = t/t_comp_factor;            %compensating the jig time vector
-%
-
-t = t-t_rec(1);
-comp_factor = 123.5/123.0383;   %took from graph FUSION4
-%comp_factor = 56.7/56.8678;   %took from graph FUSION5
-t_comp = t*comp_factor;
-
-[e_bno(:,1),e_bno(:,2),e_bno(:,3)] = quat2angle(Q','ZXY');
-%e_bno(:,1) = wrapTo2Pi(e_bno(:,1));
-b_angle = wrapTo180(real_base_angle); b_angle_expect = wrapTo180(b_angle_expect);
-t_angle = wrapTo180(real_top_angle);  t_angle_expect = wrapTo180(t_angle_expect);
-
-
-figure; 
-subplot(311);plot(t_imu,e_bno(:,1)*180/pi); hold all; plot(t,b_angle); plot(t_expect,b_angle_expect,'r*');
-subplot(312);plot(t_imu,e_bno(:,2)*180/pi);
-subplot(313);plot(t_imu,e_bno(:,3)*180/pi);hold all; plot(t,-t_angle); plot(t_expect,-t_angle_expect,'r*');
-
-
-figure; 
-subplot(311);plot(t_imu,e_bno(:,1)*180/pi); hold all; plot(t_comp,b_angle); plot(t_rec,b_angle_expect,'r*'); axis([0 inf -200 200]); grid on;
-subplot(312);plot(t_imu,e_bno(:,2)*180/pi);axis([0 inf -inf inf]); grid on;
-subplot(313);plot(t_imu,e_bno(:,3)*180/pi);hold all; plot(t_comp,-t_angle); plot(t_rec,-t_angle_expect,'r*');axis([0 inf -200 200]); grid on;
-
-
-
-
-
 
