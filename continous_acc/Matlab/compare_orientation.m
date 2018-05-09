@@ -1,4 +1,8 @@
 addpath('C:\Users\felip\Dropbox\Mestrado\Dissertação\Coletas Jiga\Teste_giro_filt')  %just to be able to load previously jig measurements
+addpath('fusion');
+addpath('jig');
+addpath('aquire_rimu');
+
 load fusion6
 %% Comparing the results
 %compensating the jig time
@@ -6,9 +10,10 @@ t_rec(1) = [];                  %the first position is a zero, used only for pre
 t_expect = com_data(1,:);       %extracting the expect time for each command
 t_expect(end+1) = t(end);       %filling with the end of all comands here
 t = t-t_rec(1);
+
 %comp_factor = 123.5/123.0383;   %took from graph FUSION4
-%comp_factor = 56.7/56.8678;    %took from graph FUSION5
-comp_factor = 254.13/253.07818;                %FUSION 6
+%comp_factor = 56.7/56.8678;     %took from graph FUSION5
+comp_factor = 254.13/253.07818;                   %FUSION 6
 t_jig_comp = t*comp_factor;
 
 %just to plot the marks on the graph

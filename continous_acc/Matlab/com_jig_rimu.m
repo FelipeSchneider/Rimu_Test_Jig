@@ -4,6 +4,10 @@ if(~isempty(instrfind))
     disp('Closing all COM ports')
     fclose(instrfind);
 end
+
+addpath('fusion');
+addpath('jig');
+addpath('aquire_rimu');
 %% angles and speed configurations - user configurable up to 249 commands for each motor
 name = 'fusion 7';
 description = 'same as fusion 6';
