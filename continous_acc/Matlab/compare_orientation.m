@@ -1,13 +1,14 @@
- addpath('C:\Users\felip\Dropbox\Mestrado\Dissertação\Coletas Jiga\Teste_giro_filt')  
-load fusion4
+addpath('C:\Users\felip\Dropbox\Mestrado\Dissertação\Coletas Jiga\Teste_giro_filt')  %just to be able to load previously jig measurements
+load fusion6
 %% Comparing the results
 %compensating the jig time
 t_rec(1) = [];                  %the first position is a zero, used only for prealocation
 t_expect = com_data(1,:);       %extracting the expect time for each command
 t_expect(end+1) = t(end);       %filling with the end of all comands here
 t = t-t_rec(1);
-comp_factor = 123.5/123.0383;   %took from graph FUSION4
+%comp_factor = 123.5/123.0383;   %took from graph FUSION4
 %comp_factor = 56.7/56.8678;    %took from graph FUSION5
+comp_factor = 254.13/253.07818;                %FUSION 6
 t_jig_comp = t*comp_factor;
 
 %just to plot the marks on the graph
@@ -18,23 +19,27 @@ t_angle_expect = com_data(3,:); t_angle_expect(end+1) = real_top_angle(end);
 Q_norm = quatnormalize(Q');
 Q_zero = avg_quaternion_markley(Q_norm(150:450,:));
 Q_norm = quatmultiply(Q_norm, quatconj(Q_zero'));
+Q_norm = quatnormalize(Q_norm);
 
 %wrap the aligned BNO angles around -180 and 180 degrees
 [e_bno(:,1),e_bno(:,2),e_bno(:,3)] = quat2angle(Q_norm,'ZXY');
 b_angle = wrapTo180(real_base_angle); b_angle_expect = wrapTo180(b_angle_expect);
 t_angle = wrapTo180(real_top_angle);  t_angle_expect = wrapTo180(t_angle_expect);
+%e_bno(end,:) = []; b_angle(end) = [];  t_angle(end) = [];
 
 %match the imu and jig times
 [t_match, base_match, top_match] = matchJigIMU(t_jig_comp, t_imu, b_angle, t_angle);
 Q_jig = zeros(length(t_match),4);
-for(i=1:length(top_match))
-    Q_jig(i,:) = angle2quat(base_match(i)*pi/180, 0,  -top_match(i)*pi/180,'ZXY');
+for i=1:length(top_match)
+    Q_jig(i,:) = angle2quat(base_match(i)*pi/180, 0, -top_match(i)*pi/180,'ZXY');
 end
+% [e_jig(:,1),e_jig(:,2),e_jig(:,3)] = quat2angle(Q_jig,'ZXY');
+% figure(10); plot(e_jig);
 
 %calculate the quaternion difference btw the BNO and jig
-Q_diff = quatmultiply(Q_norm, quatconj(Q_jig));
+Q_diff = quatmultiply(quatconj(Q_norm),Q_jig);
 [e_diff(:,1),e_diff(:,2),e_diff(:,3)] = quat2angle(Q_diff,'ZXY');
-
+%figure(11); plot(e_diff);
 
 %% Plots again
 figure; 

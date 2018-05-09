@@ -5,55 +5,27 @@ if(~isempty(instrfind))
     fclose(instrfind);
 end
 %% angles and speed configurations - user configurable up to 249 commands for each motor
-% base_angle = [3000 150 90 90 90 90 90 120 120 30 200 200 150 150];
-% base_speed = [0 350 120 180 -180 -120 -15 50 -45 15 300 -300 -720 720];
-
-% top_speed = [300 310 320 330 340 350 360 370 380 390 400 410 420 430];
-% top_angle = ones(size(top_speed))*3600;
-
-% top_speed = [60 120 180 240 300 360 420 480 540 600 660 720];
-% top_angle = (1:length(top_speed))*900; top_angle(top_angle>7200) = 7200;
-
-% base_speed = [0];
-% base_angle = [0];
-
-% base_speed = -[60 -120 180 -240 300 -360 420 -480 540 -600 660 -720];
-% base_angle = ones(size(base_speed))*700;
-% 
-% top_angle = [0];
-% top_speed = [0];
-
-
-% base_angle = 360:-15:30; base_angle = repelem(base_angle,2); %fusion 1
-% base_speed = ones(size(base_angle))*200;
-% base_speed(2:2:end) = -200;
-% 
-% top_angle = base_angle;
-% top_speed = base_speed;
-
+name = 'fusion 7';
+description = 'same as fusion 6';
 %fusion 3
-base_angle = [15 3000];% move 15 degrees, wait 1000ms
-base_speed = [200 0];% move at 200 degrees per second, command to wait
-top_angle = [2000 360];%wait 200ms, move 360 degrees
-top_speed = [0 200]; %command to wait (wait for the base move), move at 200dps
+base_angle = [10 5000];% move 10 degrees, wait 5000ms
+base_speed = [0 0];% move at 70 degrees per second, command to wait
+top_angle = [2000 360];%wait 2000ms, move 360 degrees
+top_speed = [0 0]; %command to wait (wait for the base move), move at 200dps
 j=0;
-for i=30:15:360
+for i=20:10:360
     j=j+1;
-   base_angle = [base_angle [15 3000]];
-   base_speed = [base_speed [200 0]];
+   base_angle = [base_angle [10 5000]];
+   base_speed = [base_speed [70 0]];
    top_angle = [top_angle [2000 360]];
    top_speed = [top_speed [0 200]];
 end
-
-
-base_angle = [5000 base_angle];
-base_speed = [0 base_speed];
 
 top_angle = [5000 top_angle];
 top_speed = [0 top_speed];
 %rimu definitions
 BLUETOOTH = 1;          %to use bluetooth set this flag
-time_sample = 80;      %number of seconds that we will collect
+time_sample = 300;      %number of seconds that we will collect
 COM_imu = 16;            %com port number
 COM_imu_baud = 230400;   %Baud rate
 COM_header_1 = 83;       %Header rimu 1
