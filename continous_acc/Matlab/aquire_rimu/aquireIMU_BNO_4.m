@@ -6,7 +6,7 @@ fclose(instrfind);
 BLUETOOTH = 1;          %se for usar bluetooth sete este define, se for usar 
 
 WAIT_SYNC = 0;          %wait for the technaid synchronization or not
-time_sample = 20;       %número de segundos a se coletar
+time_sample = 30;       %número de segundos a se coletar
 fs = 100;               %Frequência de amostragem (depende do micro)
 n_amostras = time_sample*fs;
 
@@ -31,8 +31,10 @@ G_MAX_BNO = 8;
 DPS_MAX_IMU = 1000;
 DPS_MAX_BNO = 2000;
 GAUSS_MAX_IMU = 4;
-MICRO_TESLA_MAX = 40;
-
+MICRO_TESLA_XY_MAX = 1300;
+MICRO_TESLA_Z_MAX = 2500;
+%bno states that for x and y the full range is 1300 uT and for z is 2500 uT
+% 1 uT = 0.01G
 %% dados magnéticos de vitória
 %https://www.ngdc.noaa.gov/geomag-web/#igrfwmm
 % Model Used:	WMM2015	More information
@@ -163,14 +165,13 @@ fclose(instrfind);
 %minimu
 %giro_imu_dps = double(giro_imu)/(2^15)*DPS_MAX_IMU;
 %acc_imu_g = double(acc_imu)/(2^15)*G_MAX_IMU;
-mag_imu_gaus = double(mag_imu)/(2^15)*MICRO_TESLA_MAX;
+mag_imu_gaus = double(mag_imu)/(2^15)*GAUSS_MAX_IMU;
 
 %bno055
 %giro_bno_dps = double(giro_bno)/(2^15)*DPS_MAX_BNO;
 %acc_bno_g = double(acc_bno)/(2^13)*G_MAX_BNO;
-mag_bno_gaus(1,:) = double(mag_bno(1,:))/(2^14)*MICRO_TESLA_MAX;
-mag_bno_gaus(2,:) = double(mag_bno(2,:))/(2^14)*MICRO_TESLA_MAX;
-mag_bno_gaus(3,:) = double(mag_bno(3,:))/(2^14)*MICRO_TESLA_MAX;
+mag_bno_gaus(1:2,:) = double(mag_bno(1:2,:))/(2^13)*MICRO_TESLA_XY_MAX/100; %Divide by 100 to convert into gauss
+mag_bno_gaus(3,:) = double(mag_bno(3,:))/(2^15)*MICRO_TESLA_Z_MAX/100;
 
 %total_field = sqrt(x_mag_gaus.^2 + 
 %% Plots

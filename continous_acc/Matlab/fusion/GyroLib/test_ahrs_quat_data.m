@@ -1,4 +1,4 @@
-function [Euler_, bw_, Angles_] = test_ahrs_quat_data(dWb, Fb, Mb, fn, mn, dt)
+function [Euler_, bw_, Angles_, q_] = test_ahrs_quat_data(dWb, Fb, Mb, fn, mn, dt)
 %  [Euler_, bw_, Angles_] = test_ahrs_quat_data(dWb, Fb, Mb, q_ref, q_init, dt)
 %  Runs the sumulation for the Quaternion-based AHRS algorithm with sensors data
 %
@@ -83,19 +83,19 @@ q = [1, 0, 0, 0];
 %Gyroscope bias estimate
 %bw = [0; 0; 0];
 %bw =   [0.0490;  -0.0882;  -0.1626];
-bw = [2.9613;   -4.9447;   -3.1485]*pi/180;
+bw = [2.5052;   -5.7301;   -4.8365]*pi/180;
 % bw =   [0.5;  .5;  -0.0626];
 %Initial Covariance matrix
 P=zeros(6,6);
-P(1:3,1:3)=diag([1e-2, 1e-2, 1e-2]); 
-P(4:6,4:6)=diag([1e-4, 1e-4, 1e-4]); 
+P(1:3,1:3)=diag([1e-3, 1e-3, 1e-3]); 
+P(4:6,4:6)=diag([1e-5, 1e-5, 1e-5]); 
 
 %% Logs
 Nsim = size(dWb,1);  %number of simulation steps
 Euler_ = zeros(Nsim,3);
 bw_ = zeros(Nsim,3);
 Angles_ = zeros(Nsim,2);
-
+q_ = zeros(Nsim,4);
 %% Main loop
 for i=1:Nsim
     
@@ -107,7 +107,7 @@ for i=1:Nsim
     
     %% Call AHRS Algorithm
     [q, P, bw] = ahrs_quat(q, P, bw, dwb, fb, mb, fn, mn, dt);
-    
+     q_(i,:) = q;
     %% collect data logs
     bw_(i,:) = bw*dt;
     [Euler_(i,1), Euler_(i,2), Euler_(i,3)] = quat_angle(quat_conj(q));

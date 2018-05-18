@@ -85,8 +85,8 @@ H(1:3,1:3) = skew(fn_hat);
 H(4:6,1:3) = skew(mn_hat);
 
 %Measurement noise covariance matrix
-R = diag([1e-1, 1e-1, 1e-1, 1e-1, 1e-1, 1e-1]);
-
+% R = diag([1e-1, 1e-1, 1e-1, 1e-1, 1e-1, 1e-1]);
+R = diag([0.5, 0.5, 0.5, 0.5, 0.5, 0.5]);
 %% Kalman Update
 I = eye(6);
 S = H*P*H+R;
@@ -103,7 +103,6 @@ q = quat_mult(q, qe);
 
 %% Update gyro bias estimate
 bw = bw+x(4:6,1);
-
 end
 
 

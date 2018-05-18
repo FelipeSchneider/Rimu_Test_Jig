@@ -26,8 +26,9 @@ G_MAX = 4;
 G_MAX_BNO = 8;
 DPS_MAX = 1000;
 DPS_MAX_BNO = 2000;
-GAUSS_MAX = 4;
-MICRO_TESLA_MAX = 40;
+GAUSS_MAX_IMU = 4;
+MICRO_TESLA_XY_MAX = 1300;
+MICRO_TESLA_Z_MAX = 2500;
 
 %% dados magnéticos de vitória
 %https://www.ngdc.noaa.gov/geomag-web/#igrfwmm

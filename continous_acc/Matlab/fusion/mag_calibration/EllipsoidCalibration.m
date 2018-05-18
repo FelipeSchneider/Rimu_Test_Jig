@@ -83,7 +83,7 @@ plot(mag_imu_gaus_cal(1,:),mag_imu_gaus_cal(2,:),'.');hold all;
 plot(mag_imu_gaus_cal(1,:),mag_imu_gaus_cal(3,:),'.');
 plot(mag_imu_gaus_cal(3,:),mag_imu_gaus_cal(2,:),'.');
 w = linspace(0,2*pi);plot(cos(w),sin(w),'r');
-title('MINIMU pós calibração'); legend('XY','XZ','ZY');
+title('MINIMU pós calibração'); legend('XY','XZ','ZY'); axis([-1.5 1.5 -1.5 1.5])
 
 figure(5);
 subplot(311);plot(t,[mag_imu_gaus(1,:); mag_bno_gaus(1,:)]'); grid on; grid on;

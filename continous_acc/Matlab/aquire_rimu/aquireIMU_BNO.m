@@ -23,8 +23,9 @@ G_MAX_IMU = 4;
 G_MAX_BNO = 8;
 DPS_MAX_IMU = 1000;
 DPS_MAX_BNO = 1000;
-GAUSS_MAX = 4;
-MICRO_TESLA_MAX = 40;
+GAUSS_MAX_IMU = 4;
+MICRO_TESLA_XY_MAX = 1300;
+MICRO_TESLA_Z_MAX = 2500;
 
 %% dados magnéticos de vitória
 %https://www.ngdc.noaa.gov/geomag-web/#igrfwmm
@@ -100,14 +101,13 @@ fclose(instrfind);
 %minimu
 giro_imu_dps = double(giro_imu)/(2^15)*DPS_MAX_IMU;
 acc_imu_g = double(acc_imu)/(2^15)*G_MAX_IMU;
-mag_imu_gaus = double(mag_imu)/(2^15)*MICRO_TESLA_MAX;
+mag_imu_gaus = double(mag_imu)/(2^15)*GAUSS_MAX_IMU;
 
 %bno055
-giro_bno_dps = double(giro_bno)/(2^15)*DPS_MAX_BNO;
-acc_bno_g = double(acc_bno)/(2^13)*G_MAX_BNO;
-mag_bno_gaus(1,:) = double(mag_bno(1,:))/(2^14)*MICRO_TESLA_MAX;
-mag_bno_gaus(2,:) = double(mag_bno(2,:))/(2^14)*MICRO_TESLA_MAX;
-mag_bno_gaus(3,:) = double(mag_bno(3,:))/(2^14)*MICRO_TESLA_MAX;
+%giro_bno_dps = double(giro_bno)/(2^15)*DPS_MAX_BNO;
+%acc_bno_g = double(acc_bno)/(2^13)*G_MAX_BNO;
+mag_bno_gaus(1:2,:) = double(mag_bno(1:2,:))/(2^13)*MICRO_TESLA_XY_MAX/100; %Divide by 100 to convert into gauss
+mag_bno_gaus(3,:) = double(mag_bno(3,:))/(2^15)*MICRO_TESLA_Z_MAX/100;
 
 % for i=1:length(mag_bno_gaus)
 %     total_field(i) = norm(mag_imu_gaus(:,i));
