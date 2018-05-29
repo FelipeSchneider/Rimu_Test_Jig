@@ -1,12 +1,15 @@
 clear all; clc; 
 close all;
-fclose(instrfind);
+if(~isempty(instrfind))
+    disp('Closing all COM ports')
+    fclose(instrfind);
+end
 
 %% Definição dos parametros iniciais do ensaio
 BLUETOOTH = 1;          %se for usar bluetooth sete este define, se for usar 
 
 WAIT_SYNC = 0;          %wait for the technaid synchronization or not
-time_sample = 30;       %número de segundos a se coletar
+time_sample = 15;       %número de segundos a se coletar
 fs = 100;               %Frequência de amostragem (depende do micro)
 n_amostras = time_sample*fs;
 
@@ -73,7 +76,7 @@ if(BLUETOOTH == 0)
     s_imu = serial(COM_imu_name,'BaudRate',COM_imu_baud,'DataBits',8);
 else
     disp('iniciando Bluetooth')
-    s_imu = Bluetooth('RIMU',1);
+    s_imu = Bluetooth('RIMU2',1);
     disp('Conectando')
 end
 s_imu.InputBufferSize = n_amostras*20;

@@ -1,3 +1,12 @@
+% This script send instructions to the jig, and only to the jig.
+% Those instructions can be changed by the user changing the 4 next variables:
+% top_angle, top_speed, base_angle and base_speed.
+% the speed is given in degrees per second, while the angle is in degrees.
+% if the "speed" of any given motor is equaled to zero, the "angle" will
+% indicate the time in milliseconds that the given motor will stall.
+% if one motor finishes the movement before the other, it will wait for the other finishes
+% before a new command starts.
+
 clear all; clc; 
 close all;
 %fclose(instrfind);
