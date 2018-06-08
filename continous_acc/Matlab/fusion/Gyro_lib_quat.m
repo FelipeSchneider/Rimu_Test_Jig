@@ -31,7 +31,7 @@ for i=2:Nsim
     fb  = Fb(:,i)./norm(Fb(:,i));
     mb  = Mb(:,i)./norm(Mb(:,i));
     % Correct attitide increments  with estimated biases
-    dwb_now  = dwb(:,i)-bw*dt;
+    dwb_now  = dwb(:,i)-bw;
 
     % Attitude Quaternion Mechanization
     %Quaternion from k+1 body axes to k body axes

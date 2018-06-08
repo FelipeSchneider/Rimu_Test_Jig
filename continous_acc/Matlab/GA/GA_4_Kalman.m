@@ -32,16 +32,16 @@ Xmax = [2e-1   2e-1   1e-2   1e-4   5e-4   5e-7];
 %P is the error covariance matrix
 %% Data that must be pre entered
 %Kalman variables
-dWb = (giro_bno_dps*pi/(180*100))'; %dWb(:,2) = -dWb(:,2);
-Fb  = acc_bno_g'; 
-Mb  = mag_bno_gaus';
+dWb = (giro_bno_dps); 
+Fb  = acc_bno_g; 
+Mb  = mag_bno_gaus;
 %correcting the referencial to the original code referencial
-Fb(:,3) = -Fb(:,3); Fb(:,2) = -Fb(:,2);
-dWb(:,3) = -dWb(:,3); dWb(:,2) = -dWb(:,2);
-Mb(:,3) = -Mb(:,3); Mb(:,2) = -Mb(:,2);
-fn  = mean(Fb(100:400,:))';
-mn  = mean(Mb(100:400,:))';
-bw = mean(dWb(100:400,:))';
+% Fb(3,:) = -Fb(3,:); Fb(2,:) = -Fb(2,:);
+% dWb(3,:) = -dWb(3,:); dWb(2,:) = -dWb(2,:);
+% Mb(3,:) = -Mb(3,:); Mb(2,:) = -Mb(2,:);
+fn  = mean(Fb(:,100:400),2);
+mn  = mean(Mb(:,100:400),2);
+bw = mean(dWb(:,100:400),2);
 fs = 100;                                   %sampling rate
 
 %bw = [2.5052;   -5.7301;   -4.8365]*pi/180; %gyro bias
@@ -108,5 +108,6 @@ if plot_figure == 1
 end
 %% First GA iteration
 %function value calculation for each particle
-[q_out] = Kalman_response(X,acc_imu_g, giro_imu_dps, mag_bno_gaus,bw, fn, mn, fs);
+%[q_out] = Kalman_response(X, Fb, dWb, Mb, bw, fn, mn, fs);
+[q_out] = Kalman_response(X,acc_bno_g, giro_bno_dps, mag_bno_gaus,bw, fn, mn, fs);
 [fit] = Kalman_fit(q_out,q_jig);
