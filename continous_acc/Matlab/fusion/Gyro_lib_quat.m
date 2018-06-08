@@ -10,8 +10,8 @@ function [q, P, bw_] = Gyro_lib_quat(P, bw, dwb, ng, ngb, Fb, Mb, fn, mn, dt, R)
 %   dwb - Intergral of angular rate vector over the computer cycle [3xN]
 %   ng  - Gyro errors noise, in the original code the vaule of 1e-4 is used
 %   ngb - Gyro bias noise, original value 1e-7
-%   fb  - Acceleration vector in body frame [3xN]
-%   mb  - Magnetic field vector in body frame [3xN]
+%   Fb  - Acceleration vector in body frame [3xN]
+%   Mb  - Magnetic field vector in body frame [3xN]
 %   fn  - Gravity vector in navigation frame [3x1]
 %   mn  - Magetic field vector in navigation frame [3x1]
 %   dt  - Computer cycle, sec.

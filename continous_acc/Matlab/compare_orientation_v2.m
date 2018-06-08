@@ -2,7 +2,7 @@ addpath('C:\Users\felip\Dropbox\Mestrado\Dissertação\Coletas Jiga\Teste_giro_fil
 addpath(genpath('fusion'));
 addpath('jig');
 addpath('aquire_rimu');
-load fusion4
+load fusion5
 clearvars -except acc_bno_g acc_imu_g com_data description fs giro_bno_dps giro_imu_dps ...
     jig_const mag_bno_gaus mag_imu_gaus Q real_base_angle real_top_angle t...
     t_angles t_imu t_rec
@@ -29,8 +29,8 @@ t_expect = com_data(1,:);       %extracting the expect time for each command
 t_expect(end+1) = t(end);       %filling with the end of all comands here
 t = t-t_rec(1);
 
-comp_factor = 123.5/123.0383;    %took from graph FUSION4
-%comp_factor = 56.7/56.8678;     %took from graph FUSION5
+%comp_factor = 123.5/123.0383;    %took from graph FUSION4
+comp_factor = 56.7/56.8678;     %took from graph FUSION5
 %comp_factor = 254.13/253.07818;                   %FUSION 6
 t_jig_comp = t*comp_factor;
 
@@ -52,8 +52,8 @@ q_jig = zeros(length(t_match),4);
 for i=1:length(top_match)
     q_jig(i,:) = angle2quat(base_match(i)*pi/180, 0, -top_match(i)*pi/180,'ZXY');
 end
-% [e_jig(:,1),e_jig(:,2),e_jig(:,3)] = quat2angle(Q_jig,'ZXY');
-% figure(10); plot(e_jig);
+ [e_jig(:,1),e_jig(:,2),e_jig(:,3)] = quat2angle(q_jig,'ZXY');
+ figure(1); plot(e_jig);
 
 %% comparing the results for the MINIMU -- FOR NOW WITH BNO'S MAGNETOMER 
 %applying the fusion algorithms
@@ -90,15 +90,25 @@ q_gyroLib = quatmultiply(quatconj(q_zero_gyroLib'),q_gyroLib);
 
 %% Erros
 %calculate the quaternion difference btw the BNO and jig
-q_diff_bno = quatmultiply(quatconj(q_bno),q_jig);
-[e_diff_bno(:,1),e_diff_bno(:,2),e_diff_bno(:,3)] = quat2angle(q_diff_bno,'ZXY');
-%figure(11); plot(e_diff);
+q_jig = quatnormalize(q_jig);
+% q_diff_bno = quatmultiply(quatconj(q_bno),q_jig); %q_bno
+% [e_diff_bno(:,1),e_diff_bno(:,2),e_diff_bno(:,3)] = quat2angle(q_diff_bno,'ZXY');
+% figure(2); plot(e_diff_bno);
+% for i=1:length(e_diff_bno)
+%     e_diff_bno(i,1) = angdiff(base_match(i)*pi/180,e_bno(i,1));
+%     e_diff_bno(i,2) = angdiff(0,e_bno(i,2));
+%     e_diff_bno(i,3) = angdiff(-top_match(i)*pi/180,e_bno(i,3));
+% end
 
+e_diff_bno(:,1) = angdiff(base_match'*pi/180,e_bno(:,1));
+e_diff_bno(:,2) = angdiff(0,e_bno(:,2));
+e_diff_bno(:,3) = angdiff(-top_match'*pi/180,e_bno(:,3));
+e_diff_bno(isnan(e_diff_bno)) = 0;
 %% Plots
-figure; plot(t_match,e_diff_bno*180/pi); legend('Yaw','Roll','Pitch'); ylabel('Angle [°]');
+figure(3); plot(t_match,e_diff_bno*180/pi); legend('Yaw','Roll','Pitch'); ylabel('Angle [°]');
 xlabel('time [s]'); axis([t_match(1) inf -inf inf]); title('Angle Error');
 
-figure; 
+figure(4); 
 subplot(311);plot(t_imu,e_bno(:,1)*180/pi); hold all; plot(t_match,base_match); plot(t_match,e_diff_bno(:,1)*180/pi); axis([0 inf -200 200]); grid on;
 title('Time matched'); ylabel('yaw'); legend('BNO','Jig','error');
 subplot(312);plot(t_imu,e_bno(:,2)*180/pi);hold all; plot(t_imu,zeros(size(e_bno(:,2)))); plot(t_match,e_diff_bno(:,2)*180/pi); 
@@ -106,7 +116,7 @@ axis([0 inf -inf inf]); grid on; ylabel('roll');
 subplot(313);plot(t_imu,e_bno(:,3)*180/pi);hold all; plot(t_match,-top_match); plot(t_match,e_diff_bno(:,3)*180/pi);axis([0 inf -200 200]); grid on;
 ylabel('pitch');
 
-figure;
+figure(5);
 subplot(311);
 plot(t_match,base_match);hold all; plot(t_imu,[e_bno(:,1) e_madgwick_imu(:,1) e_mahony_imu(:,1) e_CF_imu(:,1)]*180/pi);
 axis([0 inf -200 200]); grid on; title('Fusion comparison'); ylabel('yaw');

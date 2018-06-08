@@ -8,7 +8,7 @@ end
 %% Definição dos parametros iniciais do ensaio
 BLUETOOTH = 1;          %se for usar bluetooth sete este define, se for usar 
                         %conversor serial USB configure em 0
-time_sample = 10;       %número de segundos a se coletar
+time_sample = 30;       %número de segundos a se coletar
 fs = 1000;              %Frequência de amostragem (depende do micro)
 n_amostras = time_sample*fs;
 

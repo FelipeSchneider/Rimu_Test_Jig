@@ -66,7 +66,7 @@ for i=1:4:length(com_vector)-4 %-4 to not consider the end of commands
         B_time_cruse = (B_step_start_break-B_step_to_cruse)*cnt.d_theta/abs(B_speed);
         B_time_break = roots([-cnt.breaking_mod/2, abs(B_speed),  -B_step_breaking*cnt.d_theta]);
         B_time_break(B_time_break>=0);
-        B_time_break = min(B_time_break); %I have to get the smaller time, the bigger one corresponds to go futher and return to that desired position
+        B_time_break = min(B_time_break); %I have to get the smaller time, the larger one corresponds to go futher and return to that desired position
         
         B_t1 = 0:dt:(B_time_speed_up);      
         B_t2 = dt:dt:B_time_cruse;

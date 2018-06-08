@@ -9,27 +9,33 @@ addpath('fusion');
 addpath('jig');
 addpath('aquire_rimu');
 %% angles and speed configurations - user configurable up to 249 commands for each motor
-name = 'fusion 7';
-description = 'same as fusion 6';
+name = 'Top_rotate';
+description = 'Rotate the top motor to evaluate the gyro performance';
 %fusion 3
-base_angle = [10 5000];% move 10 degrees, wait 5000ms
-base_speed = [0 0];% move at 70 degrees per second, command to wait
-top_angle = [2000 360];%wait 2000ms, move 360 degrees
-top_speed = [0 0]; %command to wait (wait for the base move), move at 200dps
-j=0;
-for i=20:10:360
-    j=j+1;
-   base_angle = [base_angle [10 5000]];
-   base_speed = [base_speed [70 0]];
-   top_angle = [top_angle [2000 360]];
-   top_speed = [top_speed [0 200]];
-end
+% base_angle = [10 5000];% move 10 degrees, wait 5000ms
+% base_speed = [0 0];% move at 70 degrees per second, command to wait
+% top_angle = [2000 360];%wait 2000ms, move 360 degrees
+% top_speed = [0 0]; %command to wait (wait for the base move), move at 200dps
+% j=0;
+% for i=20:10:360
+%     j=j+1;
+%    base_angle = [base_angle [10 5000]];
+%    base_speed = [base_speed [70 0]];
+%    top_angle = [top_angle [2000 360]];
+%    top_speed = [top_speed [0 200]];
+% end
+% 
+% top_angle = [5000 top_angle];
+% top_speed = [0 top_speed];
 
-top_angle = [5000 top_angle];
-top_speed = [0 top_speed];
+base_angle = [0 0];% move 10 degrees, wait 5000ms
+base_speed = [0 0];% move at 70 degrees per second, command to wait
+top_angle = [900 1800 2700 3600 4500 7000 7000];%wait 2000ms, move 360 degrees
+top_speed = [60  120 180 240 360 540 720]; %command to wait (wait for the base move), move at 200dps
+
 %rimu definitions
 BLUETOOTH = 1;          %to use bluetooth set this flag
-time_sample = 300;      %number of seconds that we will collect
+time_sample = 120;      %number of seconds that we will collect
 COM_imu = 16;            %com port number
 COM_imu_baud = 230400;   %Baud rate
 COM_header_1 = 83;       %Header rimu 1

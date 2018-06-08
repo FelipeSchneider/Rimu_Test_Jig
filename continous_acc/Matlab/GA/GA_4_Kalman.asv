@@ -27,28 +27,24 @@ Xmax = [2e-1   2e-1   1e-2   1e-4   5e-4   5e-7];
 %X(4) -> Three values of inferior diag. of P -> P(4,4);P(5,5);P(6,6).
 %X(5) -> gyro error noise
 %X(6) -> gyro bias noise
-%original values [1e-1 1e-1 1e-3 1e-5 1e-4 1e-7]
+%original values [1e-1 1e-1 1e-3 1e-5 1e-4 1e-7
+
+P(1:3,1:3)=diag([1e-3, 1e-3, 1e-3]); 
+P(4:6,4:6)=diag([1e-5, 1e-5, 1e-5]); 
+
 %R is the measurement noise covariance matrix
 %P is the error covariance matrix
 %% Data that must be pre entered
-%Kalman variables
-dWb = (giro_bno_dps*pi/(180*100))'; %dWb(:,2) = -dWb(:,2);
-Fb  = acc_bno_g'; 
-Mb  = mag_bno_gaus';
-%correcting the referencial to the original code referencial
-Fb(:,3) = -Fb(:,3); Fb(:,2) = -Fb(:,2);
-dWb(:,3) = -dWb(:,3); dWb(:,2) = -dWb(:,2);
-Mb(:,3) = -Mb(:,3); Mb(:,2) = -Mb(:,2);
-fn  = mean(Fb(100:400,:))';
-mn  = mean(Mb(100:400,:))';
-bw = mean(dWb(100:400,:))';
+%Kalman constants
 fs = 100;                                   %sampling rate
+bw = [2.5052;   -5.7301;   -4.8365]*pi/180; %gyro bias
+fn = mean(acc_imu_g(:,100:400),2);          %gravity in the sensor frame
+mn = mean(mag_bno_gaus(:,100:400),2);       %magnetic field in the sensor frame
 
-%bw = [2.5052;   -5.7301;   -4.8365]*pi/180; %gyro bias
-% fn = mean(acc_imu_g(:,100:400),2);          %gravity in the sensor frame
-% mn = mean(mag_bno_gaus(:,100:400),2);       %magnetic field in the sensor frame
 
-
+%Offsets and variations
+gyro_offset=[2.809936e+00,-5.056333e+00,-3.587206e+00]';
+gyro_var=[(1.934282e-01/180*pi)^2 (1.887641e-01/180*pi)^2 (4.747390e-01/180*pi)^2]';
 %magnetometer calibration
 [mag_imu_gaus_cal, Ca_imu, Cb_imu] = magCalibration(mag_imu_gaus');
 mag_imu_gaus_cal = mag_imu_gaus_cal';
