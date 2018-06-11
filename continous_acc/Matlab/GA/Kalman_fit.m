@@ -1,4 +1,4 @@
-function [fit] = Kalman_fit(q_out,q_jig)
+function [fit_single] = Kalman_fit(q_out,q_jig)
 %calculate the fit for each particle
 % q_out is the set of quaternion orientation for all particles
 % q_jig is the quaternion orientation (reference) for the jig angles
@@ -16,7 +16,7 @@ for k=1:c
     e_diff(isnan(e_diff)) = 0;
     fit(k,:) = rms(e_diff)*180/pi;
     
-    
+    fit_single = rms(fit,2); %choose a function that best describe the fit of the 3 angles
 %     figure(15); 
 %     subplot(311);plot(e_jig(:,1)*180/pi);hold on;plot(e_kalman(:,1)*180/pi);%plot(e_diff(:,1));
 %     ylabel('yaw [rad]'); grid on;

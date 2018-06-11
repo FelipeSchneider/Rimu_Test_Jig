@@ -7,11 +7,11 @@ load fusion4
 clearvars -except acc_bno_g acc_imu_g com_data description fs giro_bno_dps giro_imu_dps ...
     jig_const mag_bno_gaus mag_imu_gaus Q real_base_angle real_top_angle t...
     t_angles t_imu t_rec
-
+clc; close all;
 %% Genetic Algorithms parameters
 plot_figure = 1;
 n_particles = 15;
-nIterations = 100;
+nIterations = 15;
 alpha = 0.25;
 r_mutation = 0.05;
 % Xmin = [10e-3   10e-3   10e-4   10e-6   10e-6   10e-6]; %limits of search
@@ -103,5 +103,17 @@ if plot_figure == 1
 end
 %% First GA iteration
 %function value calculation for each particle
-[q_out] = Kalman_response(X, acc_data, giro_data, mag_data, bw, fn, mn, fs);
+[q_out] = Kalman_response(X, acc_data, giro_data, mag_data, bw, fn, mn, fs, Xmin, Xmax);
 [fit] = Kalman_fit(q_out,q_jig);
+
+%find the best particle
+[fGbest,id_best] = min(fit);
+Gbest = X(:,id_best);
+
+%% Second to last GA iteration
+for n=1:nIterations
+    fprintf('GA iteration number %d \r',n)
+    [X,fit] = updateX(X,alpha, q_jig, Xmin, Xmax, acc_data, giro_data, mag_data, bw, fn, mn, fs);
+    [X,Gbest,fGbest,id_best] = FindBest(X, fit, fGbest, Gbest);
+    [X] = mutation(X, n_mutations, id_best, Xmin, Xmax);   
+end
