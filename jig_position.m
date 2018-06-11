@@ -1,4 +1,4 @@
-run('gig_speed.m');
+run('jig_speed.m');
 
 ACC_MOD = 1;  %every time that the interruption happens, we will speed up .25 degrees per second
                 %we must remember that the possible speeds are int

@@ -22,6 +22,7 @@ end
 
 real_speed = ((1E6*360)./(double(real_period)*DEFAULT_MS*FS_REVOLUTION)); %this is in microseconds
 real_speed(1) = 0;
+ideal_speed = 1:720; ideal_speed(1) = 0;
 % plot(cycles); hold on; plot(cycles_scaler);
 figure(1);
 plot(ideal_period); hold on; plot(real_period); 
@@ -31,3 +32,8 @@ figure(2);
 plot(real_speed); title('Real possible speeds'); 
 xlabel('ideal ang. speed (degrees per second)');
 ylabel('real ang. speed (degrees per second)');
+figure(3)
+%the error over the ideal speed
+plot((real_speed-ideal_speed)./ideal_speed*100,'LineWidth',1.5); grid on
+xlabel('Speed [dps]');ylabel('Relative speed error [%]')
+axis([0 730 -inf inf]); 

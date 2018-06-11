@@ -13,12 +13,12 @@ function [q_out] = Kalman_response(X,acc_data, gyro_data, mag_data, bw, fn, mn, 
 warning('off', 'MATLAB:illConditionedMatrix');
 
 for j=1:c
-    j
+    fprintf('Kalman response, particle n: %d \r',j)
     R(1:3,1:3)=diag([X(1,j), X(1,j), X(1,j)]);        %Initial Covariance matrix
     R(4:6,4:6)=diag([X(2,j), X(2,j), X(2,j)]);
     P(1:3,1:3)=diag([X(3,j), X(3,j), X(3,j)]);        %Initial Covariance matrix
     P(4:6,4:6)=diag([X(4,j), X(4,j), X(4,j)]);
-    [q, ~, ~] = Gyro_lib_quat(P, bw, gyro_data*(pi/180*(1/fs)), X(5,j), X(6,j),...
+    [q, ~, ~] = Gyro_lib_quat(P, bw*(pi/180), gyro_data*(pi/180*(1/fs)), X(5,j), X(6,j),...
     acc_data, mag_data, fn, mn, 1/fs, R);  
     
     %correcting the bad scalar matrices 
@@ -28,15 +28,12 @@ for j=1:c
         q(9,:) = [1 0 0 0];
     end
     
+    q = quatconj(q); %the kalman gyrolib returns the quaternion conjugate
+    
     %correct the initial position
     q_zero = avg_quaternion_markley(q(380:480,:));
     q = quatmultiply(quatconj(q_zero'),q);
     q_out(:,:,j) = q;
 end
-
-
-teste = q;
-teste(isnan(teste(:,1)),1) = 1;
-teste(isnan(teste(:,2)),2:4) = 0;
 
 warning('on', 'MATLAB:illConditionedMatrix');

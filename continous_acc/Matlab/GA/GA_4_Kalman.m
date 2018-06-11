@@ -10,36 +10,40 @@ clearvars -except acc_bno_g acc_imu_g com_data description fs giro_bno_dps giro_
 
 %% Genetic Algorithms parameters
 plot_figure = 1;
-n_particles = 40;
+n_particles = 15;
 nIterations = 100;
 alpha = 0.25;
 r_mutation = 0.05;
 % Xmin = [10e-3   10e-3   10e-4   10e-6   10e-6   10e-6]; %limits of search
 % Xmax = [1       1       10e-1   10e-1   10e-2   10e-4];
 
-Xmin = [5e-2   5e-2   5e-3   5e-5   5e-5   5e-8]; %limits of search
-Xmax = [5e-1   5e-1   5e-2   5e-4   5e-4   5e-7];
+Xmin = [5e-2   5e-2   5e-3   5e-5   5e-5   5e-8]/10; %limits of search
+Xmax = [5e-1   5e-1   5e-2   5e-4   5e-4   5e-7]*10;
 %X(1) -> Three values of superior diag. of R -> R(1,1);R(2,2);R(3,3).
 %X(2) -> Three values of inferior diag. of R -> R(4,4);R(5,5);R(6,6).
 %X(3) -> Three values of superior diag. of P -> P(1,1);P(2,2);P(3,3).
 %X(4) -> Three values of inferior diag. of P -> P(4,4);P(5,5);P(6,6).
 %X(5) -> gyro error noise
 %X(6) -> gyro bias noise
-%original values [1e-1 1e-1 1e-2 1e-4 1e-4 1e-7
+%original values [1e-1 1e-1 1e-2 1e-4 1e-4 1e-7]
 
 %R is the measurement noise covariance matrix
 %P is the error covariance matrix
 %% Data that must be pre entered
+acc_data = acc_bno_g;
+giro_data = giro_bno_dps;
+mag_data = mag_bno_gaus;
+
+% acc_data = acc_imu_g;
+% giro_data = giro_imu_dps;
+% mag_data = mag_bno_gaus;
+
 %Kalman constants
 fs = 100;                                   %sampling rate
-bw = [2.5052;   -5.7301;   -4.8365]*pi/180; %gyro bias
-fn = mean(acc_imu_g(:,100:400),2);          %gravity in the sensor frame
-mn = mean(mag_bno_gaus(:,100:400),2);       %magnetic field in the sensor frame
+bw = mean(giro_data(:,100:400),2); %gyro bias
+fn = mean(acc_data(:,100:400),2);          %gravity in the sensor frame
+mn = mean(mag_data(:,100:400),2);       %magnetic field in the sensor frame
 
-
-%Offsets and variations
-gyro_offset=[2.809936e+00,-5.056333e+00,-3.587206e+00]';
-gyro_var=[(1.934282e-01/180*pi)^2 (1.887641e-01/180*pi)^2 (4.747390e-01/180*pi)^2]';
 %magnetometer calibration
 [mag_imu_gaus_cal, Ca_imu, Cb_imu] = magCalibration(mag_imu_gaus');
 mag_imu_gaus_cal = mag_imu_gaus_cal';
@@ -99,5 +103,5 @@ if plot_figure == 1
 end
 %% First GA iteration
 %function value calculation for each particle
-[q_out] = Kalman_response(X,acc_imu_g, giro_imu_dps, mag_bno_gaus,bw, fn, mn, fs);
+[q_out] = Kalman_response(X, acc_data, giro_data, mag_data, bw, fn, mn, fs);
 [fit] = Kalman_fit(q_out,q_jig);
