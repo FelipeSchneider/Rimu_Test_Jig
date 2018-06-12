@@ -22,7 +22,7 @@ n_parameters = length(Xmin);
 %warning('off', 'MATLAB:illConditionedMatrix');
 warning('off');
 for j=1:c
-    fprintf('Kalman response, particle n: %d \r',j)
+%    fprintf('Kalman response, particle n: %d \r',j)
     R(1:3,1:3)=diag([X(1,j), X(1,j), X(1,j)]);        %Initial Covariance matrix
     R(4:6,4:6)=diag([X(2,j), X(2,j), X(2,j)]);
     P(1:3,1:3)=diag([X(3,j), X(3,j), X(3,j)]);        %Initial Covariance matrix
@@ -32,7 +32,7 @@ for j=1:c
     
     while(isnan(q(30,:))) % if the kalman is not well scalled (error during the fusion process)
         %q(9,:) = [1 0 0 0];
-        fprintf('Redo Kalman response for particle number %d \r',j)
+%        fprintf('Redo Kalman response for particle number %d \r',j)
         for k=1:n_parameters
             X(k,j) = Xmin(k) + (Xmax(k)-Xmin(k))*rand(1);
         end

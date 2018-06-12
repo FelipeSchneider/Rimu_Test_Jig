@@ -20,7 +20,7 @@ function [W,fGA] = updateX(X,alpha,q_jig, Xmin, Xmax ,acc_data, gyro_data, mag_d
     W = zeros(size(X));
     fGA = zeros(c,1);
             syms q
-    for k = 1:c
+    parfor k = 1:c
         P1 = X(:,round(length(X)*rand(1) + 0.5));
         P2 = X(:,round(length(X)*rand(1) + 0.5));
         Beta = (2*alpha+1)*rand(1)-alpha;
