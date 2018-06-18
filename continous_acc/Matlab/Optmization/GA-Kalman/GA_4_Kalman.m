@@ -1,8 +1,8 @@
 addpath('C:\Users\felip\Dropbox\Mestrado\Dissertação\Coletas Jiga\Teste_giro_filt')  %just to be able to load previously jig measurements
-addpath(genpath('C:\Users\felip\Documents\Arquivos dissertação\Testes dissertação\data colection'))
-addpath(genpath('..\fusion'));
-addpath('..\jig');
-addpath('..\');
+addpath(genpath('C:\Users\felip\Documents\Arquivos dissertação\Testes dissertação\data colection'))  %just to be able to load previously jig measurements
+addpath(genpath('..\..\fusion'));
+addpath('..\..\jig');
+addpath('..\..\');
 % addpath('..\aquire_rimu');
 load random2
 clearvars -except acc_bno_g acc_imu_g com_data description fs giro_bno_dps giro_imu_dps ...
@@ -11,7 +11,7 @@ clearvars -except acc_bno_g acc_imu_g com_data description fs giro_bno_dps giro_
 clc; close all;
 %% Genetic Algorithms parameters
 plot_figures = 1;
-n_particles = 15;
+n_particles = 40;
 nIterations = 15;
 alpha = 0.25;
 r_mutation = 0.05;
