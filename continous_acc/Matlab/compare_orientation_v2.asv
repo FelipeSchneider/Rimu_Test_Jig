@@ -130,10 +130,7 @@ rms_mahony_imu = rms(e_diff_mahony_imu*180/pi);
 rms_CF_imu = rms(e_diff_CF_imu*180/pi);
 rms_gyroLib = rms(e_diff_gyroLib*180/pi);
 
-fprintf('KTE: \r  BNO: %f; %f; %f \r  Madgwick: %f; %f; %f \r  Mahony: %f; %f; %f \r  CF: %f; %f; %f \r  Kalman: %f; %f; %f \r \r ',...
-    kte_bno, kte_madgwick_imu, kte_mahony_imu, kte_CF_imu, kte_gyroLib)
-fprintf('RMS: \r  BNO: %f; %f; %f \r  Madgwick: %f; %f; %f \r  Mahony: %f; %f; %f \r  CF: %f; %f; %f \r  Kalman: %f; %f; %f \r \r ',...
-    rms_bno, rms_madgwick_imu, rms_mahony_imu, rms_CF_imu, rms_gyroLib)
+fprintf('KTE: \r BNO: \r Mad %f ',n)
 %% Plots
 figure; plot(t_match,e_diff_bno*180/pi); legend('Yaw','Roll','Pitch'); ylabel('Angle [°]');
 xlabel('time [s]'); axis([t_match(1) inf -inf inf]); title('Angle Error');

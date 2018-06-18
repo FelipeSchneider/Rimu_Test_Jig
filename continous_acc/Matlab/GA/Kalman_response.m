@@ -1,4 +1,4 @@
-function [q_out] = Kalman_response(X,acc_data, gyro_data, mag_data, bw, fn, mn, fs, Xmin, Xmax)
+function [q_out, X] = Kalman_response(X,acc_data, gyro_data, mag_data, bw, fn, mn, fs, Xmin, Xmax)
 %Kalman_response returns the response (in quaternions) of the kalman filter for each group
 %of parameters X 
 %   X   - group of particles [nParameters, nParticles]

@@ -93,10 +93,6 @@ elseif(L_ta<L_ts)
 end
 
 n_steps_b = round(base_angle./d_theta); %calculating the number of steps of each command for the base motor
-if(max(n_steps_b) > 2^16-1)
-    warning('applying uint16 limit to the number of steps of base motor');
-    n_steps_b(n_steps_b>2^16-1) = 2^16-1;
-end
 b_angles = zeros(1,L_ba+1);
 for i=1:L_ba                            %calculating the real angle that the motor will describe
     if(base_speed(i) > 0)
@@ -108,12 +104,12 @@ for i=1:L_ba                            %calculating the real angle that the mot
         n_steps_b(i) = base_angle(i); %when the speed is smaller than the minimum speed, then we just have to make a delay
     end
 end
+if(max(n_steps_b) > 2^16-1)
+    warning('applying uint16 limit to the number of steps of base motor');
+    n_steps_b(n_steps_b>2^16-1) = 2^16-1;
+end
 
 n_steps_t = round(top_angle./d_theta);
-if(max(n_steps_t) > 2^16-1)
-    warning('applying uint16 limit to the number of steps of top motor');
-    n_steps_t(n_steps_t>2^16-1) = 2^16-1;
-end
 t_angles = zeros(1,L_ba+1);
 for i=1:L_ta
     if(top_speed(i) > 0)
@@ -124,6 +120,10 @@ for i=1:L_ta
         t_angles(i+1) = t_angles(i);
         n_steps_t(i) = top_angle(i); %when the speed is smaller than the minimum speed, then we just have to make a delay
     end
+end
+if(max(n_steps_t) > 2^16-1)
+    warning('applying uint16 limit to the number of steps of top motor');
+    n_steps_t(n_steps_t>2^16-1) = 2^16-1;
 end
 
 com_vector = 0;

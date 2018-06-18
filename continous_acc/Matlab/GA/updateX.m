@@ -48,10 +48,10 @@ function [W,fGA] = updateX(X,alpha,q_jig, Xmin, Xmax ,acc_data, gyro_data, mag_d
     %     
     %     Y2_out = Sys_response(C2,sys_input,t);
     %     Y2 = Sys_fit(Y2_out,y_ideal);
-        [q_out] = Kalman_response(C1,acc_data, gyro_data, mag_data, bw, fn, mn, fs, Xmin, Xmax);
+        [q_out, C1] = Kalman_response(C1,acc_data, gyro_data, mag_data, bw, fn, mn, fs, Xmin, Xmax);
         [fit_1] = Kalman_fit(q_out,q_jig);
 
-        [q_out] = Kalman_response(C2,acc_data, gyro_data, mag_data, bw, fn, mn, fs, Xmin, Xmax);
+        [q_out, C2] = Kalman_response(C2,acc_data, gyro_data, mag_data, bw, fn, mn, fs, Xmin, Xmax);
         [fit_2] = Kalman_fit(q_out,q_jig);
 
         if fit_1 <= fit_2

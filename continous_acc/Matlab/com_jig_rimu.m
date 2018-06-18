@@ -9,27 +9,35 @@ addpath('fusion');
 addpath('jig');
 addpath('aquire_rimu');
 %% angles and speed configurations - user configurable up to 249 commands for each motor
-name = 'fusion 7';
-description = 'same as fusion 6';
-%fusion 3
-base_angle = [10 5000];% move 10 degrees, wait 5000ms
-base_speed = [0 0];% move at 70 degrees per second, command to wait
-top_angle = [2000 360];%wait 2000ms, move 360 degrees
-top_speed = [0 0]; %command to wait (wait for the base move), move at 200dps
-j=0;
-for i=20:10:360
-    j=j+1;
-   base_angle = [base_angle [10 5000]];
-   base_speed = [base_speed [70 0]];
-   top_angle = [top_angle [2000 360]];
-   top_speed = [top_speed [0 200]];
-end
+name = 'random_move_1';
+description = 'Tunning kalman and others filters';
 
-top_angle = [5000 top_angle];
-top_speed = [0 top_speed];
+base_angle = [5000 30  60  10  1000 120  30    45  80   1000   150 60   75  300  15  80  300  120 60 1000  60 120 200 45  150  15  30    1000  85  145 360  60 60 60  60 1000 120 75   2000];
+base_speed = [0     200 720 -45 0    -150 45    -80 -300 0      600 -450 360 90  -99 145 -120 720 64 0     89 254 -99 130 -89 -78 -60   0    320 187 -180 60 30 180   20 0    109  -500 0];
+top_angle = [5000 45   99  120  1000 320  15    45  240  1000   75  480  65  200 99  46  135  220 90 1000  20 220 170 205  20  425  30   1000 145 115 260  60 60  450  60 1000 120 175  2000];
+top_speed = [0     200 720 -45  0    -150 45    -90 -300 0      600 -450 360 90  -99 145 -120 720 64 0     89 254 -99 330 -89 -320 -70   0    320 187 -180 60 -30 180  55 0    109  -500 0];
+
+
+
+%fusion 3
+% base_angle = [10 5000];% move 10 degrees, wait 5000ms
+% base_speed = [0 0];% move at 70 degrees per second, command to wait
+% top_angle = [2000 360];%wait 2000ms, move 360 degrees
+% top_speed = [0 0]; %command to wait (wait for the base move), move at 200dps
+% j=0;
+% for i=20:10:360
+%     j=j+1;
+%    base_angle = [base_angle [10 5000]];
+%    base_speed = [base_speed [70 0]];
+%    top_angle = [top_angle [2000 360]];
+%    top_speed = [top_speed [0 200]];
+% end
+% 
+% top_angle = [5000 top_angle];
+% top_speed = [0 top_speed];
 %rimu definitions
 BLUETOOTH = 1;          %to use bluetooth set this flag
-time_sample = 300;      %number of seconds that we will collect
+time_sample = 90;      %number of seconds that we will collect
 COM_imu = 16;            %com port number
 COM_imu_baud = 230400;   %Baud rate
 COM_header_1 = 83;       %Header rimu 1
