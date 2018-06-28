@@ -6,10 +6,10 @@ if(~isempty(instrfind))
 end
 
 %% Definição dos parametros iniciais do ensaio
-BLUETOOTH = 1;          %se for usar bluetooth sete este define, se for usar 
+BLUETOOTH = 0;          %se for usar bluetooth sete este define, se for usar 
 
 WAIT_SYNC = 0;          %wait for the technaid synchronization or not
-time_sample = 45;       %número de segundos a se coletar
+time_sample = 300;       %número de segundos a se coletar
 fs = 100;               %Frequência de amostragem (depende do micro)
 n_amostras = time_sample*fs;
 
@@ -23,11 +23,7 @@ COM_imu_baud = 230400;   %Baud rate
 COM_header_1 = 83;       %Header de inicio da comunicação
 COM_header_2 = 172;      %Header de inicio da comunicação
 
-if(WAIT_SYNC == 0)
-    ACTION = 165;       %ação: ler apenas o LSM+LIS
-else
-   ACTION = 169;        %ação: ler apenas o LSM+LIS esperando o sincronismo
-end
+ACTION = 170;       %ação: ler apenas o LSM+LIS
 
 G_MAX_IMU = 8;
 G_MAX_BNO = 8;
@@ -64,6 +60,8 @@ giro_bno = zeros(3,n_amostras); %prealocação para melhora da performance
 acc_bno = zeros(3,n_amostras); 
 mag_bno = zeros(3,n_amostras);
 Q = zeros(4,n_amostras);
+temperature = zeros(1,n_amostras);
+
 %pre-processing minimu
 giro_imu_dps = zeros(3,n_amostras);
 acc_imu_g = zeros(3,n_amostras);
@@ -76,7 +74,7 @@ if(BLUETOOTH == 0)
     s_imu = serial(COM_imu_name,'BaudRate',COM_imu_baud,'DataBits',8);
 else
     disp('iniciando Bluetooth')
-    s_imu = Bluetooth('RIMU',1);
+    s_imu = Bluetooth('RIMU2',1);
     disp('Conectando')
 end
 s_imu.InputBufferSize = n_amostras*20;
@@ -122,7 +120,7 @@ for j=1:n_amostras
         if(mod(j,fs)==0)                    %print o segundo atual
             fprintf('Segundo %d \r',j/fs)
         end
-        while (bytes < 44)
+        while (bytes < 46)
                  bytes = s_imu.BytesAvailable;
         end
         giro_imu(:,j) = fread(s_imu,3,'int16');
@@ -134,14 +132,14 @@ for j=1:n_amostras
         giro_bno(:,j) = fread(s_imu,3,'int16');
         
         Q(:,j) = fread(s_imu,4,'int16');
-        
+        temperature(1,j) = fread(s_imu,1,'int16');
         
         giro_imu_dps(:,j) = double(giro_imu(:,j))/(2^15)*DPS_MAX_IMU;
         giro_bno_dps(:,j) = double(giro_bno(:,j))/(2^15)*DPS_MAX_BNO;
         
         acc_imu_g(:,j) = double(acc_imu(:,j))/(2^15)*G_MAX_IMU;
         acc_bno_g(:,j) = double(acc_bno(:,j))/(2^13)*G_MAX_BNO;
-        if(mod(j,fs/1)==0) 
+        if(mod(j,fs/0.1)==0) 
             %fig_giro_x(1).YData(j) = giro_imu_dps(1,j);
             set(fig_giro_x(1),'Ydata',giro_imu_dps(1,:)');
             set(fig_giro_x(2),'Ydata',giro_bno_dps(1,:)');      
@@ -176,6 +174,7 @@ mag_imu_gaus = double(mag_imu)/(2^15)*GAUSS_MAX_IMU;
 mag_bno_gaus(1:2,:) = double(mag_bno(1:2,:))/(2^13)*MICRO_TESLA_XY_MAX/100; %Divide by 100 to convert into gauss
 mag_bno_gaus(3,:) = double(mag_bno(3,:))/(2^15)*MICRO_TESLA_Z_MAX/100;
 
+temperature_C = temperature.*0.0625+25;
 %total_field = sqrt(x_mag_gaus.^2 + 
 %% Plots
 % figure(1);
@@ -224,5 +223,9 @@ if(PLOT_CIRC_MAG == 1)
     hs(2) = subplot(122);
     scatter3(hs(2),mag_bno_gaus(1,:),mag_bno_gaus(2,:),mag_bno_gaus(3,:),'*')
 end
+
+figure(7);
+plot(t,temperature_C);
+title('Temperature (°C)'); xlabel('Tempo [s]');
 
 clear w hs;

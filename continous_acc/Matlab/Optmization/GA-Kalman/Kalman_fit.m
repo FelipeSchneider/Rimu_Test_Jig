@@ -6,7 +6,6 @@ c = size(q_out,3);
 %fit = zeros(c,3);
 
 [e_jig(:,1),e_jig(:,2),e_jig(:,3)] = quat2angle(q_jig,'ZXY');
-e_jig(:,3) = e_jig(:,3);
 
 for k=1:c  
     [e_kalman(:,1),e_kalman(:,2),e_kalman(:,3)] = quat2angle(q_out(:,:,k),'ZXY');

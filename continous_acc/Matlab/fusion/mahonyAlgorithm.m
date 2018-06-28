@@ -1,5 +1,5 @@
 function [ quaternion ] = mahonyAlgorithm(Acc, GyroRate, Magn, fs, ...
-                            gyro_off, Kp)
+                            gyro_off, Kp, init_Q)
 %[ quaternion ] = mahonyAlgorithm(Acc, GyroRate, Magn, fs, ...
 %                            gyro_off, Kp)
 %   Acc         accelerometer readings. The input format must be
@@ -13,8 +13,12 @@ function [ quaternion ] = mahonyAlgorithm(Acc, GyroRate, Magn, fs, ...
 %   fs          sampling frequency in Hz
 %   gyro_off    Gyroscope offset in dps. The input format must be 3x1
 %   Kp          Mahony's gain
-
-AHRS = MahonyAHRS('SamplePeriod', 1/fs, 'Kp', Kp);
+%   init_Q      Initial quaternion orientation
+if(nargin == 7)
+    AHRS = MahonyAHRS('SamplePeriod', 1/fs, 'Kp', Kp, 'Quaternion', init_Q);
+else
+    AHRS = MahonyAHRS('SamplePeriod', 1/fs, 'Kp', Kp);
+end
 for i=1:length(Acc)
     Acc(:,i)=Acc(:,i)/norm(Acc(:,i));
     Magn(:,i)=Magn(:,i)/norm(Magn(:,i));

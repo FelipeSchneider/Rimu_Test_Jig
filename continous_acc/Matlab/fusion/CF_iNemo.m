@@ -115,6 +115,9 @@ while(i<=acqSize)
 
         qFilt(:,i)=qGyroFilt(:,i)*filt_coef + qOsserv(:,i)*(1-filt_coef); 
         qFilt(:,i)=qFilt(:,i)/norm(qFilt(:,i));
+        
+%         qFilt_aux = wavg_quaternion_markley([qGyroFilt(:,i)'; qOsserv(:,i)'], [filt_coef, 1-filt_coef]);
+%         qFilt(:,i)=(qFilt_aux/norm(qFilt_aux))';
     end
     i=i+1;
     

@@ -1,5 +1,5 @@
 function [ quaternion ] = madgwickAlgorithm(Acc, GyroRate, Magn, fs, ...
-                            gyro_off, Beta)
+                            gyro_off, Beta, init_Q)
 %[ quaternion ] = madgwickAlgorithm(Acc, GyroRate, Magn, fs, ...
 %                            gyro_off, Beta)
 %   Acc         accelerometer readings. The input format must be
@@ -13,8 +13,12 @@ function [ quaternion ] = madgwickAlgorithm(Acc, GyroRate, Magn, fs, ...
 %   fs          sampling frequency in Hz
 %   gyro_off    Gyroscope offset in dps. The input format must be 3x1
 %   Beta        Madgwick's gain
-
-AHRS = MadgwickAHRS('SamplePeriod', 1/fs, 'Beta', Beta);
+%   init_Q      Initial quaternion orientation
+if(nargin == 7)
+    AHRS = MadgwickAHRS('SamplePeriod', 1/fs, 'Beta', Beta, 'Quaternion', init_Q);
+else
+    AHRS = MadgwickAHRS('SamplePeriod', 1/fs, 'Beta', Beta);
+end
 for i=1:length(Acc)
     Acc(:,i)=Acc(:,i)/norm(Acc(:,i));
     Magn(:,i)=Magn(:,i)/norm(Magn(:,i));

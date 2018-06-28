@@ -67,6 +67,7 @@ for i=1:4:length(com_vector)-4 %-4 to not consider the end of commands
         B_time_break = roots([-cnt.breaking_mod/2, abs(B_speed),  -B_step_breaking*cnt.d_theta]);
         B_time_break(B_time_break>=0);
         B_time_break = min(B_time_break); %I have to get the smaller time, the bigger one corresponds to go futher and return to that desired position
+        B_time_break = abs(B_time_break); %due to approximations, we can have real roots
         
         B_t1 = 0:dt:(B_time_speed_up);      
         B_t2 = dt:dt:B_time_cruse;
@@ -124,6 +125,7 @@ for i=1:4:length(com_vector)-4 %-4 to not consider the end of commands
         T_time_break = roots([-cnt.breaking_mod/2, abs(T_speed),  -T_step_breaking*cnt.d_theta]);
         T_time_break(T_time_break>=0);
         T_time_break = min(T_time_break); %I have to get the smaller time, the bigger one corresponds to go futher and return to that desired position
+        T_time_break = abs(T_time_break);
         
         T_t1 = 0:dt:(T_time_speed_up);      
         T_t2 = dt:dt:T_time_cruse;
