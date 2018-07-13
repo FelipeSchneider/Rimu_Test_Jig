@@ -2,13 +2,13 @@ addpath(genpath('C:\Users\felip\Documents\Arquivos dissertação\Testes dissertaçã
 addpath(genpath('..\..\fusion'));
 addpath('..\..\jig');
 addpath('..\..\');
-
+clc;
 load random2
 clearvars -except acc_bno_g acc_imu_g com_data description fs giro_bno_dps giro_imu_dps ...
     jig_const mag_bno_gaus mag_imu_gaus Q real_base_angle real_top_angle t...
     t_angles t_imu t_rec
 load LIS_calibration_matrices
-clc; close all; 
+ close all; 
 %% calibrate LSM gyro data
 giro_imu_dps = giro_imu_dps - mean(giro_imu_dps(:,100:400),2);
 giro_imu_dps = giro_imu_dps*1.1692104;
@@ -17,10 +17,9 @@ giro_imu_dps = giro_imu_dps*1.1692104;
 mag_imu_gaus_cal = mag_imu_gaus' * Ca_imu' + repmat(Cb_imu', length(mag_imu_gaus), 1);
 mag_imu_gaus_cal = mag_imu_gaus_cal';
 %% Data that must be pre entered
-acc_data = acc_bno_g;
+acc_data = acc_imu_g;
 giro_data = giro_imu_dps;
 mag_data = mag_imu_gaus_cal;
-
 
 fs = 100;                                   %sampling rate
 bw = mean(giro_data(:,100:400),2);          %gyro bias
@@ -90,21 +89,21 @@ j = j + 1;
 [e_cf(:,1),e_cf(:,2),e_cf(:,3)] = quat2angle(q_CF,'ZXY');
 [e_madg(:,1),e_madg(:,2),e_madg(:,3)] = quat2angle(q_madgwick,'ZXY');
 [e_mahony(:,1),e_mahony(:,2),e_mahony(:,3)] = quat2angle(q_mahony,'ZXY');
-figure(15); 
-subplot(311);plot(base_match);hold on;plot([e_madg(:,1),e_mahony(:,1)]*180/pi);%plot(e_diff(:,1));
-ylabel('yaw [º]'); grid on;
-subplot(312);plot(zeros(size(base_match)));hold on;plot([e_madg(:,2),e_mahony(:,2)]*180/pi);%plot(e_diff(:,2));
-ylabel('roll [º]'); grid on;
-subplot(313);plot(-top_match);hold on;plot([e_madg(:,3),e_mahony(:,3)]*180/pi);%plot(e_diff(:,3));
-ylabel('pitch [º]'); grid on;
-
-figure(16); 
-subplot(311);plot(base_match);hold on;plot([e_cf(:,1),e_madg(:,1),e_mahony(:,1)]*180/pi);%plot(e_diff(:,1));
-ylabel('yaw [º]'); grid on; legend('Jig','CF','Madgwick','Mahony')
-subplot(312);plot(zeros(size(base_match)));hold on;plot([e_cf(:,2),e_madg(:,2),e_mahony(:,2)]*180/pi);%plot(e_diff(:,2));
-ylabel('roll [º]'); grid on;
-subplot(313);plot(-top_match);hold on;plot([e_cf(:,3),e_madg(:,3),e_mahony(:,3)]*180/pi);%plot(e_diff(:,3));
-ylabel('pitch [º]'); grid on;
+% figure(15); 
+% subplot(311);plot(base_match);hold on;plot([e_madg(:,1),e_mahony(:,1)]*180/pi);%plot(e_diff(:,1));
+% ylabel('yaw [º]'); grid on;
+% subplot(312);plot(zeros(size(base_match)));hold on;plot([e_madg(:,2),e_mahony(:,2)]*180/pi);%plot(e_diff(:,2));
+% ylabel('roll [º]'); grid on;
+% subplot(313);plot(-top_match);hold on;plot([e_madg(:,3),e_mahony(:,3)]*180/pi);%plot(e_diff(:,3));
+% ylabel('pitch [º]'); grid on;
+% 
+% figure(16); 
+% subplot(311);plot(base_match);hold on;plot([e_cf(:,1),e_madg(:,1),e_mahony(:,1)]*180/pi);%plot(e_diff(:,1));
+% ylabel('yaw [º]'); grid on; legend('Jig','CF','Madgwick','Mahony')
+% subplot(312);plot(zeros(size(base_match)));hold on;plot([e_cf(:,2),e_madg(:,2),e_mahony(:,2)]*180/pi);%plot(e_diff(:,2));
+% ylabel('roll [º]'); grid on;
+% subplot(313);plot(-top_match);hold on;plot([e_cf(:,3),e_madg(:,3),e_mahony(:,3)]*180/pi);%plot(e_diff(:,3));
+% ylabel('pitch [º]'); grid on;
 end
 [best_CF, i_best_CF] = min(kte_CF);
 [best_madgwick, i_best_madgwick] = min(kte_madgwick);
@@ -131,5 +130,5 @@ title('Fit RMS');
 % plot([rms_CF; rms_madgwick; rms_mahony]'); legend('CF','Madgwick','Mahony');
 % title('Fit RMS');
 
-save('fit','kte_madgwick', 'kte_CF', 'kte_mahony', 'i', 'j', 'rms_CF', 'rms_madgwick', 'rms_mahony', 'top_limit', 'step', 'steps', 'steps_CF')
+save('fit_lsm_lis_mag','kte_madgwick', 'kte_CF', 'kte_mahony', 'i', 'j', 'rms_CF', 'rms_madgwick', 'rms_mahony', 'top_limit', 'step', 'steps', 'steps_CF')
 

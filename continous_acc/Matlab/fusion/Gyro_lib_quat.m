@@ -1,4 +1,4 @@
-function [q, P, bw_] = Gyro_lib_quat(P, bw, dwb, ng, ngb, Fb, Mb, fn, mn, dt, R)
+function [q, P, bw_] = Gyro_lib_quat(P, bw, dwb, ng, ngb, Fb, Mb, fn, mn, dt, R, q_init)
 % [q, P, bw] = ahrs_quat(q, P, bw, dwb, fb, mb, fn, mn, dt)
 % Implements the quaternion AHRS algorithm usin measurements
 % from the three-axis gyroscope and accelerometer,
@@ -21,9 +21,15 @@ function [q, P, bw_] = Gyro_lib_quat(P, bw, dwb, ng, ngb, Fb, Mb, fn, mn, dt, R)
 %   q  - Updated attitude quaternion [1x4]
 %   P  - Updated Kalman filter covarince matrix [6x6]
 %   bw - Updated gyroscopes biases vector [3x1]
+
+
 Nsim = length(dwb);
 q = zeros(Nsim,4);
-q(1,:) = [1 0 0 0];
+if(nargin == 12)
+    q(1,:) = q_init;
+else
+    q(1,:) = [1 0 0 0];
+end
 bw_ = zeros(Nsim,3);
 for i=2:Nsim
 %     fb  = Fb(i,:)'./norm(Fb(i,:));
@@ -40,7 +46,11 @@ for i=2:Nsim
         lambda = [cos(gamma/2), dwb_now(1)*sin(gamma/2)/gamma, dwb_now(2)*sin(gamma/2)/gamma,...
             dwb_now(3)*sin(gamma/2)/gamma];
     else
-        lambda = [1, 0, 0, 0];
+        if(nargin == 12)
+            lambda = q_init;
+        else
+            lambda = [1, 0, 0, 0];
+        end 
     end
     %Update q for body motion using gyro measurements only
     q(i,:) = quat_mult(quat_conj(lambda),q(i-1,:));
@@ -106,7 +116,7 @@ for i=2:Nsim
     q(i,:) = quat_mult(q(i,:), qe);
 
     %% Update gyro bias estimate
-    bw = bw+x(4:6,1);
+    bw = bw+x(4:6,1); %¨problem to long duration tests
     bw_(i,:) = bw*dt;
 end
 

@@ -78,11 +78,90 @@ q_gyroLib = quatmultiply(quatconj(q_zero_gyroLib'),q_gyroLib);
 figure;
 subplot(311);
 plot(t,[e_bno(:,1) e_madgwick_imu(:,1) e_mahony_imu(:,1) e_CF_imu(:,1) e_gyroLib(:,1)]*180/pi);
-axis([0 inf -inf inf]); grid on; title('Fusion comparison'); ylabel('yaw');
+axis([0 inf -3 8]); grid on; title('Fusion comparison'); ylabel('yaw');
 legend('BNO','Madgwick','Mahony','CF','Kalman','Orientation','Horizontal');
 subplot(312);
 plot(t,[e_bno(:,2) e_madgwick_imu(:,2) e_mahony_imu(:,2) e_CF_imu(:,2) e_gyroLib(:,2)]*180/pi);
-axis([0 inf -inf inf]); grid on; ylabel('roll');
+axis([0 inf -3 3]); grid on; ylabel('roll');
 subplot(313);
 plot(t,[e_bno(:,3) e_madgwick_imu(:,3) e_mahony_imu(:,3) e_CF_imu(:,3) e_gyroLib(:,3)]*180/pi);
-axis([0 inf -inf inf]); grid on; ylabel('pitch');
+axis([0 inf -3 3]); grid on; ylabel('pitch');
+
+
+%% nice plots for report
+% filter performance
+figure;
+p = panel();
+p.pack('v',3);
+p(1).pack({1}, {100});
+p(2).pack({1}, {100});
+p(3).pack({1}, {100});
+p.de.margin = 4;
+p.margin = [15 15 5 10];
+p.select('all');
+p.fontsize = 10;
+p.identify();
+
+p(1,1,1).select();
+plot(t, e_bno(:,1)*180/pi,'Linewidth',1.3); hold all; 
+plot(t, e_madgwick_imu(:,1)*180/pi,':');
+plot(t, e_mahony_imu(:,1)*180/pi,'-.','Linewidth',1.5);
+plot(t, e_CF_imu(:,1)*180/pi);
+plot(t, e_gyroLib(:,1)*180/pi,'--','Linewidth',1.5);
+axis([0 30 -3 6]); grid on; title('Fusion comparison'); ylabel('Yaw [°]');
+legend('BNO','Madgwick','Mahony','CF','Kalman','Orientation','Horizontal');
+a = gca; a.XTickLabel = {};
+
+p(2,1,1).select();
+plot(t, e_bno(:,2)*180/pi,'Linewidth',1.3); hold all; 
+plot(t, e_madgwick_imu(:,2)*180/pi,':');
+plot(t, e_mahony_imu(:,2)*180/pi,'-.','Linewidth',1.5);
+plot(t, e_CF_imu(:,2)*180/pi);
+plot(t, e_gyroLib(:,2)*180/pi,'--','Linewidth',1.5);
+axis([0 30 -1.5 1.5]); grid on; ylabel('Roll [°]');
+a = gca; a.XTickLabel = {};
+
+p(3,1,1).select();
+plot(t, e_bno(:,3)*180/pi,'Linewidth',1.3); hold all; 
+plot(t, e_madgwick_imu(:,3)*180/pi,':');
+plot(t, e_mahony_imu(:,3)*180/pi,'-.','Linewidth',1.5);
+plot(t, e_CF_imu(:,3)*180/pi);
+plot(t, e_gyroLib(:,3)*180/pi,'--','Linewidth',1.5);
+axis([0 30 -1.5 1.5]); grid on; 
+ylabel('Pitch [°]'); xlabel('Time [s]');
+p(3).marginbottom = 10;
+
+
+lis = normc(mag_imu_gaus);
+bno_mag_norm = normc(mag_bno_gaus);
+
+figure;
+p = panel();
+p.pack('v',3);
+p(1).pack({1}, {100});
+p(2).pack({1}, {100});
+p(3).pack({1}, {100});
+p.de.margin = 4;
+p.margin = [15 15 5 5];
+p.select('all');
+p.fontsize = 10;
+p.identify();
+
+p(1,1,1).select();
+plot(t,[lis(1,:)-mean(lis(1,:)); bno_mag_norm(1,:)-mean(bno_mag_norm(1,:))]'); grid on;
+ylabel('X axis','FontSize',12);legend('LIS','BNO','Location','northeast','Orientation','horizontal')
+axis([0 30 -inf inf])
+a = gca; a.XTickLabel = {};
+
+p(2,1,1).select();
+plot(t,[lis(2,:)-mean(lis(2,:)); bno_mag_norm(2,:)-mean(bno_mag_norm(2,:))]'); grid on;
+ylabel('Y axis','FontSize',12);
+axis([0 30 -inf inf])
+a = gca; a.XTickLabel = {};
+
+p(3,1,1).select();
+plot(t,[lis(3,:)-mean(lis(3,:)); bno_mag_norm(3,:)-mean(bno_mag_norm(3,:))]'); grid on;
+ylabel('Z axis','FontSize',12);
+axis([0 30 -inf inf])
+xlabel('Time [s]','FontSize',12)
+p(3).marginbottom = 10;

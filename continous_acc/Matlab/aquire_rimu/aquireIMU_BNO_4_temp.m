@@ -1,5 +1,5 @@
-clear all; clc; 
-close all;
+% clear all; clc; 
+% close all;
 if(~isempty(instrfind))
     disp('Closing all COM ports')
     fclose(instrfind);
@@ -8,18 +8,17 @@ end
 %% Definição dos parametros iniciais do ensaio
 BLUETOOTH = 0;          %se for usar bluetooth sete este define, se for usar 
 
-WAIT_SYNC = 0;          %wait for the technaid synchronization or not
-time_sample = 300;       %número de segundos a se coletar
+time_sample = 600;       %número de segundos a se coletar
 fs = 100;               %Frequência de amostragem (depende do micro)
 n_amostras = time_sample*fs;
 
 t = 0:1/fs:time_sample; %define o vetor de tempo
 t(end) = [];            %elimina a ultima posição do vetor tempo
 
-PLOT_CIRC_MAG = 0;
+PLOT_CIRC_MAG = 1;
 
 COM_imu = 16;            %Numero da porta COM
-COM_imu_baud = 230400;   %Baud rate
+COM_imu_baud = 460800;   %Baud rate
 COM_header_1 = 83;       %Header de inicio da comunicação
 COM_header_2 = 172;      %Header de inicio da comunicação
 
@@ -84,7 +83,7 @@ pause(1);
 %% plot inicial
 screensize = get(groot,'Screensize');
 figure(1);
-set(gcf, 'Position', [0 0 screensize(3)/2 screensize(4)]); 
+set(gcf, 'Position', [0 0 screensize(3)/2.2 screensize(4)/1.2]); 
 subplot(311);
 fig_giro_x = plot(t,[giro_imu_dps(1,:); giro_bno_dps(1,:)]'); 
 grid on; title('Giroscópio');ylabel('X [dps]');
@@ -95,7 +94,7 @@ subplot(313);
 fig_giro_z = plot(t,[giro_imu_dps(3,:); giro_bno_dps(3,:)]'); ylabel('Z [dps]'); grid on;
 
 figure(2);
-set(gcf, 'Position', [screensize(3)/2 0 screensize(3)/2 screensize(4)]); 
+set(gcf, 'Position', [screensize(3)/2 0 screensize(3)/2.2 screensize(4)/1.2]); 
 subplot(311);fig_acc_x = plot(t,[acc_imu_g(1,:); acc_bno_g(1,:)]'); 
 grid on; title('Acelerômetro');ylabel('X [g]');
 legend('Minimu','BNO','Location','northwest','Orientation','horizontal')
@@ -120,7 +119,7 @@ for j=1:n_amostras
         if(mod(j,fs)==0)                    %print o segundo atual
             fprintf('Segundo %d \r',j/fs)
         end
-        while (bytes < 46)
+        while (bytes < 40)
                  bytes = s_imu.BytesAvailable;
         end
         giro_imu(:,j) = fread(s_imu,3,'int16');
@@ -128,7 +127,7 @@ for j=1:n_amostras
         mag_imu(:,j) = fread(s_imu,3,'int16');
         
         acc_bno(:,j) = fread(s_imu,3,'int16');
-        mag_bno(:,j) = fread(s_imu,3,'int16');
+        %mag_bno(:,j) = fread(s_imu,3,'int16');
         giro_bno(:,j) = fread(s_imu,3,'int16');
         
         Q(:,j) = fread(s_imu,4,'int16');
@@ -171,8 +170,8 @@ mag_imu_gaus = double(mag_imu)/(2^15)*GAUSS_MAX_IMU;
 %bno055
 %giro_bno_dps = double(giro_bno)/(2^15)*DPS_MAX_BNO;
 %acc_bno_g = double(acc_bno)/(2^13)*G_MAX_BNO;
-mag_bno_gaus(1:2,:) = double(mag_bno(1:2,:))/(2^13)*MICRO_TESLA_XY_MAX/100; %Divide by 100 to convert into gauss
-mag_bno_gaus(3,:) = double(mag_bno(3,:))/(2^15)*MICRO_TESLA_Z_MAX/100;
+% mag_bno_gaus(1:2,:) = double(mag_bno(1:2,:))/(2^13)*MICRO_TESLA_XY_MAX/100; %Divide by 100 to convert into gauss
+% mag_bno_gaus(3,:) = double(mag_bno(3,:))/(2^15)*MICRO_TESLA_Z_MAX/100;
 
 temperature_C = temperature.*0.0625+25;
 %total_field = sqrt(x_mag_gaus.^2 + 
@@ -183,7 +182,7 @@ temperature_C = temperature.*0.0625+25;
 % subplot(312);plot(t,[giro_imu_dps(2,:); giro_bno_dps(2,:)]'); ylabel('Y [dps]'); grid on;
 % subplot(313);plot(t,[giro_imu_dps(3,:); giro_bno_dps(3,:)]'); ylabel('Z [dps]'); grid on;
 % xlabel('Tempo [s]')
-
+% 
 % figure(2);
 % subplot(311);plot(t,[acc_imu_g(1,:); acc_bno_g(1,:)]'); grid on;
 % title('Acelerômetro');ylabel('X [g]');legend('Minimu','BNO','Location','northwest','Orientation','horizontal')
@@ -192,10 +191,10 @@ temperature_C = temperature.*0.0625+25;
 % xlabel('Tempo [s]')
 
 figure(3);
-subplot(311);plot(t,[mag_imu_gaus(1,:); mag_bno_gaus(1,:)]'); grid on; grid on;
-title('Magnetômetro');ylabel('X');legend('Minimu','BNO','Location','northwest','Orientation','horizontal')
-subplot(312);plot(t,[mag_imu_gaus(2,:); mag_bno_gaus(2,:)]'); ylabel('Y'); grid on;
-subplot(313);plot(t,[mag_imu_gaus(3,:); mag_bno_gaus(3,:)]'); ylabel('Z'); grid on;
+subplot(311);plot(t,mag_imu_gaus(1,:)'); grid on; grid on;
+title('Magnetômetro');ylabel('X');legend('Minimu','Location','northwest','Orientation','horizontal')
+subplot(312);plot(t,mag_imu_gaus(2,:)'); ylabel('Y'); grid on;
+subplot(313);plot(t,mag_imu_gaus(3,:)'); ylabel('Z'); grid on;
 xlabel('Tempo [s]')
 
 figure(4);
@@ -212,16 +211,6 @@ if(PLOT_CIRC_MAG == 1)
     title('Elipsoide Minimu'); legend('XY','XZ','ZY');
     hs(2) = subplot(122);
     scatter3(hs(2),mag_imu_gaus(1,:),mag_imu_gaus(2,:),mag_imu_gaus(3,:),'*')
-
-    figure(6);
-    subplot(121);
-    plot(mag_bno_gaus(1,:),mag_bno_gaus(2,:),'.');hold all;
-    plot(mag_bno_gaus(1,:),mag_bno_gaus(3,:),'.');
-    plot(mag_bno_gaus(3,:),mag_bno_gaus(2,:),'.');
-    w = linspace(0,2*pi);plot(cos(w),sin(w),'r');
-    title('Elipsoide BNO'); legend('XY','XZ','ZY');
-    hs(2) = subplot(122);
-    scatter3(hs(2),mag_bno_gaus(1,:),mag_bno_gaus(2,:),mag_bno_gaus(3,:),'*')
 end
 
 figure(7);

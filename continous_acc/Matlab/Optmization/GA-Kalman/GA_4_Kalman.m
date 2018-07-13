@@ -20,14 +20,14 @@ mag_imu_gaus_cal = mag_imu_gaus_cal';
 %% Genetic Algorithms parameters
 plot_figures = 1;
 n_particles = 40;
-nIterations = 25;
+nIterations = 5;
 alpha = 0.25;
 r_mutation = 0.05;
 % Xmin = [10e-3   10e-3   10e-4   10e-6   10e-6   10e-6]; %limits of search
 % Xmax = [1       1       10e-1   10e-1   10e-2   10e-4];
 
-Xmin = [5e-2   5e-2   5e-3   5e-5   5e-5   5e-8]/100; %limits of search
-Xmax = [5e-1   5e-1   5e-2   5e-4   5e-4   5e-7]*5;
+Xmin = [5e-2   5e-2   5e-3   5e-5   5e-5   5e-8]/200; %limits of search
+Xmax = [5e-1   5e-1   5e-2   5e-4   5e-4   5e-7]*2;
 %X(1) -> Three values of superior diag. of R -> R(1,1);R(2,2);R(3,3). measurement noise covariance matrix
 %X(2) -> Three values of inferior diag. of R -> R(4,4);R(5,5);R(6,6). measurement noise covariance matrix
 %X(3) -> Three values of superior diag. of P -> P(1,1);P(2,2);P(3,3). error covariance matrix
@@ -36,8 +36,8 @@ Xmax = [5e-1   5e-1   5e-2   5e-4   5e-4   5e-7]*5;
 %X(6) -> gyro bias noise
 %original values [1e-1 1e-1 1e-2 1e-4 1e-4 1e-7]
 %% Data that must be pre entered
-acc_data = acc_bno_g;
-giro_data = giro_imu_dps;
+acc_data = (acc_imu_g + acc_bno_g)/2;
+giro_data = (giro_imu_dps + giro_bno_dps)/2;
 mag_data = mag_imu_gaus_cal;
 
 % acc_data = acc_imu_g;
@@ -49,10 +49,6 @@ fs = 100;                                   %sampling rate
 bw = mean(giro_data(:,100:400),2);          %gyro bias
 fn = mean(acc_data(:,100:400),2);           %gravity in the sensor frame
 mn = mean(mag_data(:,100:400),2);           %magnetic field in the sensor frame
-
-%magnetometer calibration
-[mag_imu_gaus_cal, Ca_imu, Cb_imu] = magCalibration(mag_imu_gaus');
-mag_imu_gaus_cal = mag_imu_gaus_cal';
 
 %% Compensating the jig time and 
 t_rec(1) = [];                  %the first position is a zero, used only for prealocation
