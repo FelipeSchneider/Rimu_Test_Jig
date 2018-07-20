@@ -1,8 +1,4 @@
 function [n] = GaussNewtonMethod(q,Acc,Magn)
-    %Calibration Values
-    Magn(1,1)=Magn(1,1)+0.38;
-    Magn(2,1)=Magn(2,1)*1.1;
-    Magn(3,1)=Magn(3,1)-0.08;
     %Compute the new step quaternions by mean of the Gauss-Newton method
     a=q(2,1);
     b=q(3,1);

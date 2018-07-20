@@ -1,25 +1,27 @@
-addpath(genpath('C:\Users\felip\Documents\Arquivos dissertação\Testes dissertação\data colection'))  %just to be able to load previously jig measurements
+%addpath(genpath('C:\Users\felip\Documents\Arquivos dissertação\Testes dissertação\data colection'))  %just to be able to load previously jig measurements
 addpath(genpath('..\..\fusion'));
 addpath('..\..\jig');
 addpath('..\..\');
 clc;
-load random2
+%load random2
+load yaw_comp_data3.mat
 clearvars -except acc_bno_g acc_imu_g com_data description fs giro_bno_dps giro_imu_dps ...
     jig_const mag_bno_gaus mag_imu_gaus Q real_base_angle real_top_angle t...
     t_angles t_imu t_rec
-load LIS_calibration_matrices
+%load LIS_calibration_matrices
  close all; 
 %% calibrate LSM gyro data
 giro_imu_dps = giro_imu_dps - mean(giro_imu_dps(:,100:400),2);
 giro_imu_dps = giro_imu_dps*1.1692104;
 
 %% calibrate LIS data
-mag_imu_gaus_cal = mag_imu_gaus' * Ca_imu' + repmat(Cb_imu', length(mag_imu_gaus), 1);
-mag_imu_gaus_cal = mag_imu_gaus_cal';
+% mag_imu_gaus_cal = mag_imu_gaus' * Ca_imu' + repmat(Cb_imu', length(mag_imu_gaus), 1);
+% mag_imu_gaus_cal = mag_imu_gaus_cal';
 %% Data that must be pre entered
 acc_data = acc_imu_g;
 giro_data = giro_imu_dps;
-mag_data = mag_imu_gaus_cal;
+%mag_data = mag_imu_gaus_cal;
+mag_data = mag_bno_gaus;
 
 fs = 100;                                   %sampling rate
 bw = mean(giro_data(:,100:400),2);          %gyro bias

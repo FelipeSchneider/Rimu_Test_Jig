@@ -9,7 +9,7 @@ end
 BLUETOOTH = 1;          %se for usar bluetooth sete este define, se for usar 
 
 WAIT_SYNC = 0;          %wait for the technaid synchronization or not
-time_sample = 45;       %número de segundos a se coletar
+time_sample = 400;       %número de segundos a se coletar
 fs = 100;               %Frequência de amostragem (depende do micro)
 n_amostras = time_sample*fs;
 
@@ -86,7 +86,7 @@ pause(1);
 %% plot inicial
 screensize = get(groot,'Screensize');
 figure(1);
-set(gcf, 'Position', [0 0 screensize(3)/2 screensize(4)]); 
+set(gcf, 'Position', [0 100 screensize(3)/2-100 screensize(4)-100]); 
 subplot(311);
 fig_giro_x = plot(t,[giro_imu_dps(1,:); giro_bno_dps(1,:)]'); 
 grid on; title('Giroscópio');ylabel('X [dps]');
@@ -97,7 +97,7 @@ subplot(313);
 fig_giro_z = plot(t,[giro_imu_dps(3,:); giro_bno_dps(3,:)]'); ylabel('Z [dps]'); grid on;
 
 figure(2);
-set(gcf, 'Position', [screensize(3)/2 0 screensize(3)/2 screensize(4)]); 
+set(gcf, 'Position', [screensize(3)/2 100 screensize(3)/2-100 screensize(4)-100]); 
 subplot(311);fig_acc_x = plot(t,[acc_imu_g(1,:); acc_bno_g(1,:)]'); 
 grid on; title('Acelerômetro');ylabel('X [g]');
 legend('Minimu','BNO','Location','northwest','Orientation','horizontal')
@@ -224,5 +224,5 @@ if(PLOT_CIRC_MAG == 1)
     hs(2) = subplot(122);
     scatter3(hs(2),mag_bno_gaus(1,:),mag_bno_gaus(2,:),mag_bno_gaus(3,:),'*')
 end
-
+%[mag_imu_gaus_cal, Ca_imu, Cb_imu] = magCalibration(mag_imu_gaus');
 clear w hs;

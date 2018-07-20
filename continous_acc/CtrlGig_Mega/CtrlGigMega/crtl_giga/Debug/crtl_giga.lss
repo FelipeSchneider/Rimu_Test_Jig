@@ -2254,8 +2254,8 @@ uint8_t processCommands(s_motor_ctrl *s){
     1596:	35 d4       	rcall	.+2154   	; 0x1e02 <__subsf3>
     1598:	20 e0       	ldi	r18, 0x00	; 0
     159a:	30 e0       	ldi	r19, 0x00	; 0
-    159c:	42 e2       	ldi	r20, 0x22	; 34
-    159e:	53 e4       	ldi	r21, 0x43	; 67
+    159c:	42 ea       	ldi	r20, 0xA2	; 162
+    159e:	52 e4       	ldi	r21, 0x42	; 66
     15a0:	9c d4       	rcall	.+2360   	; 0x1eda <__divsf3>
     15a2:	4b 01       	movw	r8, r22
     15a4:	5c 01       	movw	r10, r24
@@ -2358,8 +2358,8 @@ uint8_t processCommands(s_motor_ctrl *s){
     1642:	df d3       	rcall	.+1982   	; 0x1e02 <__subsf3>
     1644:	20 e0       	ldi	r18, 0x00	; 0
     1646:	30 e0       	ldi	r19, 0x00	; 0
-    1648:	42 e2       	ldi	r20, 0x22	; 34
-    164a:	53 e4       	ldi	r21, 0x43	; 67
+    1648:	42 ea       	ldi	r20, 0xA2	; 162
+    164a:	52 e4       	ldi	r21, 0x42	; 66
     164c:	46 d4       	rcall	.+2188   	; 0x1eda <__divsf3>
     164e:	4b 01       	movw	r8, r22
     1650:	5c 01       	movw	r10, r24
@@ -2995,6 +2995,8 @@ void disableTimerMtop(void){
 000019e4 <_Z12initTimerAccv>:
 }
 
+
+
 void initTimerAcc(void){
 	TCCR4A = 0;
     19e4:	10 92 a0 00 	sts	0x00A0, r1	; 0x8000a0 <__TEXT_REGION_LENGTH__+0x7000a0>
@@ -3003,8 +3005,8 @@ void initTimerAcc(void){
     19ea:	f0 e0       	ldi	r31, 0x00	; 0
     19ec:	10 82       	st	Z, r1
 	ICR4 = SPEED_UPDATE_TIMER_TOP;
-    19ee:	8f e6       	ldi	r24, 0x6F	; 111
-    19f0:	9b e2       	ldi	r25, 0x2B	; 43
+    19ee:	8e ec       	ldi	r24, 0xCE	; 206
+    19f0:	96 e5       	ldi	r25, 0x56	; 86
     19f2:	90 93 a7 00 	sts	0x00A7, r25	; 0x8000a7 <__TEXT_REGION_LENGTH__+0x7000a7>
     19f6:	80 93 a6 00 	sts	0x00A6, r24	; 0x8000a6 <__TEXT_REGION_LENGTH__+0x7000a6>
 	TCCR4B = 1<<(CS10);

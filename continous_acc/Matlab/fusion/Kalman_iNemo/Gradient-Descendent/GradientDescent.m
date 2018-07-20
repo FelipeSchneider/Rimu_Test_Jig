@@ -1,7 +1,4 @@
 function [q_result] = GradientDescent(Acc,Magn,q,mu)
-    Magn(1,1)=Magn(1,1)+0.38;
-    Magn(2,1)=Magn(2,1)*1.1;
-    Magn(3,1)=Magn(3,1)-0.08;
     q1=q(1,1);
     q2=q(2,1);
     q3=q(3,1);

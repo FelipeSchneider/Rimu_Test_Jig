@@ -69,11 +69,19 @@ const uint8_t END_MSG[] = {0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00};
 #define INV_BREAKING_SCALER		  1
 #define RATIO_ACC_BREAKING		  0.5		//this is the % of total steps that will be dedicated to acceleration. if the acceleration is twice slower than breaking, than this ratio should be .666 for example
 
-#define SPEED_UPDATE_TIMER_TOP	  11119					//this will give approximately 720Hz - period of the timer that will update the speed (will 
-#define ACC_MODULE				  (720*ACC_SCALER)		//degrees per second square
-#define BREAKING_MODULE			  (720*BREAKING_SCALER)
+//for 720°/s^2
+// #define SPEED_UPDATE_TIMER_TOP	  11119					//this will give approximately 720Hz - period of the timer that will update the speed (will 
+// #define ACC_MODULE				  (720*ACC_SCALER)		//degrees per second square
+// #define BREAKING_MODULE			  (720*BREAKING_SCALER)
+// #define D_THETA					  (360/(DEFAULT_MS*FS_REVOLUTION))
+// #define DEN_CALC_ACC_STEPS		  (float)(162)					//(2*ACC_MODULE*D_THETA));
+
+//for 360°/s^2
+#define SPEED_UPDATE_TIMER_TOP	  22222					//this will give approximately 360Hz - period of the timer that will update the speed (will
+#define ACC_MODULE				  (360*ACC_SCALER)		//degrees per second square
+#define BREAKING_MODULE			  (360*BREAKING_SCALER)
 #define D_THETA					  (360/(DEFAULT_MS*FS_REVOLUTION))
-#define DEN_CALC_ACC_STEPS		  (float)(162)					//360/(2*ACC_MODULE*D_THETA));
+#define DEN_CALC_ACC_STEPS		  (float)(81)					//(2*ACC_MODULE*D_THETA));
 
 typedef enum{
   FULL_STEP,

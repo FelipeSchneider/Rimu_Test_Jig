@@ -116,7 +116,7 @@ for i=2:Nsim
     q(i,:) = quat_mult(q(i,:), qe);
 
     %% Update gyro bias estimate
-    bw = bw+x(4:6,1); %¨problem to long duration tests
+    %bw = bw%+x(4:6,1); %¨problem to long duration tests
     bw_(i,:) = bw*dt;
 end
 

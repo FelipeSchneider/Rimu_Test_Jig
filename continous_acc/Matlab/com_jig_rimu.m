@@ -9,48 +9,67 @@ addpath('fusion');
 addpath('jig');
 addpath('aquire_rimu');
 %% angles and speed configurations - user configurable up to 249 commands for each motor
-name = 'fast_move_1';
-description = 'Tunning kalman and others filters';
 
-%random test
-% base_angle = [5000 30  60  10  1000 120  30    45  80   1000   150 60   75  300  15  80  300  120 60 1000  60 120 200 45  150  15  30    1000  85  145 360  60 60 60  60 1000 120 75   2000];
-% base_speed = [0     200 720 -45 0    -150 45    -80 -300 0      600 -450 360 90  -99 145 -120 720 64 0     89 254 -99 130 -89 -78 -60   0    320 187 -180 60 30 180   20 0    109  -500 0];
-% top_angle = [5000 45   99  120  1000 320  15    45  240  1000   75  480  65  200 99  46  135  220 90 1000  20 220 170 205  20  425  30   1000 145 115 260  60 60  450  60 1000 120 175  2000];
-% top_speed = [0     200 720 -45  0    -150 45    -90 -300 0      600 -450 360 90  -99 145 -120 720 64 0     89 254 -99 330 -89 -320 -70   0    320 187 -180 60 -30 180  55 0    109  -500 0];
+%mid range test
+base_angle = [5000 30  30   30   1000  130  30  40  80   2000   45  45   75  2000 150  35  90  300  120 45 3000  60 120 200 45  150  15   30   1000  85  45 45  45  95 60  30  30   3000];
+base_speed = [0    60  100  150  0    -110  45  -80 200  0      300 -300 60  0    -60  99  145 -120 200 64 0     89 254 -99 130 -89 -78  -60   0     320 60 -90 120 72 123 -99 -210 0];
+top_angle = [5000  45   99  120  1000 120   15  45  240  2000   75  360  65  2000 200  99  46  135  120 90 1000  20 90  170 25  20   95   30   1000 145 115 260  60 60  360  60 124  3000];
+top_speed = [0     200  120 -45  0    -75   45  -90 -200 0      200 -85  160 0    90  -99  145 -120 220 64 0     89 154 -99 30  -89 -220 -70   0    120 187 -180 60 -30 104  55  109 0];
+time_sample = 70;      %number of seconds that we will collect
 
 %fast speed
-base_angle = [5000 90  120 50   150  30  180 480  30  60   360 450   90   150 145 175 25  35   90  78  14   423  165 245 720  250 25  25  25  400  360 142 15  25  35  165  85];
-base_speed = [0    200 300 -400 -500 115 720 -180 100 -245 720 -250 -130 -650 600 165 278 -145 -75 -98 -125 145  720 500 -450 524 250 152 365 -654 250 350 152 365 184 -500 410];
-top_angle = [5000 85  165  35  25  15  142 360 4000 25  25  25  2500 720  245 165  120  14  78  90  35   25  1705 145 150  90   80   360  60  30  180  180 30  150   50 120  90];
-top_speed = [0    410 -500 184 365 152 350 250 -654 365 152 250 524  -450 500 720 -145 -125 -98 -75 -145 278 265  600 -650 -130 -100 720 -245 100 -180 720 115 -500 -400 300 200];
+% base_angle = [5000 90  120  50   150  30  180 180  30    60   360 450   90   150  145 25   35   90  78  14   223  165 245 129  250  25   25  140  257 142  15   25   35  165  85   195  5000];
+% base_speed = [0    200 300  -100 -200 115 320 -180 100   -245 220 -250 -130 -150  60  78  -145 -75 -98 -125  -145 120 220 -150 124  -112 325 -354 250 315  152  65   104 -200 115 -114  0];
+% top_angle = [5000  85  165  35   25   15  142 360  409   25   25  25   250   120  245 165  120  15  78  90   35   25  175  145 150  90   80  60   60  30   180  180  150  50  120  90   5000];
+% top_speed = [0     410 -500 184  265  152 150 250 -154   -300 152 250  224  -210  150 320 -145 -125 -98 -75 -145  278 265  100 -150 -130 95  -100 220 -245 100  -180 115 -250 -114 -300 0];
+% time_sample = 70;      %number of seconds that we will collect
 
 %slow speed
-% base_angle = [5000 90  3000 90  3000 90  3000 10 10 10 10 30  1000 30  1000 30  1000 30  1000 30  1000 30  1000 15  500  15  500 15  500 15  500 15 35   1500 45  1500 120 1500 10 1500 10 1500 10 1500 10 1500 10 1500 10 1500 10 1500 10 1500 10];
-% base_speed = [0    100 0    100 0    100 0    0  0  0  0  -150 0   -150 0   -150 0   -150 0   -150 0   -150 0   200 0    200 0   200 0   200 0   200 -120 0   -130 0   -100 0   100 0   100 0   100 0   100 0   100 0   100 0   100 0   100 0   100];
-% top_angle = [5000 10 10 10 10  90  3000 90  3000 90  3000 30  1000 30  1000 30  1000 30  1000 30  1000 30  1000 15  500  15  500 15  500 15  500 15  35   1500 45  1500 120 1500 10 1000 10 1000 10 1000 10 1000 10 1000 10 1000 10 1000 10 1000 10];
-% top_speed = [0    0  0  0  0  100  0    100 0    100 0    150 0    150 0   -150 0    150 0   -150 0    150 0    200 0    200 0   200 0   200 0   200 -120 0   -130 0    100  0   100 0   100 0   100 0   100 0   100 0   100 0   100 0   100 0   100];
+% base_angle = [5000	10	10	10	10	10	10	90	2000	90	2000	90	2000	30	20	1000	30	1000	30	1000	30	1000	90	1000	30	1000	15	500	15	500	0	15	20	15	35	15	22	1500	120	1500	10	30	10	1000	10	10	1000	10	1000	10	1000	10	1000	20	77	5000];
+% base_speed = [0 0 0 0 0 0 0 70 0 70 0 70 0 -100 -90 0 -100 0 -100 0 -150 0 -150 0 -150 0 200 0 200 0 0 200 300 -200 0 -200 -120 0 -130 0 -100 100 -100 0 -100 -100 0 -100 0 100 0 100 0 90 90 0];
+% top_angle = [5000	90	2000	90	2000	90	2000	10	10	10	10	10	20	30	1000	30	1000	30	1000	30	1000	30	1000	15	500	15	500	15	500	15	500	15	35	1500	45	1500	120	1500	10	20	10	1500	10	1500	10	1500	10	1500	10	1500	10	1500	10	10	125	5000];
+% top_speed = [0	70	0	70	0	70	0	0	0	0	0	0	100	-100	0	-100	0	-100	0	-100	0	-150	0	200	0	200	0	200	0	200	0	200	-120	0	-130	0	-100	0	100	75	100	0	100	0	100	0	100	0	100	0	100	0	100	100	-100	0];
+% time_sample = 75;      %number of seconds that we will collect
 
-
-
-%fusion 3
+%% Yaw correction 
 % base_angle = [10 5000];% move 10 degrees, wait 5000ms
-% base_speed = [0 0];% move at 70 degrees per second, command to wait
-% top_angle = [2000 360];%wait 2000ms, move 360 degrees
+% base_speed = [60    0];% move at 60 degrees per second, command to wait
+% top_angle = [0 0];%wait 2000ms, move 360 degrees
 % top_speed = [0 0]; %command to wait (wait for the base move), move at 200dps
 % j=0;
 % for i=20:10:360
 %     j=j+1;
 %    base_angle = [base_angle [10 5000]];
-%    base_speed = [base_speed [70 0]];
-%    top_angle = [top_angle [2000 360]];
-%    top_speed = [top_speed [0 200]];
+%    base_speed = [base_speed [60 0]];
+%    top_angle = [top_angle [0 0]];
+%    top_speed = [top_speed [0 0]];
 % end
-% 
 % top_angle = [5000 top_angle];
 % top_speed = [0 top_speed];
-%rimu definitions
+% base_angle = [5000 base_angle];
+% base_speed = [0 base_speed];
+% time_sample = 200;      %number of seconds that we will collect
+%% Pitch correction 
+% base_angle = [0 0];% move 10 degrees, wait 5000ms
+% base_speed = [0    0];% move at 60 degrees per second, command to wait
+% top_angle = [10 5000];%wait 2000ms, move 360 degrees
+% top_speed = [60 0]; %command to wait (wait for the base move), move at 200dps
+% j=0;
+% for i=20:10:360
+%     j=j+1;
+%    base_angle = [base_angle [0 0]];
+%    base_speed = [base_speed [0 0]];
+%    top_angle = [top_angle [10 5000]];
+%    top_speed = [top_speed [60 0]];
+% end
+% top_angle = [5000 top_angle];
+% top_speed = [0 top_speed];
+% base_angle = [5000 base_angle];
+% base_speed = [0 base_speed];
+% time_sample = 200;      %number of seconds that we will collect
+
+%% rimu definitions
 BLUETOOTH = 1;          %to use bluetooth set this flag
-time_sample = 65;      %number of seconds that we will collect
 COM_imu = 16;            %com port number
 COM_imu_baud = 230400;   %Baud rate
 COM_header_1 = 83;       %Header rimu 1
@@ -70,7 +89,7 @@ COM_jig_num = 11;
 %% constants
 jig_const = struct('microstep', 16, 'step_per_rev', 200,... 
             'd_theta', 360/(16*200),'min_w',10,'max_w',720,...
-            'max_base_angle',720,'acc_mod',720,'breaking_mod',720,...
+            'max_base_angle',720,'acc_mod',360,'breaking_mod',360,...
             'positive_speed','CCW','negative_speed','CW',...
             'limit_com_size',249);
         

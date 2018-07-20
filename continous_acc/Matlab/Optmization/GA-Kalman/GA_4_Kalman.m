@@ -1,22 +1,23 @@
 addpath('C:\Users\felip\Dropbox\Mestrado\Dissertação\Coletas Jiga\Teste_giro_filt')  %just to be able to load previously jig measurements
-addpath(genpath('C:\Users\felip\Documents\Arquivos dissertação\Testes dissertação\data colection'))  %just to be able to load previously jig measurements
+% addpath(genpath('C:\Users\felip\Documents\Arquivos dissertação\Testes dissertação\data colection'))  %just to be able to load previously jig measurements
 addpath(genpath('..\..\fusion'));
 addpath('..\..\jig');
 addpath('..\..\');
 % addpath('..\aquire_rimu');
-load random2
+%load random2
+load yaw_comp_data3.mat
 clearvars -except acc_bno_g acc_imu_g com_data description fs giro_bno_dps giro_imu_dps ...
     jig_const mag_bno_gaus mag_imu_gaus Q real_base_angle real_top_angle t...
     t_angles t_imu t_rec
-load LIS_calibration_matrices
+%load LIS_calibration_matrices
 clc; close all;
 %% calibrate LSM gyro data
 giro_imu_dps = giro_imu_dps - mean(giro_imu_dps(:,100:400),2);
 giro_imu_dps = giro_imu_dps*1.1692104;
 
 %% calibrate LIS data
-mag_imu_gaus_cal = mag_imu_gaus' * Ca_imu' + repmat(Cb_imu', length(mag_imu_gaus), 1);
-mag_imu_gaus_cal = mag_imu_gaus_cal';
+% mag_imu_gaus_cal = mag_imu_gaus' * Ca_imu' + repmat(Cb_imu', length(mag_imu_gaus), 1);
+% mag_imu_gaus_cal = mag_imu_gaus_cal';
 %% Genetic Algorithms parameters
 plot_figures = 1;
 n_particles = 40;
@@ -26,8 +27,8 @@ r_mutation = 0.05;
 % Xmin = [10e-3   10e-3   10e-4   10e-6   10e-6   10e-6]; %limits of search
 % Xmax = [1       1       10e-1   10e-1   10e-2   10e-4];
 
-Xmin = [5e-2   5e-2   5e-3   5e-5   5e-5   5e-8]/200; %limits of search
-Xmax = [5e-1   5e-1   5e-2   5e-4   5e-4   5e-7]*2;
+Xmin = [5e-2   5e-2   5e-3   5e-5   5e-5   5e-8]/100; %limits of search
+Xmax = [5e-1   5e-1   5e-2   5e-4   5e-4   5e-7]*4;
 %X(1) -> Three values of superior diag. of R -> R(1,1);R(2,2);R(3,3). measurement noise covariance matrix
 %X(2) -> Three values of inferior diag. of R -> R(4,4);R(5,5);R(6,6). measurement noise covariance matrix
 %X(3) -> Three values of superior diag. of P -> P(1,1);P(2,2);P(3,3). error covariance matrix
@@ -38,7 +39,7 @@ Xmax = [5e-1   5e-1   5e-2   5e-4   5e-4   5e-7]*2;
 %% Data that must be pre entered
 acc_data = (acc_imu_g + acc_bno_g)/2;
 giro_data = (giro_imu_dps + giro_bno_dps)/2;
-mag_data = mag_imu_gaus_cal;
+mag_data = mag_bno_gaus;
 
 % acc_data = acc_imu_g;
 % giro_data = giro_imu_dps;

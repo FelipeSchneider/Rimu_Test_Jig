@@ -44,7 +44,7 @@ for i=1:4:length(com_vector)-4 %-4 to not consider the end of commands
     
     if(abs(B_speed) >= cnt.min_w)   %if the base motor will move at this command
         B_step_to_cruse = round((B_speed^2 - cnt.min_w^2)/(2*cnt.acc_mod*cnt.d_theta)); %   V^2 = Vo^2 + 2*a*DS;
-        B_step_breaking = round((B_speed^2 - cnt.min_w^2)/(2*cnt.breaking_mod*cnt.d_theta)); %   V^2 = Vo^2 + 2*a*DS;
+        B_step_breaking = round((B_speed^2 - cnt.min_w^2)/(2*cnt.breaking_mod*cnt.d_theta)); %   V^2 = Vo^2 + 2*a*DS; DS = n_steps*d_theta
         
         %calculating the real cruse speed, number of steps to cruse... for BASE
         %motor
