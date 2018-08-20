@@ -1,7 +1,9 @@
 addpath(genpath('..\fusion'));
 addpath('..\');
+addpath('C:\Users\felip\Documents\Arquivos dissertação\Testes dissertação\Longa aquisição\Teste_3');
 clear all; clc; close all;
 disp('Start:'); disp(datetime('now'));
+cor = lines(6);
 %% concatenating
 acc_bno = zeros(3,96*60000);
 acc_imu = zeros(3,96*60000);
@@ -33,18 +35,20 @@ gyro_data = (giro_imu + giro_bno)/2;
 mag_data = mag_imu_gaus_cal;
 fs = 100;
 
-R = diag([0.106081894043137, 0.106081894043137, 0.106081894043137,0.546630894966456, 0.546630894966456, 0.546630894966456])*2; %measurement noise covariance matrix
-P = diag([0.0286839110161009, 0.0286839110161009, 0.0286839110161009, 0.000350603145874234, 0.000350603145874234, 0.000350603145874234]); %error covariance matrix
-Gyro_errors_noise = 0.000792992205142529;
-Gyro_errors_bias = 8.54935619884057e-07;
-Kp = 1.63;          %Mahony
-Beta = 0.155;       %Madgwick 
-Crossover = 0.5;  %CF
+X_best = [0.048178218974686;0.109923250960862;0.005811115831348;0.007798193953625;0.006819123339871;1.007453221846325e-06];  %mid range
+Kp = 2.630;          %Mahony 
+Beta = 0.210;       %Madgwick 
+Crossover = 0.977;  %CF
+
+R = diag([X_best(1), X_best(1), X_best(1), X_best(2), X_best(2), X_best(2)]); %measurement noise covariance matrix
+P = diag([X_best(3), X_best(3), X_best(3), X_best(4), X_best(4), X_best(4)]); %error covariance matrix
+Gyro_errors_noise = X_best(5);
+Gyro_errors_bias = X_best(6);
 
 %the test must start with a steady period
-bw = mean(gyro_data(:,100:400),2);       %gyro bias
-fn = mean(acc_data(:,100:400),2);          %gravity in the sensor frame
-mn = mean(mag_data(:,100:400),2);       %magnetic field in the sensor frame
+bw = mean(gyro_data(:,500:1000),2);       %gyro bias
+fn = mean(acc_data(:,500:1000),2);          %gravity in the sensor frame
+mn = mean(mag_data(:,500:1000),2);       %magnetic field in the sensor frame
 
 %% time calculation
 t = (1:length(temp))/(100*60*60);
@@ -151,31 +155,34 @@ p.fontsize = 10;
 p.identify();
 
 p(1,1,1).select();
-plot(t, e_bno(:,1)*180/pi,':','Linewidth',1.3); hold all;
-plot(t, e_madgwick_imu(:,1)*180/pi);
-plot(t, e_mahony_imu(:,1)*180/pi,'-.','Linewidth',1.5);
-plot(t, e_CF_imu(:,1)*180/pi);
-plot(t, e_gyroLib(:,1)*180/pi,'--','Linewidth',1.5);
+plot(t, e_bno(:,1)*180/pi,':','Linewidth',1.3,'color',cor(2,:)) ; hold all;
+plot(t, e_madgwick_imu(:,1)*180/pi,'color',cor(3,:));
+plot(t, e_mahony_imu(:,1)*180/pi,'-.','Linewidth',1.5,'color',cor(4,:));
+plot(t, e_CF_imu(:,1)*180/pi,'color',cor(5,:));
+plot_kalman = plot(t, e_gyroLib(:,1)*180/pi,'--','Linewidth',1.5,'color',cor(6,:));
+plot_kalman.Color(4) = 0.35;
 axis([0 inf -1 1]);
 grid on; ylabel('Yaw error [°]');
 legend('BNO','Madgwick','Mahony','CF','Kalman','Orientation','Horizontal');
 a = gca; a.XTickLabel = {};
 
 p(2,1,1).select();
-plot(t, e_bno(:,2)*180/pi,':','Linewidth',1.3); hold all;
-plot(t, e_madgwick_imu(:,2)*180/pi);
-plot(t, e_mahony_imu(:,2)*180/pi,'-.','Linewidth',1.5);
-plot(t, e_CF_imu(:,2)*180/pi);
-plot(t, e_gyroLib(:,2)*180/pi,'--','Linewidth',1.5);
+plot(t, e_bno(:,2)*180/pi,':','Linewidth',1.3,'color',cor(2,:)) ;hold all;
+plot(t, e_madgwick_imu(:,2)*180/pi,'color',cor(3,:));
+plot(t, e_mahony_imu(:,2)*180/pi,'-.','Linewidth',1.5,'color',cor(4,:));
+plot(t, e_CF_imu(:,2)*180/pi,'color',cor(5,:));
+plot_kalman = plot(t, e_gyroLib(:,2)*180/pi,'--','Linewidth',1.5,'color',cor(6,:));
+plot_kalman.Color(4) = 0.35;
 axis([0 inf -2 2]); grid on; ylabel('Roll error [°]');
 a = gca; a.XTickLabel = {};
 
 p(3,1,1).select();
-plot(t, e_bno(:,3)*180/pi,':','Linewidth',1.3); hold all;
-plot(t, e_madgwick_imu(:,3)*180/pi);
-plot(t, e_mahony_imu(:,3)*180/pi,'-.','Linewidth',1.5);
-plot(t, e_CF_imu(:,3)*180/pi);
-plot(t, e_gyroLib(:,3)*180/pi,'--','Linewidth',1.5);
+plot(t, e_bno(:,3)*180/pi,':','Linewidth',1.3,'color',cor(2,:)) ;hold all;
+plot(t, e_madgwick_imu(:,3)*180/pi,'color',cor(3,:));
+plot(t, e_mahony_imu(:,3)*180/pi,'-.','Linewidth',1.5,'color',cor(4,:));
+plot(t, e_CF_imu(:,3)*180/pi,'color',cor(5,:));
+plot_kalman = plot(t, e_gyroLib(:,3)*180/pi,'--','Linewidth',1.5,'color',cor(6,:));
+plot_kalman.Color(4) = 0.35;
 axis([0 inf -10 10]); grid on; 
 ylabel('Pitch error [°]');  a = gca; a.XTickLabel = {};
 
@@ -186,13 +193,13 @@ xlabel('Time [h]');
 p(4).marginbottom = 10;
 
 %filtered data figure
-e_bno2 = movmean(e_bno, 1000);
-e_madgwick_imu2 = movmean(e_madgwick_imu, 1000);
-e_mahony_imu2 = movmean(e_mahony_imu, 1000);
-e_CF_imu2 = movmean(e_CF_imu, 1000);
-e_gyroLib2 = movmean(e_gyroLib, 1000);
+e_bno2 = movmean(e_bno, 10000);
+e_madgwick_imu2 = movmean(e_madgwick_imu, 10000);
+e_mahony_imu2 = movmean(e_mahony_imu, 10000);
+e_CF_imu2 = movmean(e_CF_imu, 10000);
+e_gyroLib2 = movmean(e_gyroLib, 10000);
 
-cor = lines(5);
+cor = lines(6);
 
 figure;
 p = panel();
@@ -208,31 +215,34 @@ p.fontsize = 10;
 p.identify();
 
 p(1,1,1).select();
-plot(t, e_gyroLib2(:,1)*180/pi,'Color',cor(5,:)); hold all;
-plot(t, e_CF_imu2(:,1)*180/pi,'Linewidth',1.3,'Color',cor(4,:));
-plot(t, e_mahony_imu2(:,1)*180/pi,'Color',cor(3,:));
-plot(t, e_madgwick_imu2(:,1)*180/pi,'Color',cor(2,:));
-plot(t, e_bno2(:,1)*180/pi,'Linewidth',1.3,'Color',cor(1,:));
+plot(t, e_bno2(:,1)*180/pi,':','Linewidth',1.3,'color',cor(2,:)) ; hold all;
+plot(t, e_madgwick_imu2(:,1)*180/pi,'color',cor(3,:));
+plot(t, e_mahony_imu2(:,1)*180/pi,'-.','Linewidth',1.5,'color',cor(4,:));
+plot(t, e_CF_imu2(:,1)*180/pi,'color',cor(5,:));
+plot_kalman = plot(t, e_gyroLib2(:,1)*180/pi,'--','Linewidth',1.5,'color',cor(6,:));
+plot_kalman.Color(4) = 0.35;
 axis([0 inf -0.5 0.5]);
 grid on; ylabel('Yaw error [°]');
-legend('Kalman','CF','Mahony','Madgwick','BNO','Orientation','Horizontal');
+legend('BNO','Madgwick','Mahony','CF','Kalman','Orientation','Horizontal');
 a = gca; a.XTickLabel = {};
 
 p(2,1,1).select();
-plot(t, e_gyroLib2(:,2)*180/pi,'Color',cor(5,:)); hold all;
-plot(t, e_CF_imu2(:,2)*180/pi,'Linewidth',1.3,'Color',cor(4,:));
-plot(t, e_mahony_imu2(:,2)*180/pi,'Color',cor(3,:));
-plot(t, e_madgwick_imu2(:,2)*180/pi,'Color',cor(2,:));
-plot(t, e_bno2(:,2)*180/pi,'Linewidth',1.3,'Color',cor(1,:));
+plot(t, e_bno2(:,2)*180/pi,':','Linewidth',1.3,'color',cor(2,:)) ; hold all;
+plot(t, e_madgwick_imu2(:,2)*180/pi,'color',cor(3,:));
+plot(t, e_mahony_imu2(:,2)*180/pi,'-.','Linewidth',1.5,'color',cor(4,:));
+plot(t, e_CF_imu2(:,2)*180/pi,'color',cor(5,:));
+plot_kalman = plot(t, e_gyroLib2(:,2)*180/pi,'--','Linewidth',1.5,'color',cor(6,:));
+plot_kalman.Color(4) = 0.35;
 axis([0 inf -1 1]); grid on; ylabel('Roll error [°]');
 a = gca; a.XTickLabel = {};
 
 p(3,1,1).select();
-plot(t, e_gyroLib2(:,3)*180/pi,'Color',cor(5,:)); hold all;
-plot(t, e_CF_imu2(:,3)*180/pi,'Linewidth',1.3,'Color',cor(4,:));
-plot(t, e_mahony_imu2(:,3)*180/pi,'Color',cor(3,:));
-plot(t, e_madgwick_imu2(:,3)*180/pi,'Color',cor(2,:));
-plot(t, e_bno2(:,3)*180/pi,'Linewidth',1.3,'Color',cor(1,:));
+plot(t, e_bno2(:,3)*180/pi,':','Linewidth',1.3,'color',cor(2,:)) ; hold all;
+plot(t, e_madgwick_imu2(:,3)*180/pi,'color',cor(3,:));
+plot(t, e_mahony_imu2(:,3)*180/pi,'-.','Linewidth',1.5,'color',cor(4,:));
+plot(t, e_CF_imu2(:,3)*180/pi,'color',cor(5,:));
+plot_kalman = plot(t, e_gyroLib2(:,3)*180/pi,'--','Linewidth',1.5,'color',cor(6,:));
+plot_kalman.Color(4) = 0.35;
 axis([0 inf -7 10]); grid on; 
 ylabel('Pitch error [°]');  a = gca; a.XTickLabel = {};
 
@@ -322,5 +332,41 @@ plot(t, temp,'Linewidth',1.3); hold all;
 axis([0 inf -inf inf]); grid on; ylabel('Temperature [°C]');
 xlabel('Time [h]');
 p(4).marginbottom = 10;
+
+v = e_bno2*180/pi-movmedian(e_bno2*180/pi,90000,1);
+var_bno = var(v(100000:end,:));
+v = e_madgwick_imu2*180/pi-movmedian(e_madgwick_imu2*180/pi,90000,1);
+var_madgwick = var(v(100000:end,:));
+v = e_mahony_imu2*180/pi-movmedian(e_mahony_imu2*180/pi,90000,1);
+var_mahony = var(v(100000:end,:));
+v = e_CF_imu2*180/pi-movmedian(e_CF_imu2*180/pi,90000,1);
+var_CF = var(v(100000:end,:));
+v = e_gyroLib2*180/pi-movmedian(e_gyroLib2*180/pi,90000,1);
+var_giroLib = var(v(100000:end,:));
+
+var_bno = var_bno';
+var_madgwick = var_madgwick';
+var_mahony = var_mahony';
+var_CF = var_CF';
+var_giroLib = var_giroLib';
+
+
+ref_bno = mean(e_bno(5*100*60*60:6*100*60*60,:))*180/pi;
+ref_CF = mean(e_CF_imu(5*100*60*60:6*100*60*60,:))*180/pi;
+ref_gyroLib = mean(e_gyroLib(5*100*60*60:6*100*60*60,:))*180/pi;
+ref_madgwick = mean(e_madgwick_imu(5*100*60*60:6*100*60*60,:))*180/pi;
+ref_mahony = mean(e_mahony_imu(5*100*60*60:6*100*60*60,:))*180/pi;
+
+dev_bno = mean(e_bno(7.5*100*60*60:8.5*100*60*60,:))*180/pi;
+dev_CF = mean(e_CF_imu(7.5*100*60*60:8.5*100*60*60,:))*180/pi;
+dev_gyroLib = mean(e_gyroLib(7.5*100*60*60:8.5*100*60*60,:))*180/pi;
+dev_madgwick = mean(e_madgwick_imu(7.5*100*60*60:8.5*100*60*60,:))*180/pi;
+dev_mahony = mean(e_mahony_imu(7.5*100*60*60:8.5*100*60*60,:))*180/pi;
+
+temp_dev_bno = (dev_bno-ref_bno)';
+temp_dev_CF = (dev_CF-ref_CF)';
+temp_dev_gyroLib = (dev_gyroLib-ref_gyroLib)';
+temp_dev_madgwick = (dev_madgwick-ref_madgwick)';
+temp_dev_mahony = (dev_mahony-ref_mahony)';
 
 

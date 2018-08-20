@@ -1,4 +1,4 @@
-function [ HP ] = plotEstimation(t, q_all, q_best, q_jig, f_plot, nIteration, HP )
+function [ HP ] = plotEstimation(t, q_all, q_best, q_jig, f_plot, A, nIteration, HP)
 %plotEstimation Plot the estimation of all particles, including the best estimation
 %and the jig angle
 %   t     - Time vector
@@ -17,11 +17,17 @@ if f_plot == 1
     [e_jig(:,1),e_jig(:,2),e_jig(:,3)] = quat2angle(q_jig,'ZXY');
     [e_best(:,1),e_best(:,2),e_best(:,3)] = quat2angle(q_best,'ZXY');
     
+    [ e_best ] = angleAlignment( e_best, e_jig, A{1}, A{2}, A{3} , 'yaw');
+    [ e_best ] = angleAlignment( e_best, e_jig, A{4}, A{5}, A{6} , 'pitch');
+    
+    Z = zeros(size(e_best));
+    [ ~, ~, ~, ~, e_best ] = jigTimeAlign(Z, Z, Z, Z, e_best, e_jig );
+    
     e_diff(:,1) = angdiff(abs(e_jig(:,1)),abs(e_best(:,1)));
     e_diff(:,2) = angdiff(e_jig(:,2),e_best(:,2));
     e_diff(:,3) = angdiff(e_jig(:,3),e_best(:,3));
     
-    if(nargin == 7)
+    if(nargin == 8)
         set(0,'currentfigure',HP(1));
         subplot(311);
         plot_title = sprintf('Kalman estimation - It. %d', nIteration);
@@ -39,7 +45,7 @@ if f_plot == 1
         set(HP(7),'YData',e_diff(:,2)*180/pi);
         set(HP(8),'YData',e_diff(:,3)*180/pi);
         drawnow;
-    elseif(nargin == 5)
+    elseif(nargin == 6)
         HP(1) = figure; 
         subplot(311);
         plot(t,e_jig(:,1)*180/pi); hold on;

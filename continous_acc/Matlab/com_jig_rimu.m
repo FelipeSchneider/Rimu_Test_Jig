@@ -11,11 +11,11 @@ addpath('aquire_rimu');
 %% angles and speed configurations - user configurable up to 249 commands for each motor
 
 %mid range test
-base_angle = [5000 30  30   30   1000  130  30  40  80   2000   45  45   75  2000 150  35  90  300  120 45 3000  60 120 200 45  150  15   30   1000  85  45 45  45  95 60  30  30   3000];
-base_speed = [0    60  100  150  0    -110  45  -80 200  0      300 -300 60  0    -60  99  145 -120 200 64 0     89 254 -99 130 -89 -78  -60   0     320 60 -90 120 72 123 -99 -210 0];
-top_angle = [5000  45   99  120  1000 120   15  45  240  2000   75  360  65  2000 200  99  46  135  120 90 1000  20 90  170 25  20   95   30   1000 145 115 260  60 60  360  60 124  3000];
-top_speed = [0     200  120 -45  0    -75   45  -90 -200 0      200 -85  160 0    90  -99  145 -120 220 64 0     89 154 -99 30  -89 -220 -70   0    120 187 -180 60 -30 104  55  109 0];
-time_sample = 70;      %number of seconds that we will collect
+% base_angle = [5000 30  30   30   1000  130  30  40  80   2000   45  45   75  2000 150  35  90  300  120 45 3000  60 120 200 45  150  15   30   1000  85  45 45  45  95 60  30  30   3000];
+% base_speed = [0    60  100  150  0    -110  45  -80 200  0      300 -300 60  0    -60  99  145 -120 200 64 0     89 254 -99 130 -89 -78  -60   0     320 60 -90 120 72 123 -99 -210 0];
+% top_angle = [5000  45   99  120  1000 120   15  45  240  2000   75  360  65  2000 200  99  46  135  120 90 1000  20 90  170 25  20   95   30   1000 145 115 260  60 60  360  60 124  3000];
+% top_speed = [0     200  120 -45  0    -75   45  -90 -200 0      200 -85  160 0    90  -99  145 -120 220 64 0     89 154 -99 30  -89 -220 -70   0    120 187 -180 60 -30 104  55  109 0];
+% time_sample = 70;      %number of seconds that we will collect
 
 %fast speed
 % base_angle = [5000 90  120  50   150  30  180 180  30    60   360 450   90   150  145 25   35   90  78  14   223  165 245 129  250  25   25  140  257 142  15   25   35  165  85   195  5000];
@@ -68,6 +68,12 @@ time_sample = 70;      %number of seconds that we will collect
 % base_speed = [0 base_speed];
 % time_sample = 200;      %number of seconds that we will collect
 
+%% Vibration check
+base_angle = [0 0];
+base_speed = [0 0];
+top_angle = [1080 2160 3240 4320 6480 6840 6840];
+top_speed = [-60 -120 -180 -240 -360 -540 -720];
+time_sample = 120;
 %% rimu definitions
 BLUETOOTH = 1;          %to use bluetooth set this flag
 COM_imu = 16;            %com port number

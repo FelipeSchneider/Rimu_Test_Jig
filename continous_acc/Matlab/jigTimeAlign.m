@@ -1,5 +1,13 @@
 function [ e_bno, e_madgwick, e_mahony, e_CF, e_gyroLib ] = jigTimeAlign( e_bno, e_madgwick, e_mahony, e_CF, e_gyroLib, e_jig )
-%
+%jigTimeAlign find the maximum cross correlation btw each signal and the
+%jig orientation. Then, deslocate the signals in time domain aiming to find
+%the best fit btw the sensor orientation and jig orientation
+e_bno(isnan(e_bno)) = 0;
+e_madgwick(isnan(e_madgwick)) = 0;
+e_mahony(isnan(e_mahony)) = 0;
+e_CF(isnan(e_CF)) = 0;
+e_gyroLib(isnan(e_gyroLib)) = 0;
+
 [c_bno,lag_bno]=xcorr(e_bno(:,1),e_jig(:,1));               [~,I_bno]=max(c_bno); 
 [c_madgwick,lag_madgwick]=xcorr(e_madgwick(:,1),e_jig(:,1)); [~,I_madgwick]=max(c_madgwick); 
 [c_mahony,lag_mahony]=xcorr(e_mahony(:,1),e_jig(:,1));      [~,I_mahony]=max(c_mahony); 

@@ -28,7 +28,7 @@ for j=1:c
     P(1:3,1:3)=diag([X(3,j), X(3,j), X(3,j)]);        %Initial Covariance matrix
     P(4:6,4:6)=diag([X(4,j), X(4,j), X(4,j)]);
     [q, ~, ~] = Gyro_lib_quat(P, bw*(pi/180), gyro_data*(pi/180*(1/fs)), X(5,j), X(6,j),...
-    acc_data, mag_data, fn, mn, 1/fs, R);  
+    acc_data, mag_data, fn, mn, 1/fs, R, [-1.0000,-0.0002, 0.0001, 0.0020]);  
     
     while(isnan(q(30,:))) % if the kalman is not well scalled (error during the fusion process)
         %q(9,:) = [1 0 0 0];
@@ -42,7 +42,7 @@ for j=1:c
         P(1:3,1:3)=diag([X(3,j), X(3,j), X(3,j)]);        %Initial Covariance matrix
         P(4:6,4:6)=diag([X(4,j), X(4,j), X(4,j)]);
         [q, ~, ~] = Gyro_lib_quat(P, bw*(pi/180), gyro_data*(pi/180*(1/fs)), X(5,j), X(6,j),...
-        acc_data, mag_data, fn, mn, 1/fs, R);
+        acc_data, mag_data, fn, mn, 1/fs, R, [-1.0000,-0.0002, 0.0001, 0.0020]);
     end
     
     q(isnan(q(:,1)),1) = 1; %replace NaN by unit vector, usually the last measurement is NaN
@@ -51,7 +51,7 @@ for j=1:c
     q = quatconj(q); %the kalman gyrolib returns the quaternion conjugate
     
     %correct the initial position
-    q_zero = avg_quaternion_markley(q(380:480,:));
+    q_zero = avg_quaternion_markley(q(200:350,:));
     q = quatmultiply(quatconj(q_zero'),q);
     q_out(:,:,j) = q;
 end

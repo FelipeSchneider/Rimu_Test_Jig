@@ -1,4 +1,4 @@
-function [W,fGA] = updateX(X,alpha,q_jig, Xmin, Xmax ,acc_data, gyro_data, mag_data, bw, fn, mn, fs)
+function [W,fGA] = updateX(X,alpha,q_jig, Xmin, Xmax ,acc_data, gyro_data, mag_data, bw, fn, mn, fs, A)
 %   X           - group of particles [nParameters, nParticles]
 %   alpha       - crossover expantion factor
 %   q_jig       - response of real jig orientation
@@ -11,6 +11,7 @@ function [W,fGA] = updateX(X,alpha,q_jig, Xmin, Xmax ,acc_data, gyro_data, mag_d
 %   fn          - Gravity vector in navigation frame [3x1]
 %   mn          - Magetic field vector in navigation frame [3x1]
 %   fs          - sampling frequency
+%   A           - jig alignment coeficients
 % Returns:
 %   W           - New set of particles
 %   fGA         - Fit of the new set of particles
@@ -49,10 +50,10 @@ function [W,fGA] = updateX(X,alpha,q_jig, Xmin, Xmax ,acc_data, gyro_data, mag_d
     %     Y2_out = Sys_response(C2,sys_input,t);
     %     Y2 = Sys_fit(Y2_out,y_ideal);
         [q_out, C1] = Kalman_response(C1,acc_data, gyro_data, mag_data, bw, fn, mn, fs, Xmin, Xmax);
-        [fit_1] = Kalman_fit(q_out,q_jig);
+        [fit_1] = Kalman_fit(q_out,q_jig, A);
 
         [q_out, C2] = Kalman_response(C2,acc_data, gyro_data, mag_data, bw, fn, mn, fs, Xmin, Xmax);
-        [fit_2] = Kalman_fit(q_out,q_jig);
+        [fit_2] = Kalman_fit(q_out,q_jig, A);
 
         if fit_1 <= fit_2
             W(:,k) = C1;
